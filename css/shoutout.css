@@ -35,9 +35,9 @@
 }
 .shout-col-1 {
     background: #f9f9f9;
-    width: 45%;
+    width: 40%;
     float: left;
-    height: 800px;
+
     -webkit-border-radius: 4px 4px;
     -moz-border-radius: 4px 4px;
     border-radius: 4px 4px;
@@ -45,7 +45,7 @@
 .shout-col-2 {
     background: #f9f9f9;
     float: left;
-    width: 50%;
+    width: 56%;
     -webkit-border-radius: 4px 4px;
     -moz-border-radius: 4px 4px;
     border-radius: 4px 4px;
@@ -167,8 +167,17 @@ details.dept-group[open] summary {
 }
 .view.view-shoutout-huddle-news .views-row {
     transition: .5s;
-}
 
+}
+.view.view-shoutout-huddle-news .views-row:hover {
+    cursor:pointer;
+
+}
+.view-shoutout-comment-list .views-row:hover {
+    transform: scale(1.2);
+    z-index: 9999;
+    transition: 1s;
+}
 /*USER PICS AND SHOUTOUT LIST*/
 div.shoutout-user-pic img {
     float: left;
@@ -183,6 +192,7 @@ div.shoutout-user-pic img {
     min-height: 115px;
     background: #eaeaea;
     border-radius: 6px;
+    transition:1s;
 }
 .view.view-shoutout-comment-list .views-field-field-last-name, .view.view-shoutout-comment-list .views-field-field-department {
     font-weight: 500;
