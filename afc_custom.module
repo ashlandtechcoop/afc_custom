@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * Module file for custom behaviours and functions used by AFC
+ * Basic hook implementations and helper functions will be found here.
+ *
+ *
+ */
+
+function afc_custom_theme_registry_alter(&$theme_registry) {
+
+//    $theme_registry['my-account']['template'] = 'account';
+//    $theme_registry['my-account']['path'] = drupal_get_path('module', 'lpbe_accounts') . '/templates';
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function afc_custom_node_view($node, $view_mode, $langcode) {
+    //
+}
+
+/**
+ * Implementation of hook_preprocess_HOOK().
+ */
+function afc_custom_preprocess_node(&$variables){
+
+    if ($variables['nid'] == 70) {
+
+        $dept_list = views_embed_view('shoutout_department_emp_list', 'block');
+        $huddle_new = views_embed_view('shoutout_huddle_news', 'block');
+        $shout_list = views_embed_view('shoutout_comment_list', 'block');
+
+        $variables['dept_list'] = $dept_list;
+        $variables['huddle_news']=$huddle_new;
+        $variables['shout_list']=$shout_list;
+
+    }
+}
