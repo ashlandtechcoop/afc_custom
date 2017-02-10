@@ -9,6 +9,76 @@
 
 
 /**
+ * Custom function to get user profile fields
+ */
+function get_profile($uid) {
+    $user = user_load($uid);
+    if ($user) {
+        $profile = profile2_load_by_user($user);
+        if (isset($profile['main'])) {
+            $profile = $profile['main'];
+            return $profile;
+        } else {
+            return FALSE;
+        }
+
+    } else {
+        return FALSE;
+    }
+}
+
+/**
+ * Custom function to count shoutouts
+ *  and change number when new shoutout is given
+ */
+function afc_custom_calculate_shoutout($uid) {
+    $profile = get_profile($uid);
+
+    if ($profile) {
+        if (isset($profile->field_total_shoutouts) && isset($profile->field_current_shoutouts)) {
+            $total_so = $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'];
+            $current_so = $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'];
+
+            if ($current_so == 3) {
+                //call shoutout alert function
+            } else {
+                $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so + 1;
+                $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so + 1;
+            }
+        }
+    }
+}
+
+
+/**
+ * Custom function that creates shoutout node from
+ *  submitted response on shoutout webform
+ */
+function afc_custom_add_new_shoutout(&$nodeinfo){
+    global $user; //should be service account
+
+    $title = 'shoutout to ' . $nodeinfo['employee_to'] . date('m-d-y');
+    $new_message = null;
+    $new_message = new stdClass();
+    $new_message->title = $title;
+    $new_message->body[LANGUAGE_NONE][0]['value'] = $nodeinfo['body'];
+    $new_message->type = 'shoutout';
+    $new_message->language = LANGUAGE_NONE;
+    node_object_prepare($new_message);
+    $new_message->uid = $user->uid;
+    $new_message->status = 1;
+    $new_message->promote = 0;
+    $new_message->comment = 0;
+    $new_message->field_employee[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_to'];
+    $new_message->field_employee_from[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_from'];
+
+    $new_message = node_submit($new_message);
+    node_save($new_message);
+
+    watchdog('afc_custom', 'Created new shoutout to user @user', array('@user' => $nodeinfo['employee_to']));
+}
+
+/**
  * Custom function to lookup uid for badge number
  */
 function afc_custom_return_uid_for_badge($badge) {
@@ -22,7 +92,6 @@ function afc_custom_return_uid_for_badge($badge) {
     }
 }
 
-
 /**
  * hook_form_alter
  */
@@ -31,16 +100,26 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
     //If on shoutout form
     if ($form_id == 'webform_client_form_84') {
 
-
         ctools_include('modal');
         ctools_include('ajax');
         ctools_add_js('ajax-responder');
 
-        //close the form if it got executed
+        //if its been submitted call the function that creates a shoutout and close the form
         if (!empty($form_state['executed'])) {
+
+            $emp_from = $form_state['input']['submitted']['employee_id_from'];
+            $emp_to = $form['submitted']['employee_id_to']['#default_value'];
+            $can_msg = $form_state['input']['submitted']['shoutout_canned_responses'];
+            $other_msg = $form_state['input']['submitted']['shoutout_message'];
+
+            $nodeinfo = array();
+            $nodeinfo['employee_to'] = $emp_to;
+            $nodeinfo['employee_from'] =$emp_from;
+            $nodeinfo['body'] = (trim(strlen($other_msg)) == 0) ? $can_msg : $other_msg;
+            afc_custom_add_new_shoutout($nodeinfo);
+            afc_custom_calculate_shoutout($emp_to);
             $output[] = ctools_modal_command_dismiss(); //Close modal automatically
-            $output[] = ctools_ajax_command_reload(); //reload parent window
-            $output[] = ajax_command_replace('#ajax-response', '<div class="fuck">MY TEST RESPONSE</div>');
+            $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">Thanks for showing appreciation of your fellow employees! You\'re awesome!</div>');
             print ajax_render($output);
             drupal_exit();
         }
@@ -54,8 +133,7 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                 $profile = profile2_load_by_user($user);
                 $profile = $profile['main'];
                 $nick_name = $profile->field_nick_name['und'][0]['value'] . ' ' . $profile->field_last_name['und'][0]['value'];
-                //$profile->field_nick_name['und'][0]['value']
-//                dpm($form);
+
                 $form['submitted']['my_form_component']['#title'] = $nick_name;
 //                $form['foo'] = array(
 //                    '#markup' => '<div class="nickname">To: '.$nick_name.'</div>',
@@ -67,11 +145,11 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
         //Add validate and submit
         $form['#validate'][] = 'afc_custom_validate_webform_84';
-        $first = array_shift($form['#submit']);
-        array_unshift($form['#submit'], $first, 'afc_custom_submit_webform_84');
+//        $form['#submit'][] = 'afc_custom_submit_webform_84';
+//        $first = array_shift($form['#submit']);
+//        array_unshift($form['#submit'], $first, 'afc_custom_submit_webform_84');
     }
 
-  //add js
 }
 
 /**
@@ -85,20 +163,13 @@ function afc_custom_validate_webform_84(&$form, &$form_state) {
         if (!$uid) {
             //error if we can't find a matching uid for that badge
             form_set_error('', t('It looks like your badge# is incorrect :('));
-            $form_state['rebuild'] = TRUE;
+//            $form_state['rebuild'] = TRUE;
         } else {
             $form_state['values']['submitted']['employee_id_from'] = $uid;
         }
     }
 }
 
-/**
- * Submit handler for Webform ID #84.
- */
-function afc_custom_submit_webform_84(&$form, &$form_state) {
-    //call function to create new node
-
-}
 
 function afc_custom_webform_js_submit($form, $form_state) {
     watchdog('afc_custom', 'calling js submit');
@@ -181,3 +252,4 @@ function afc_custom_preprocess_node(&$variables){
 
     }
 }
+

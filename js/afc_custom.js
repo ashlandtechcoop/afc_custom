@@ -36,6 +36,20 @@ var idleTime = 0;
 		//Shoutout page scripts
 		if ($('#shoutout-page-main-content').length > 0) {
 
+			if ($('#ajax-msg').length > 0) {
+				$('#ajax-msg').addClass('bounce');
+				$('#ajax-msg').delay(4000).fadeOut('slow');
+				window.setTimeout(function(){location.reload()},4100);
+
+				//onclick of huddle news
+				$('#ajax-msg').click(function() {
+					$('#ajax-msg').fadeOut('slow');
+					location.reload();
+				});
+
+			}
+
+
 			//onclick of huddle news
 			$('.view.view-shoutout-huddle-news .views-row').click(function() {
 				if ($(this).hasClass('zoomin')) {

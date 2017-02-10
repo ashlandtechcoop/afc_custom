@@ -2,6 +2,9 @@ name = Ashland Food Coop Custom Portal Modules
 description = Primary module collection for Employee Portal
 core = 7.x
 
+files[] = includes/helpers.inc
+files[] = includes/shoutout_logic.inc
+
 scripts[] = js/afc_custom.js
 
 stylesheets[all][] = css/shoutout.css

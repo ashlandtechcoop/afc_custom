@@ -260,3 +260,24 @@ div.modal-forms-modal-content .modal-header span.popups-close {
 div.modal-forms-modal-content .modal-header span#modal-title {
     display: none;
 }
+
+
+/*POPUP RESPONSE*/
+#ajax-msg.bounce  {
+     -webkit-animation: bounce 1.5s;
+    -webkit-animation-iteration-count: 1;
+}
+div#ajax-msg {
+    position: absolute;
+    top: 320px;
+    left: 450px;
+    width: 730px;
+    background: rgba(139, 195, 74, 0.89);
+    text-shadow: 2px 2px #bfbfbf;
+    color: #444;
+    font-weight: 600;
+    padding: 25px;
+    font-size: 36px;
+    text-align: center;
+    /* box-shadow: 2px 4px 14px #bebebe; */
+}
