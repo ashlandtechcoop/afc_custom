@@ -5,12 +5,13 @@
 
 
 function timerIncrement() {
-
+//1 = 15s
 	idleTime = idleTime + 1;
-	console.log(idleTime);
-	if (idleTime > 2) { // 20 minutes
-		console.log('12 seconds');
-		window.location.reload();
+
+	if (idleTime > 2) { // 45 seconds
+		console.log('reloading');
+		//window.location.reload();
+		//window.scrollTo(0, 0);
 	}
 }
 var idleTime = 0;
@@ -20,8 +21,15 @@ var idleTime = 0;
 			
 		$(window).load(function() {
 			console.log('Afc Custom Module loaded');
-
-
+			//Zero the idle timer on mouse movement.
+			$(this).mousemove(function(e) {
+				idleTime = 0;
+				console.log(1);
+			});
+			$(this).keypress(function(e) {
+				idleTime = 0;
+				console.log(2);
+			});
 		});
 
 
@@ -39,17 +47,9 @@ var idleTime = 0;
 
 			//IDLE COUNTER
 			//Increment the idle time counter every minute.
-			var idleInterval = setInterval(timerIncrement, 6000); // 1 minute 60000
-			console.log(0);
-			//Zero the idle timer on mouse movement.
-			$(this).mousemove(function(e) {
-				idleTime = 0;
-				console.log(1);
-			});
-			$(this).keypress(function(e) {
-				idleTime = 0;
-				console.log(2);
-			});
+			var idleInterval = setInterval(timerIncrement, 15000); // 1 minute 60000
+
+
 
 		}
     }

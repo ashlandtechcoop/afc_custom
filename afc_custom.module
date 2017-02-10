@@ -8,164 +8,157 @@
  */
 
 
-// Menu callback
-function ctools_ajax_content($js = NULL) {
-    $webform_nid = WEBFORM_NID; // Your webform $nid
-    return ctools_ajax_modal_webform($js, $webform_nid);
+/**
+ * Custom function to lookup uid for badge number
+ */
+function afc_custom_return_uid_for_badge($badge) {
+    if ($badge) {
+        $query = db_query("SELECT p.uid FROM {field_data_field_badge} b join {profile} p on entity_id = pid where b.field_badge_value =".$badge);
+        $records = $query->fetchAll();
+        if ($records[0]->uid) {
+            //if its there, return the first one
+            return $records[0]->uid;
+        }
+    }
 }
 
-// Handle CTools modal webforms
-// $webform_nid is the nid of the webform
-function ctools_ajax_modal_webform($js = NULL, $webform_nid = NULL) {
-    $node = node_load($webform_nid); // Load webform node
-    $submission =  (object) array(); // empty object required by webform
 
-    // React without the modal
-    if (!$js) {
-        // Webform requires more parameters than standard forms
-        return drupal_get_form('webform_client_form_'.$webform_nid, $node, $submission);
+/**
+ * hook_form_alter
+ */
+function afc_custom_form_alter(&$form, &$form_state, $form_id) {
+
+    //If on shoutout form
+    if ($form_id == 'webform_client_form_84') {
+
+
+        ctools_include('modal');
+        ctools_include('ajax');
+        ctools_add_js('ajax-responder');
+
+        //close the form if it got executed
+        if (!empty($form_state['executed'])) {
+            $output[] = ctools_modal_command_dismiss(); //Close modal automatically
+            $output[] = ctools_ajax_command_reload(); //reload parent window
+            $output[] = ajax_command_replace('#ajax-response', '<div class="fuck">MY TEST RESPONSE</div>');
+            print ajax_render($output);
+            drupal_exit();
+        }
+
+        //get the user the shoutout is to
+        if (isset($_GET['sho'])) {
+
+            $user = user_load(check_plain($_GET['sho']));
+            if ($user) {
+                $form['submitted']['employee_id_to']['#default_value'] = $user->uid;
+                $profile = profile2_load_by_user($user);
+                $profile = $profile['main'];
+                $nick_name = $profile->field_nick_name['und'][0]['value'] . ' ' . $profile->field_last_name['und'][0]['value'];
+                //$profile->field_nick_name['und'][0]['value']
+//                dpm($form);
+                $form['submitted']['my_form_component']['#title'] = $nick_name;
+//                $form['foo'] = array(
+//                    '#markup' => '<div class="nickname">To: '.$nick_name.'</div>',
+//                    '#weight' => -10,
+//                );
+            }
+
+        }
+
+        //Add validate and submit
+        $form['#validate'][] = 'afc_custom_validate_webform_84';
+        $first = array_shift($form['#submit']);
+        array_unshift($form['#submit'], $first, 'afc_custom_submit_webform_84');
     }
 
-    // React with the modal
-    // Add modal components
-    ctools_include('modal');
-    ctools_include('ajax');
-    $form_state = array(
-        'title' => $node->title,
-        'ajax' => TRUE,
-    );
-
-    // Emulate ctools_modal_form_wrapper() form modal.inc because webform can not be triggered trough drupal_build_form
-    // If it can, I'd be glad to understand how
-    $form_state += array(
-        're_render' => FALSE,
-        'no_redirect' => !empty($form_state['ajax']),
-    );
-
-    // Fetch webform form stuff
-    $output = drupal_get_form('webform_client_form_'.$webform_nid, $node, $submission);
-    // Merge node content (except webform) and webform form before rendering
-    $node_view = node_view($node); // Prepare webform for rendering
-    $node_view['body']['#weight'] = -100; // Ensure node body is at the top
-    unset($node_view['webform']); // Prevent displaying twice the webform
-    array_unshift( $output['submitted'], $node_view['body']); // Merge
-    $node->title = ''; // Remove title to prevent displaying twice
-
-    if (!empty($form_state['ajax'])) {
-        $output = ctools_modal_form_render($form_state, $output);
-    }
-
-    // Handle successful submission through session flag - see '_custom_webform_submit' function below
-    if ( isset($_SESSION['webform_client_form_'.$webform_nid]) && $_SESSION['webform_client_form_'.$webform_nid] == 'submitted') {
-        // Delete session flag
-        unset($_SESSION['webform_client_form_'.$webform_nid]);
-        // Fetch confirmation message. It will be displayed in the modal window
-        $confirmation['#markup'] =
-            '<div class="popups-confirmation-wrapper">'.
-            check_markup($output['#node']->webform['confirmation'], $output['#node']->webform['confirmation_format'], '', TRUE).
-            '</div>';
-        $output = array(); // Recreate output
-        // Oerwrite the form output if it was successful.
-        $output[] = ctools_modal_command_display('Confirmation', $confirmation);
-    }
-
-    // Render output in modal window
-    print ajax_render($output);
-    exit;
-}
-
-// Set a session flag to mark the webform as submitted.
-// This value will be used to trigger display confirmation message in CTools modal window
-function _custom_webform_submit($form, $form_state) {
-    $webform_nid = $form['#node']->nid;
-    $_SESSION['webform_client_form_'.$webform_nid] = 'submitted';
+  //add js
 }
 
 /**
- * Implementation of hook_menu().
+ * Validation handler for Webform ID #84.
  */
-function ec_app_menu() {
-    $items['get/ajax/node/%'] = array(
-        'page callback' => 'ctools_ajax_content', // Render HTML
-        'type' => MENU_CALLBACK,
-        'page arguments' => array(3),
-        'access arguments' => array('access content'),
-        'delivery callback' => 'ec_app_ajax_callback',  // Magic goes here
-    );
+function afc_custom_validate_webform_84(&$form, &$form_state) {
+
+    if(isset($form_state['values']['submitted']['employee_id_from'])) {
+        $badge = $form_state['values']['submitted']['employee_id_from'];
+        $uid = afc_custom_return_uid_for_badge($badge);
+        if (!$uid) {
+            //error if we can't find a matching uid for that badge
+            form_set_error('', t('It looks like your badge# is incorrect :('));
+            $form_state['rebuild'] = TRUE;
+        } else {
+            $form_state['values']['submitted']['employee_id_from'] = $uid;
+        }
+    }
 }
-            //AJAX A WEBFORM BUT ITS NOT A POPUP
-                //function afc_custom_form_alter(&$form, &$form_state, $form_id) {
-                //    // see if webform_client_form_ is in the form_id
-                //    if(strstr($form_id, 'webform_client_form_')) {
-                //        dpm('it is');
-                //        // get the nid so we can use it in the wrapper value
-                //        $nid = $form['#node']->nid;
-                //        // add the ajax properties to the submit button
-                //        $form['actions']['submit']['#ajax'] = array(
-                //            'callback' => 'mymodule_webform_js_submit',
-                //            'wrapper' => 'webform-client-form-' . $nid,
-                //            'method' => 'replace',
-                //            'effect' => 'fade',
-                //        );
-                //    }
-                //}
-                //
-                //function afc_custom_webform_js_submit($form, $form_state) {
-                //    dpm('calling js submit');
-                //    // define the $sid variable (submission id from webform)
-                //    $sid = $form_state['values']['details']['sid'];
-                //    // if we have a sid then we know the form was properly submitted, otherwise, we'll just return the existing $form array
-                //    if ($sid) {
-                //        // first we have to load up the webform node object
-                //        $node = node_load($form_state['values']['details']['nid']);
-                //        // create an array up with the confirmation message, retreived from the webform node
-                //        $confirmation = array(
-                //            '#type' => 'markup',
-                //            '#markup' => check_markup($node->webform['confirmation'], $node->webform['confirmation_format'], '', TRUE),
-                //        );
-                //        // return the confirmation message
-                //        return $confirmation;
-                //    }
-                //    else {
-                //        // return the form
-                //        return $form;
-                //    }
-                //}
+
+/**
+ * Submit handler for Webform ID #84.
+ */
+function afc_custom_submit_webform_84(&$form, &$form_state) {
+    //call function to create new node
+
+}
+
+function afc_custom_webform_js_submit($form, $form_state) {
+    watchdog('afc_custom', 'calling js submit');
+    // define the $sid variable (submission id from webform)
+    $sid = $form_state['values']['details']['sid'];
+    // if we have a sid then we know the form was properly submitted, otherwise, we'll just return the existing $form array
+    if ($sid) {
+        // first we have to load up the webform node object
+        $node = node_load($form_state['values']['details']['nid']);
+        // create an array up with the confirmation message, retreived from the webform node
+        $confirmation = array(
+            '#type' => 'markup',
+            '#markup' => check_markup($node->webform['confirmation'], $node->webform['confirmation_format'], '', TRUE),
+        );
+        // return the confirmation message
+        return $confirmation;
+    }
+    else {
+        // return the form
+        return $form;
+    }
+}
 
 /**
  * Implements hook_node_view().
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
+if (isset($_GET['ss'])) {
 
+}
     switch ($node->type) {
         case 'page':
 
             //SHOUTOUT BOX
             if ($node->nid ==70 ){
-                dpm($node);
+//                dpm($node);
+
+                $bike_to_work = '<button id="bike-to-work-btn" class="shout-buttons btn-one">Bike to Work</button>';
+                $emp_sugg ='<button id="employee-sugg-btn" class="shout-buttons btn-two">Employee Suggestion</button>';
+                $job_openings = '<button id="job-openings-btn" class="shout-buttons btn-three">Job Openings</button>';
+
+                //bike to work
+                $node->content['bike_to_work'] = array(
+                    '#markup' => $bike_to_work,
+                    '#weight' => 1,
+                );
+
+                //employee suggesstion button
+                $node->content['emp_sugg'] = array(
+                    '#markup' => $emp_sugg,
+                    '#weight' => 1,
+                );
+
+                //job openings button
+                $node->content['job_openings'] = array(
+                    '#markup' => $job_openings,
+                    '#weight' => 1,
+                );
             }
 
-            $bike_to_work = '<button id="bike-to-work-btn" class="shout-buttons btn-one">Bike to Work</button>';
-            $emp_sugg ='<button id="employee-sugg-btn" class="shout-buttons btn-two">Employee Suggestion</button>';
-            $job_openings = '<button id="job-openings-btn" class="shout-buttons btn-three">Job Openings</button>';
-
-            //bike to work
-            $node->content['bike_to_work'] = array(
-                '#markup' => $bike_to_work,
-                '#weight' => 1,
-            );
-
-            //employee suggesstion button
-            $node->content['emp_sugg'] = array(
-                '#markup' => $emp_sugg,
-                '#weight' => 1,
-            );
-
-            //job openings button
-            $node->content['job_openings'] = array(
-                '#markup' => $job_openings,
-                '#weight' => 1,
-            );
 
         break;
     }

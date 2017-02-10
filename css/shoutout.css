@@ -108,8 +108,17 @@ details.dept-group[open] {
     margin-left: 20px;
 }
 details.dept-group div.views-row {
-    padding: 14px 1px 5px 0px;
-    margin-left: 22px;
+    padding: 14px 1px 5px 14px;
+}
+details.dept-group div.views-row a.div-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    color: #fff;
+}
+details.dept-group div.views-row:hover {
+    background:#828282;
 }
 details.dept-group[open] summary {
     color: #fff;
@@ -221,4 +230,33 @@ div.shoutout-user-pic img {
     margin-left: 1px;
     color: white;
     border-radius: 2px 30px 30px 2px;
+}
+
+/*SHOUTOUT MODAL FORM STYLE*/
+.form-item.webform-component.webform-component-number.webform-component--employee-id-to {
+    display: none !important;
+}
+div.modal-forms-modal-content .popups-container {
+    background: transparent !important;
+}
+div#modal-content {
+    height: auto !important;
+    background: #fbfbfb;
+}
+input.webform-submit.button-primary.form-submit {
+    float: right;
+    /* content: "Go baby!"; */
+}
+div.modal-forms-modal-content .modal-header {
+    border: none;
+}
+
+div.modal-forms-modal-content .modal-header span.popups-close {
+    opacity: 1;
+    border-radius: 50%;
+    /* border: 1px solid #FFF; */
+    /* background-color: transparent; */
+}
+div.modal-forms-modal-content .modal-header span#modal-title {
+    display: none;
 }
