@@ -59,21 +59,39 @@ function _get_manager_tid() {
 
 /**
  * Custom function to alert manager of shoutout prize
+ * uid is the user who has received the 3rd shoutout
  */
 function shoutout_alert($uid) {
 //    get the user_
 //    get the department
 //    get the manager of that department
-    $profile = get_profile($uid);
+
+    $user_profile = get_profile($uid);
     $manager_tid = _get_manager_tid();
 
-    if ($profile && $manager_tid) {
-        if (isset($profile->field_department[LANGUAGE_NONE])) {
-            $dept_tid = $profile->field_department[LANGUAGE_NONE][0]['tid'];
+    if ($user_profile && $manager_tid) {
+        if (isset($user_profile->field_department[LANGUAGE_NONE])) {
+            $dept_tid = $user_profile->field_department[LANGUAGE_NONE][0]['tid'];
             $manager_uid = _get_manager_of_dept($dept_tid,$manager_tid);
             if ($manager_uid) {
                 $manager = user_load($manager_uid);
-                
+                $mgr_profile = get_profile($manager_uid);
+
+                $to = $manager->mail;
+                $site_email = variable_get('site_mail', '');
+                $users_name = $user_profile->field_nick_name[LANGUAGE_NONE][0]['value'].' '.$user_profile->field_last_name[LANGUAGE_NONE][0]['value'];
+
+
+                $values = array(
+                    'manager_email' => $manager->mail,
+                    'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
+                    'employee_name' => $users_name,
+                );
+//                drupal_mail('ec_app', 'notify_ec_user', $user->mail, 'en', $values, $user->name . ' <' . $user->mail . '>');
+//                drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $from = NULL, $send = TRUE);
+                watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
+                drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+
             }
         } else {
             return false;
@@ -81,9 +99,6 @@ function shoutout_alert($uid) {
     } else {
         return false;
     }
-
-
-
 }
 
 /**
@@ -110,23 +125,40 @@ function get_profile($uid) {
  *  and change number when new shoutout is given
  */
 function afc_custom_calculate_shoutout($uid) {
+
+    if (empty($uid)) {
+        return false;
+    }
+
     $profile = get_profile($uid);
 
     if ($profile) {
         if (isset($profile->field_total_shoutouts) && isset($profile->field_current_shoutouts)) {
+
             $total_so = $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'];
             $current_so = $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'];
 
-            if ($current_so == 3) {
-                //alert manager of shoutout
+            //add new shoutout to shoutouts and save
+            $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so + 1;
+            $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so + 1;
+            profile2_save($profile);
+
+            if ($profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] == 3) {
+                //alert manager of shoutout prize
                 shoutout_alert($uid);
                 //reset current shoutouts to 0
-            } else {
-                $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so + 1;
-                $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so + 1;
+                //also send over the shoutouts so the manager sees the last one in the email?
+                //also create a reward node and send a link to the manager to aknowledge it
             }
+        } else {
+            watchdog('afc_custom','Function: afc_custom_calculate_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
+            return false;
         }
+    } else {
+        watchdog('afc_custom','Function: afc_custom_calculate_shoutout - no profile was found');
+        return false;
     }
+    return true;
 }
 
 
@@ -135,7 +167,13 @@ function afc_custom_calculate_shoutout($uid) {
  *  submitted response on shoutout webform
  */
 function afc_custom_add_new_shoutout(&$nodeinfo){
+    if (empty($nodeinfo)) {
+        return false;
+    }
+
     global $user; //should be service account
+
+    $emp_from = afc_custom_return_uid_for_badge($nodeinfo['employee_from']);
 
     $title = 'shoutout to ' . $nodeinfo['employee_to'] . date('m-d-y');
     $new_message = null;
@@ -150,12 +188,13 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
     $new_message->promote = 0;
     $new_message->comment = 0;
     $new_message->field_employee[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_to'];
-    $new_message->field_employee_from[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_from'];
+    $new_message->field_employee_from[LANGUAGE_NONE][0]['uid'] = $emp_from;
 
     $new_message = node_submit($new_message);
     node_save($new_message);
 
     watchdog('afc_custom', 'Created new shoutout to user @user', array('@user' => $nodeinfo['employee_to']));
+    return true;
 }
 
 /**
@@ -186,42 +225,49 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
         ctools_include('ajax');
         ctools_add_js('ajax-responder');
 
-        //if its been submitted call the function that creates a shoutout and close the form
-        if (!empty($form_state['executed'])) {
+                //SUBMITTED EMPLOYEE SHOUTOUT FORM
+                //on submit calculate shoutouts and alert manager
+                if (!empty($form_state['executed'])) {
 
-            $emp_from = $form_state['input']['submitted']['employee_id_from'];
-            $emp_to = $form['submitted']['employee_id_to']['#default_value'];
+                    $emp_from = $form_state['input']['submitted']['employee_id_from'];
+                    $emp_to = $form['submitted']['employee_id_to']['#default_value'];
 
-            if (!empty($form['submitted']['shoutout_canned_responses']['#default_value'])) {
-                $can_tid = $form['submitted']['shoutout_canned_responses']['#default_value'];
-                if (array_key_exists($can_tid, $form['submitted']['shoutout_canned_responses']['#options'])) {
-                    $can_msg = $form['submitted']['shoutout_canned_responses']['#options'][$can_tid];
-                } else {
-                    //tid cant be found in the drop down array
-                    $can_msg = null;
-                }
+                    //get text from canned message drop down
+                    if (!empty($form['submitted']['shoutout_canned_responses']['#default_value'])) {
+                        $can_tid = $form['submitted']['shoutout_canned_responses']['#default_value'];
+                        if (array_key_exists($can_tid, $form['submitted']['shoutout_canned_responses']['#options'])) {
+                            $can_msg = $form['submitted']['shoutout_canned_responses']['#options'][$can_tid];
+                        } else {
+                            //tid cant be found in the drop down array
+                            $can_msg = null;
+                        }
 
-            } else {
+                    } else {
 
-                $can_msg = null;
-            }
+                        $can_msg = null;
+                    }
 
-            $other_msg = $form_state['input']['submitted']['shoutout_message'];
+                        $other_msg = $form_state['input']['submitted']['shoutout_message'];
+                        $nodeinfo = array();
+                        $nodeinfo['employee_to'] = $emp_to;
+                        $nodeinfo['employee_from'] = $emp_from;
+                        $nodeinfo['body'] = (trim(strlen($other_msg)) == 0) ? $can_msg : $other_msg;
 
-            $nodeinfo = array();
-            $nodeinfo['employee_to'] = $emp_to;
-            $nodeinfo['employee_from'] = $emp_from;
-            $nodeinfo['body'] = (trim(strlen($other_msg)) == 0) ? $can_msg : $other_msg;
-//            dpm($form);
-//            dpm($form_state);
+                        if (!afc_custom_add_new_shoutout($nodeinfo)) {
+                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_add_new_shoutout failed and returned false');
+                        }
 
-            afc_custom_add_new_shoutout($nodeinfo);
-            afc_custom_calculate_shoutout($emp_to);
-            $output[] = ctools_modal_command_dismiss(); //Close modal automatically
-            $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">Thanks for showing appreciation of your fellow employees! You\'re awesome!</div>');
-            print ajax_render($output);
-            drupal_exit();
-        }
+                        if (!afc_custom_calculate_shoutout($emp_to)) {
+                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_calculate_shoutout failed and returned false');
+                            //send an email to an admin letting them know if this happens
+                        }
+
+                        $output[] = ctools_modal_command_dismiss(); //Close modal automatically
+                        $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">Thanks for showing appreciation of your fellow employees! You\'re awesome!</div>');
+                        print ajax_render($output);
+                        drupal_exit();
+                    }
+                    //END EMPLOYEE SUBMITTED SHOUTOUT FORM
 
         //get the user the shoutout is to
         if (isset($_GET['sho'])) {
@@ -297,8 +343,8 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-    $uid = afc_custom_return_uid_for_badge(9439);
-    shoutout_alert($uid);
+    $uid = afc_custom_return_uid_for_badge(9806);
+    dpm($uid);
 }
     switch ($node->type) {
         case 'page':
@@ -353,3 +399,24 @@ function afc_custom_preprocess_node(&$variables){
     }
 }
 
+function afc_custom_mail ($key, &$message, $params) {
+    switch ($key) {
+        case 'shoutout_alert':
+            // Set headers etc
+//            'manager_email' => $manager->mail,
+//            'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
+//            'employee_name' => $users_name,
+
+            $message['to'] = 'mcampbell@ashlandfood.coop'; //$params['manager_email'];
+            $message['subject'] = t('!Shoutout alert for @user_name', array('@user_name' => $params['employee_name']));
+            $message['body'][] = t('Attn: @manager_name', array('@manager_name' => $params['manager_nick_name']));
+            $message['body'][] = t('An employee in your department has reached 3 shoutouts.');
+            $message['body'][] = t('Please acknowledge and reward @users_name as soon as possible.', array('@users_name' => $params['employee_name']));
+            $message['body'][] = t("Click this link after you're done to show that you've taken care of this.");
+            $message['body'][] = t('Thank you!');
+
+            watchdog('afc_custom', 'Function: hook_mail - finished submitted mail');
+
+            break;
+    }
+}
