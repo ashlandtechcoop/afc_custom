@@ -167,12 +167,13 @@ function afc_custom_calculate_shoutout($uid) {
  *  submitted response on shoutout webform
  */
 function afc_custom_add_new_shoutout(&$nodeinfo){
-    if (empty($nodeinfo)) {
+    if (empty($nodeinfo['employee_from'])) {
+        watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - no badge number given');
         return false;
     }
 
     global $user; //should be service account
-
+    
     $emp_from = afc_custom_return_uid_for_badge($nodeinfo['employee_from']);
 
     $title = 'shoutout to ' . $nodeinfo['employee_to'] . date('m-d-y');

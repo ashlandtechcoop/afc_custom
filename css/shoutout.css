@@ -281,3 +281,32 @@ div#ajax-msg {
     text-align: center;
     /* box-shadow: 2px 4px 14px #bebebe; */
 }
+
+/*search box*/
+div#employee-search-icon:hover {
+    cursor: pointer;
+}
+div#employee-search-icon {
+    display: inline-block;
+    position: relative;
+    left: 90px;
+    top: 4px;
+}
+
+div#employee-search-icon img {
+    width: 28px;
+}
+div#employee-search-field input#employee-search {
+    transition: 2s;
+    font-size: 22px;
+    color: #4e4e4e;
+}
+input.unhide-search {
+    display: block;
+}
+input.hide-search {
+    display: none;
+}
+div#employee-search-field ul.ui-autocomplete li {
+    font-size: 20px;
+}

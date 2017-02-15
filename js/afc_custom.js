@@ -7,11 +7,12 @@
 function timerIncrement() {
 //1 = 15s
 	idleTime = idleTime + 1;
+	console.log(idleTime);
 
-	if (idleTime > 2) { // 45 seconds
+	if (idleTime > 4) { // 45 seconds
 		console.log('reloading');
-		//window.location.reload();
-		//window.scrollTo(0, 0);
+		window.location.reload();
+		window.scrollTo(0, 0);
 	}
 }
 var idleTime = 0;
@@ -24,11 +25,9 @@ var idleTime = 0;
 			//Zero the idle timer on mouse movement.
 			$(this).mousemove(function(e) {
 				idleTime = 0;
-				console.log(1);
 			});
 			$(this).keypress(function(e) {
 				idleTime = 0;
-				console.log(2);
 			});
 		});
 
@@ -45,9 +44,31 @@ var idleTime = 0;
 				$('#ajax-msg').click(function() {
 					$('#ajax-msg').fadeOut('slow');
 					location.reload();
+					window.scrollTo(0, 0);
 				});
 
 			}
+
+
+			//onclick of search employees
+			$('#employee-search-icon').click(function() {
+
+				if ($('#employee-search').hasClass('hide-search')) {
+					$('#employee-search').removeClass('hide-search');
+					$('#employee-search').addClass('unhide-search');
+					$("#employee-search-field").animate({
+						height: '50px'
+					});
+
+				} else {
+					$("#employee-search-field").animate({
+						height: '0px'
+					});
+					$('#employee-search').removeClass('unhide-search');
+					$('#employee-search').addClass('hide-search');
+				}
+
+			});
 
 
 			//onclick of huddle news
