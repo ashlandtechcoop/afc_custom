@@ -9,10 +9,10 @@ function timerIncrement() {
 	idleTime = idleTime + 1;
 	console.log(idleTime);
 
-	if (idleTime > 4) { // 45 seconds
+	if (idleTime > 20) { // 45 seconds
 		console.log('reloading');
-		window.location.reload();
-		window.scrollTo(0, 0);
+		//window.location.reload();
+		//window.scrollTo(0, 0);
 	}
 }
 var idleTime = 0;
@@ -49,6 +49,11 @@ var idleTime = 0;
 
 			}
 
+			//
+			$('.shout-buttons').click(function() {
+				console.log(1);
+
+			});
 
 			//onclick of search employees
 			$('#employee-search-icon').click(function() {

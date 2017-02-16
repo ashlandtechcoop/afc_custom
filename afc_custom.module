@@ -129,7 +129,7 @@ function afc_custom_calculate_shoutout($uid) {
     if (empty($uid)) {
         return false;
     }
-
+    watchdog('afc_custom', 'Function: afc_custom_calculate_shoutout - Begin calculate shoutout');
     $profile = get_profile($uid);
 
     if ($profile) {
@@ -171,9 +171,9 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
         watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - no badge number given');
         return false;
     }
-
+    watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - begin making new shoutout');
     global $user; //should be service account
-    
+
     $emp_from = afc_custom_return_uid_for_badge($nodeinfo['employee_from']);
 
     $title = 'shoutout to ' . $nodeinfo['employee_to'] . date('m-d-y');
@@ -219,7 +219,7 @@ function afc_custom_return_uid_for_badge($badge) {
  */
 function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
-    //If on shoutout form
+    //SHOUTOUT FORM
     if ($form_id == 'webform_client_form_84') {
 
         ctools_include('modal');
@@ -263,10 +263,10 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                             //send an email to an admin letting them know if this happens
                         }
 
-                        $output[] = ctools_modal_command_dismiss(); //Close modal automatically
-                        $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">Thanks for showing appreciation of your fellow employees! You\'re awesome!</div>');
-                        print ajax_render($output);
-                        drupal_exit();
+//                        $output[] = ctools_modal_command_dismiss(); //Close modal automatically
+//                        $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg"></div>');
+//                        print ajax_render($output);
+//                        drupal_exit();
                     }
                     //END EMPLOYEE SUBMITTED SHOUTOUT FORM
 
@@ -289,20 +289,82 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
         }
 
-        //Add validate and submit
+        //Add validate
         $form['#validate'][] = 'afc_custom_validate_webform_84';
-//        $form['#submit'][] = 'afc_custom_submit_webform_84';
-//        $first = array_shift($form['#submit']);
-//        array_unshift($form['#submit'], $first, 'afc_custom_submit_webform_84');
+
+    }
+
+
+    //BIKE TO WORK FORM
+    if ($form_id == 'webform_client_form_83') {
+        //Add validatE
+        dpm(1);
+        $form['#validate'][] = 'afc_custom_validate_webform_83';
+    }
+
+
+    //for webforms that are modals, use ajax to dismiss them once submitted
+    if(strstr($form_id, 'webform_client_form_')) {
+        if(strstr($form['#action'], 'modal_forms')) {
+
+            //if submitted
+            if (!empty($form_state['executed'])) {
+                if (!empty($form['#node']->webform['confirmation'])) {
+                    //grab confirmation message from webform config
+                    $msg = $form['#node']->webform['confirmation'];
+                } else {
+                    $msg = 'Thanks!';
+                }
+                $output[] = ctools_modal_command_dismiss(); //Close modal automatically
+                $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">'.$msg.'</div>');
+                print ajax_render($output);
+                drupal_exit();
+            }
+        }
+    }
+
+}
+/**
+ * Implements hook_webform_submission_presave().
+ */
+
+function afc_custom_webform_submission_presave($node, &$submission) {
+
+    switch ($node->nid){
+        case 83:
+            $submission->uid = $submission->data[1][0];
+        break;
+    }
+}
+/**
+ * Validation handler for Webform ID #83 BIKE TO WORK FORM.
+ */
+function afc_custom_validate_webform_83(&$form, &$form_state) {
+//function to replace employee badge# with uid.
+
+    if(isset($form_state['values']['submitted']['employee_id'])) {
+        $badge = $form_state['values']['submitted']['employee_id'];
+        $uid = afc_custom_return_uid_for_badge($badge);
+        if (!$uid) {
+            //error if we can't find a matching uid for that badge
+            form_set_error('', t('It looks like your badge# is incorrect :('));
+//            $form_state['rebuild'] = TRUE;
+        } else {
+            $form_state['values']['submitted']['employee_id'] = $uid;
+
+        }
+    } else {
+        form_set_error('', t('No badge# given'));
     }
 
 }
 
+
 /**
- * Validation handler for Webform ID #84.
+ * Validation handler for Webform ID #84 SHOUTOUT FORM.
  */
 function afc_custom_validate_webform_84(&$form, &$form_state) {
-
+//function to replace employee badge# with uid
     if(isset($form_state['values']['submitted']['employee_id_from'])) {
         $badge = $form_state['values']['submitted']['employee_id_from'];
         $uid = afc_custom_return_uid_for_badge($badge);
@@ -352,29 +414,17 @@ if (isset($_GET['ss'])) {
 
             //SHOUTOUT BOX
             if ($node->nid ==70 ){
-//                dpm($node);
+                //load html from shoutout buttons block
+                $block = block_load('block', 3);
+                $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
+                $output = drupal_render($render_array);
 
-                $bike_to_work = '<button id="bike-to-work-btn" class="shout-buttons btn-one">Bike to Work</button>';
-                $emp_sugg ='<button id="employee-sugg-btn" class="shout-buttons btn-two">Employee Suggestion</button>';
-                $job_openings = '<button id="job-openings-btn" class="shout-buttons btn-three">Job Openings</button>';
-
-                //bike to work
-                $node->content['bike_to_work'] = array(
-                    '#markup' => $bike_to_work,
+                $node->content['circle_buttons'] = array(
+                    '#markup' => $output,
                     '#weight' => 1,
                 );
 
-                //employee suggesstion button
-                $node->content['emp_sugg'] = array(
-                    '#markup' => $emp_sugg,
-                    '#weight' => 1,
-                );
 
-                //job openings button
-                $node->content['job_openings'] = array(
-                    '#markup' => $job_openings,
-                    '#weight' => 1,
-                );
             }
 
 
