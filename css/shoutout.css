@@ -73,6 +73,21 @@
     border-radius: 5px 5px;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
+.shout-col-4.shout-block h3 {
+    background: #8bc53f;
+    color: #333;
+}
+.dark-line {
+    padding: 10px;
+    background: #f7f7f7;
+    color: #101010;
+    font-size: 22px;
+    box-shadow: 2px 4px 16px #a9a9a9;
+}
+.shout-col-4 {
+    clear: both;
+    width: 500px;
+}
 .shout-block {
     margin: 5px 10px;
 }
@@ -358,3 +373,8 @@ span.dept {
 .hide-field {
     display: none;
 }
+div#employee-search-field ul.ui-autocomplete li:last-child {
+    display: none;
+
+}
+

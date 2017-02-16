@@ -298,7 +298,6 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
     //BIKE TO WORK FORM
     if ($form_id == 'webform_client_form_83') {
         //Add validatE
-        dpm(1);
         $form['#validate'][] = 'afc_custom_validate_webform_83';
     }
 
@@ -412,9 +411,11 @@ if (isset($_GET['ss'])) {
     switch ($node->type) {
         case 'page':
 
-            //SHOUTOUT BOX
+            //SHOUTOUT BOARD
             if ($node->nid ==70 ){
-                //load html from shoutout buttons block
+
+
+                //SHOUTOUT BUTTONS BLOCK
                 $block = block_load('block', 3);
                 $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
                 $output = drupal_render($render_array);
@@ -422,6 +423,13 @@ if (isset($_GET['ss'])) {
                 $node->content['circle_buttons'] = array(
                     '#markup' => $output,
                     '#weight' => 1,
+                );
+
+                //JOB POSTINGS
+
+                $node->content['job_postings'] = array(
+                    '#markup' => $job_postings,
+                    '#weight' => 2,
                 );
 
 
@@ -437,15 +445,19 @@ if (isset($_GET['ss'])) {
  */
 function afc_custom_preprocess_node(&$variables){
 
+    //shoutout node - add stuff to template file
+
     if ($variables['nid'] == 70) {
 
         $dept_list = views_embed_view('shoutout_department_emp_list', 'block');
         $huddle_new = views_embed_view('shoutout_huddle_news', 'block');
         $shout_list = views_embed_view('shoutout_comment_list', 'block');
+        $job_postings = views_embed_view('shoutout_job_postings','block');
 
         $variables['dept_list'] = $dept_list;
         $variables['huddle_news']=$huddle_new;
         $variables['shout_list']=$shout_list;
+        $variables['job_postings']=$job_postings;
 
     }
 }

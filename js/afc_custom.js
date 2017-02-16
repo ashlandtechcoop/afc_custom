@@ -7,7 +7,7 @@
 function timerIncrement() {
 //1 = 15s
 	idleTime = idleTime + 1;
-	console.log(idleTime);
+	//console.log(idleTime);
 
 	if (idleTime > 20) { // 45 seconds
 		console.log('reloading');
@@ -59,8 +59,10 @@ var idleTime = 0;
 			$('#employee-search-icon').click(function() {
 
 				if ($('#employee-search').hasClass('hide-search')) {
+					$("#employee-search-field").show();
 					$('#employee-search').removeClass('hide-search');
 					$('#employee-search').addClass('unhide-search');
+
 					$("#employee-search-field").animate({
 						height: '50px'
 					});
@@ -69,6 +71,7 @@ var idleTime = 0;
 					$("#employee-search-field").animate({
 						height: '0px'
 					});
+					$("#employee-search-field").hide();
 					$('#employee-search').removeClass('unhide-search');
 					$('#employee-search').addClass('hide-search');
 				}
