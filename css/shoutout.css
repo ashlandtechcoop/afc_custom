@@ -374,3 +374,16 @@ input#edit-field-full-name-value-shout-out {
 div.view-shoutout-comment-list div.view-filters {
     display: none;
 }
+.nickname {
+    position: absolute;
+    font-size: 20px;
+    top: 5px;
+    /* left: 2px; */
+    /* background: #74ae74; */
+    /* padding: 5px 20px; */
+    /* margin-bottom: 27px; */
+    color: #333;
+}
+form#webform-client-form-84 {
+    margin-top: 30px;
+}

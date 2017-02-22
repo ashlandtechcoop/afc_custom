@@ -285,11 +285,16 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                 $profile = $profile['main'];
                 $nick_name = $profile->field_nick_name['und'][0]['value'] . ' ' . $profile->field_last_name['und'][0]['value'];
 
-                $form['submitted']['my_form_component']['#title'] = $nick_name;
-//                $form['foo'] = array(
-//                    '#markup' => '<div class="nickname">To: '.$nick_name.'</div>',
-//                    '#weight' => -10,
-//                );
+//                $form['submitted']['my_form_component']['#title'] = $nick_name;
+                $form['nickname'] = array(
+                    '#markup' => '<div class="nickname">Shoutout to '.$nick_name.'</div>',
+                    '#weight' => -10,
+                );
+
+                $form['popup_message'] = array(
+                    '#markup' => '<div id="popup-message-shoutout">Type in your staff#</div>',
+                    '#weight' => -10,
+                );
             }
 
         }
