@@ -6,6 +6,7 @@ files[] = includes/helpers.inc
 files[] = includes/shoutout_logic.inc
 
 scripts[] = js/afc_custom.js
+scripts[] = js/shoutout_stats_refresh.js
 
 stylesheets[all][] = css/shoutout.css
 

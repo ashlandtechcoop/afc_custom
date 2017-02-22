@@ -219,6 +219,11 @@ function afc_custom_return_uid_for_badge($badge) {
  */
 function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
+    //exposed filter for shoutout stats
+    if($form['#id']=='views-exposed-form-shoutout-comment-list-block') {
+        $form['field_full_name_value_shout_out']['#attributes']['placeholder'] = 'Employee name';
+    }
+
     //SHOUTOUT FORM
     if ($form_id == 'webform_client_form_84') {
 
@@ -452,12 +457,14 @@ function afc_custom_preprocess_node(&$variables){
         $dept_list = views_embed_view('shoutout_department_emp_list', 'block');
         $huddle_new = views_embed_view('shoutout_huddle_news', 'block');
         $shout_list = views_embed_view('shoutout_comment_list', 'block');
+
         $job_postings = views_embed_view('shoutout_job_postings','block');
 
         $variables['dept_list'] = $dept_list;
         $variables['huddle_news']=$huddle_new;
         $variables['shout_list']=$shout_list;
         $variables['job_postings']=$job_postings;
+
 
     }
 }

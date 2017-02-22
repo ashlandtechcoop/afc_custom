@@ -32,7 +32,7 @@ var idleTime = 0;
 		});
 
 
-		//Shoutout page scripts
+		//Shoutout page scripts and handlers
 		if ($('#shoutout-page-main-content').length > 0) {
 
 			if ($('#ajax-msg').length > 0) {
@@ -57,24 +57,30 @@ var idleTime = 0;
 
 			//onclick of search employees
 			$('#employee-search-icon').click(function() {
-
-				if ($('#employee-search').hasClass('hide-search')) {
-					$("#employee-search-field").show();
-					$('#employee-search').removeClass('hide-search');
-					$('#employee-search').addClass('unhide-search');
-
-					$("#employee-search-field").animate({
-						height: '50px'
-					});
-
+				if ($('#employee-search-field').is(":hidden")) {
+					$('#employee-search-field').fadeIn('slow');
 				} else {
-					$("#employee-search-field").animate({
-						height: '0px'
-					});
-					$("#employee-search-field").hide();
-					$('#employee-search').removeClass('unhide-search');
-					$('#employee-search').addClass('hide-search');
+					$('#employee-search-field').fadeOut('slow');
 				}
+
+                //
+				//if ($('#employee-search').hasClass('hide-search')) {
+				//	$("#employee-search-field").show();
+				//	$('#employee-search').removeClass('hide-search');
+				//	$('#employee-search').addClass('unhide-search');
+                //
+				//	$("#employee-search-field").animate({
+				//		height: '50px'
+				//	});
+                //
+				//} else {
+				//	$("#employee-search-field").animate({
+				//		height: '0px'
+				//	});
+				//	$("#employee-search-field").hide();
+				//	$('#employee-search').removeClass('unhide-search');
+				//	$('#employee-search').addClass('hide-search');
+				//}
 
 			});
 
@@ -92,7 +98,15 @@ var idleTime = 0;
 			//Increment the idle time counter every minute.
 			var idleInterval = setInterval(timerIncrement, 15000); // 1 minute 60000
 
+			//shout stats search icon button
+			$('#shout-search-icon').once().click(function() {
+				if ($('div.view-shoutout-comment-list div.view-filters').is(":hidden")) {
+					$('div.view-shoutout-comment-list div.view-filters').fadeIn('slow');
+				} else {
+					$('div.view-shoutout-comment-list div.view-filters').fadeOut('slow');
+				}
 
+			});
 
 		}
     }
