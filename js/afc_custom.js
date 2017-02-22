@@ -62,26 +62,6 @@ var idleTime = 0;
 				} else {
 					$('#employee-search-field').fadeOut('slow');
 				}
-
-                //
-				//if ($('#employee-search').hasClass('hide-search')) {
-				//	$("#employee-search-field").show();
-				//	$('#employee-search').removeClass('hide-search');
-				//	$('#employee-search').addClass('unhide-search');
-                //
-				//	$("#employee-search-field").animate({
-				//		height: '50px'
-				//	});
-                //
-				//} else {
-				//	$("#employee-search-field").animate({
-				//		height: '0px'
-				//	});
-				//	$("#employee-search-field").hide();
-				//	$('#employee-search').removeClass('unhide-search');
-				//	$('#employee-search').addClass('hide-search');
-				//}
-
 			});
 
 
@@ -107,6 +87,26 @@ var idleTime = 0;
 				}
 
 			});
+
+			//popups
+			$('.popup-shoutout-info').once().click(function() {
+				console.log('popup');
+				$( "#ajax-response" ).after('<div id="popup-shoutout-info" style="display:none;">Enter your employee# so we know who the shoutout is from</div>');
+				$( "#ajax-response" ).after('<div id="popup-shoutout-choose" style="display:none;">Choose a response</div>');
+				$( "#ajax-response" ).after('<div id="popup-shoutout-submit" style="display:none;">Then click submit</div>');
+
+				$('#popup-shoutout-info').delay(0050).fadeIn('slow');
+				$('#popup-shoutout-info').delay(1700).fadeOut('slow');
+
+				$('#popup-shoutout-choose').delay(2200).fadeIn('slow');
+				$('#popup-shoutout-choose').delay(2500).fadeOut('slow');
+
+				$('#popup-shoutout-submit').delay(3000).fadeIn('slow');
+				$('#popup-shoutout-submit').delay(3100).fadeOut('slow');
+				$('form#webform-client-form-84 input.webform-submit').toggle( "bounce", { times: 3 }, "slow" );
+
+			});
+
 
 		}
     }

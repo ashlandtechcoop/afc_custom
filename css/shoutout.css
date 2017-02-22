@@ -387,3 +387,114 @@ div.view-shoutout-comment-list div.view-filters {
 form#webform-client-form-84 {
     margin-top: 30px;
 }
+
+/*popups*/
+div#popup-shoutout-info:after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 50px;
+    border-width: 20px 0 0 20px;
+    border-style: solid;
+    border-color: #075698 transparent;
+    display: block;
+    width: 0;
+    top: 17px;
+    right: -40px;
+    bottom: auto;
+    left: auto;
+    border-width: 15px 0 0 40px;
+    border-color: transparent #075698;
+}
+
+div#popup-shoutout-info {
+    position: absolute;
+    z-index: 1002;
+    top: 35%;
+    left: 18%;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+    padding: 15px;
+    margin: 1em 0 3em;
+    color: #fff;
+    background: #075698;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
+    background: -moz-linear-gradient(#2e88c4, #075698);
+    background: -o-linear-gradient(#2e88c4, #075698);
+    background: linear-gradient(#2e88c4, #075698);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+div#popup-shoutout-choose:after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 50px;
+    border-width: 20px 0 0 20px;
+    border-style: solid;
+    border-color: #075698 transparent;
+    display: block;
+    width: 0;
+    top: 17px;
+    right: -40px;
+    bottom: auto;
+    left: auto;
+    border-width: 15px 0 0 40px;
+    border-color: transparent #075698;
+}
+
+div#popup-shoutout-choose {
+    position: absolute;
+    z-index: 1002;
+    top: 40%;
+    left: 18%;
+    width: 300px;
+    font-size: 20px;
+    text-align: center;
+    padding: 15px;
+    margin: 1em 0 3em;
+    color: #fff;
+    background: #075698;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
+    background: -moz-linear-gradient(#2e88c4, #075698);
+    background: -o-linear-gradient(#2e88c4, #075698);
+    background: linear-gradient(#2e88c4, #075698);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+div#popup-shoutout-submit:after {
+    top: -20px;
+    right: 50px;
+    bottom: auto;
+    left: auto;
+    border-width: 20px 20px 0 0;
+    border-color: transparent #075698;
+}
+
+div#popup-shoutout-submit {
+    position: absolute;
+    left: 54%;
+    top: 73%;
+    z-index: 1002;
+    padding: 15px;
+    margin: 1em 0 3em;
+    font-size: 20px;
+    color: #fff;
+    background: #075698;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
+    background: -moz-linear-gradient(#2e88c4, #075698);
+    background: -o-linear-gradient(#2e88c4, #075698);
+    background: linear-gradient(#2e88c4, #075698);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#075698), to(#2e88c4));
+    background: -moz-linear-gradient(#075698, #2e88c4);
+    background: -o-linear-gradient(#075698, #2e88c4);
+    background: linear-gradient(#075698, #2e88c4);
+}
+

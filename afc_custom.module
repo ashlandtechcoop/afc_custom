@@ -291,10 +291,6 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                     '#weight' => -10,
                 );
 
-                $form['popup_message'] = array(
-                    '#markup' => '<div id="popup-message-shoutout">Type in your staff#</div>',
-                    '#weight' => -10,
-                );
             }
 
         }
