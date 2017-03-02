@@ -231,6 +231,11 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
         ctools_include('ajax');
         ctools_add_js('ajax-responder');
 
+        //add an extra js file to the form because we can't select elements on this form
+        //from the main js file. Maybe becauses its modal/ajax...idk but this works
+        $form['#attached']['js'] = array(
+            drupal_get_path('module', 'afc_custom') . '/js/shoutout_popups.js',
+        );
                 //SUBMITTED EMPLOYEE SHOUTOUT FORM
                 //on submit calculate shoutouts and alert manager
                 if (!empty($form_state['executed'])) {

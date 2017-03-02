@@ -5,10 +5,14 @@ core = 7.x
 files[] = includes/helpers.inc
 files[] = includes/shoutout_logic.inc
 
+scripts[] = js/jquery-gradientify/jquery.gradientify.js
+scripts[] = js/jquery-gradientify/jquery.gradientify.min.js
 scripts[] = js/afc_custom.js
 scripts[] = js/shoutout_stats_refresh.js
 
 stylesheets[all][] = css/shoutout.css
+stylesheets[all][] = css/animate.css/animate.min.css
+stylesheets[all][] = css/animate.css/animate.css
 
 ; Information added by  packaging script on 2013-12-03
 version = "7.x-1.0"

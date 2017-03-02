@@ -13,23 +13,33 @@ article#node-70 {
     width: 64%;
     background: #d8d8d8;
     border: 1px solid #ccc;
-    height: 1500px;
+    height: 2060px;
     border-right: 10px solid #8bc53f;
+
 }
 
 .shout-container-right {
     float:left;
     width:36%;
-    height: 1500px;
-    overflow: scroll;
+    height: 2060px;
+    overfloy: scroll;
     background: #464646;
 }
 .shout-header2 {
+
+    /*graidents*/
     background: #333333;
-    /* height: 250px; */
+    background: -webkit-linear-gradient(#454545, #090909);
+    background: -o-linear-gradient(#454545, #090909));
+    background: -moz-linear-gradient(#454545, #090909));
+    background: linear-gradient(#454545,#090909));
 }
 .shout-footer {
-    clear:both;
+    clear: both;
+    background: #8bc53f;
+    height: 40px;
+    /* z-index: 1003; */
+    /* box-shadow: -64px -106px 25px black; */
 }
 .shout-menu-header {
     background: #5a5a5a;
@@ -40,7 +50,8 @@ article#node-70 {
     background: #f9f9f9;
     width: 40%;
     float: left;
-
+    min-height: 770px;
+    height:auto;
     -webkit-border-radius: 4px 4px;
     -moz-border-radius: 4px 4px;
     border-radius: 4px 4px;
@@ -76,9 +87,8 @@ article#node-70 {
     border-radius: 5px 5px;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
-.shout-col-4.shout-block h3 {
-    background: #8bc53f;
-    color: #333;
+textarea#edit-submitted-shoutout-message {
+    height: 65px !important;
 }
 .dark-line {
     padding: 10px;
@@ -89,7 +99,7 @@ article#node-70 {
 }
 .shout-col-4 {
     clear: both;
-    width: 500px;
+    width: 98%;
 }
 .shout-block {
     margin: 5px 10px;
@@ -204,10 +214,34 @@ div#block-block-3 .content {
     cursor:pointer;
 
 }
-.view-shoutout-comment-list .views-row:hover {
+.refresh-icon {
+    float: right;
+    position: relative;
+    left: -100px;
+    top: -38px;
+}
+.refresh-icon:hover {
+    cursor: pointer;
+}
+.refresh-icon img{
+    width:31px;
+}
+
+/*comment hover added to shoutout comment on click*/
+.comment-hover {
     transform: scale(1.2);
-    z-index: 9999;
-    transition: 1s;
+    width: 30% !important;
+    box-shadow: 0 2px 21px black;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 1000;
+}
+.gray-out, .gray-out img {
+    background: rgba(0, 0, 0, 0.23) !important;
+    opacity: .5;
+}
+.view-shoutout-comment-list .views-row:hover {
+    cursor:pointer;
 }
 /*USER PICS AND SHOUTOUT LIST*/
 div.shoutout-user-pic img {
@@ -223,7 +257,7 @@ div.shoutout-user-pic img {
     min-height: 115px;
     background: #eaeaea;
     border-radius: 6px;
-    transition:1s;
+    transition:.5s;
 }
 .view.view-shoutout-comment-list .views-field-field-last-name, .view.view-shoutout-comment-list .views-field-field-department {
     font-weight: 500;
@@ -365,6 +399,24 @@ div#employee-search-field ul.ui-autocomplete li:last-child {
 
 
 /*shoutout stats*/
+button#reset:hover {
+
+    -webkit-animation-name: jello;
+    animation-name: jello;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+}
+
+button#reset {
+    border-style: none;
+    padding: 7px 18px;
+    color: white;
+    font-size: 18px;
+    background: #2196F3;
+}
 input#edit-field-full-name-value-shout-out {
     font-size: 18px;
 }
@@ -386,9 +438,31 @@ div.view-shoutout-comment-list div.view-filters {
 }
 form#webform-client-form-84 {
     margin-top: 30px;
+    font-size: 14px;
 }
-
+.view-shoutout-comment-list::-webkit-scrollbar {
+    display: none;
+}
+.view-shoutout-comment-list {
+    height: 1960px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+}
 /*popups*/
+div#shoutout-popup1 {
+    position: absolute;
+    top: 265px;
+    left: 360px;
+    background: white;
+    display: inline-block;
+    font-size: 35px;
+    /* width: auto; */
+    padding: 10px 25px;
+    border: 1px solid #2196F3;
+    border-left: 14px solid #2196F3;
+    border-radius: 2px;
+}
 div#popup-shoutout-info:after {
     content: "";
     position: absolute;
@@ -496,5 +570,55 @@ div#popup-shoutout-submit {
     background: -moz-linear-gradient(#075698, #2e88c4);
     background: -o-linear-gradient(#075698, #2e88c4);
     background: linear-gradient(#075698, #2e88c4);
+}
+
+/* normal button style */
+.myButton {
+    width: 110px;
+    height: 30px;
+    background-color:#0099cc;
+    text-align: center;
+    color: #FFF;
+    position: relative;
+}
+/* button hover style if required */
+.myButton:hover {
+
+}
+/* generated element for shine effect.
+ * normal state is semi-transparent
+ * white but with zero width. Set no
+ * transition here for no mouse-leave
+ * animations. Otherwise the effect
+ * will play in reverse when your mouse
+ * leaves the element
+ */
+.myButton:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.4);
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+
+}
+/* on hover we animate the width to
+ * 100% and opacity to 0 so the element
+ * grows and fades out
+ */
+.myButton:hover:after {
+    width: 120%;
+    background-color: rgba(255,255,255,0);
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
 }
 
