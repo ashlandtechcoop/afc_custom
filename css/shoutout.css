@@ -8,6 +8,19 @@ article#node-70 {
 .shout-header {
 
 }
+div#shoutout-page-main-content {
+    font-family: 'Raleway', arial, sans-serif !important;
+}
+.shout-menu-header .menu-div {
+    display: inline;
+}
+div#what-is-it {
+    float: right;
+    text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+    color: #f9f9f9;
+    opacity: 0.3;
+    font-size: 30px;
+}
 .shout-container-left {
     float: left;
     width: 64%;
@@ -392,6 +405,10 @@ span.dept {
 .hide-field {
     display: none;
 }
+.show-field {
+    display: block !important;
+}
+
 div#employee-search-field ul.ui-autocomplete li:last-child {
     display: none;
 
@@ -450,6 +467,27 @@ form#webform-client-form-84 {
     width: 100%;
 }
 /*popups*/
+div#shoutout-popup0 p {
+    font-size: 32px;
+    line-height: 45px;
+}
+
+div#shoutout-popup0 {
+    position: absolute;
+    top: 200px;
+    left: 400px;
+    width: 49%;
+    background: white;
+    z-index: 1005;
+    display: inline-block;
+    /* font-size: 35px !important; */
+    /* width: auto; */
+    padding: 10px 25px;
+    border: 1px solid #2196F3;
+    border-left: 14px solid #2196F3;
+    border-radius: 2px;
+
+}
 div#shoutout-popup1 {
     position: absolute;
     top: 265px;

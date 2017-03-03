@@ -48,11 +48,15 @@ var idleTime = 0;
 			//	});
 			//	$(this).attr('open', true);
 			//});
+			$('#what-is-it').click(function() {
+				$('#shoutout-popup0').addClass('show-field item animated bounceInLeft');
 
+			});
 			$('#make-shoutout').click(function() {
 				$('#shoutout-popup1').fadeIn(2000);
 
 			});
+
 
 			//display ajax messages after posting shoutout
 			if ($('#ajax-msg').length > 0) {
