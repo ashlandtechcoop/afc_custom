@@ -35,25 +35,94 @@ var idleTime = 0;
 		//Shoutout page scripts and handlers
 		if ($('#shoutout-page-main-content').length > 0) {
 
-			//details[i].open = false;
-			//$('details.dept-group').click(function() {
-			//	$("details.dept-group").each(function(index) {
-			//		if ($(this).attr('open')) {
-			//			console.log('its true');
-			//			$(this).attr('open', false);
-			//		} else {
-			//			console.log('its not ture');
-			//		}
-            //
-			//	});
-			//	$(this).attr('open', true);
-			//});
+			//POPUPS
 			$('#what-is-it').click(function() {
-				$('#shoutout-popup0').addClass('show-field item animated bounceInLeft');
-
+				$('#shoutout-popup0').removeClass('hide-field').addClass('item bounceInDown animated');
 			});
-			$('#make-shoutout').click(function() {
-				$('#shoutout-popup1').fadeIn(2000);
+
+
+
+			//SHOW ME ON CLICK POPUPS
+			var nar = false;
+			$('#make-shoutout').once().click(function() {
+				if ($('#shoutout-popup1').hasClass('hide-field')) {
+
+					//show first popup
+					var dpos = $('.front-end').parent('details').position();
+					$('#shoutout-popup1').css({top: dpos.top-30 + 'px', left: dpos.left+530 + 'px', position:'absolute'});
+					$('#shoutout-popup1').removeClass('hide-field').addClass('bounceInRight animated');
+
+					$('.front-end').parent('details').addClass('greyed-out');
+
+					//show second popup and que the employee search field display
+					$('#shoutout-popup2').delay(2000).fadeIn('fast').queue(function(next){
+
+						$('#shoutout-popup2').removeClass('hide-field');
+						//display the employee name search
+						if ($('#employee-search-field').is(":hidden")) {
+
+							$('#employee-search-field').fadeIn('slow');
+							$('#employee-search-field').addClass('swing animated');
+
+							//highlight the frontend summary and drop down the employee search
+							var dpos = $('.front-end').parent('details').position();
+							$('#shoutout-popup1').css({top: dpos.top-30 + 'px', left: dpos.left+530 + 'px', position:'absolute'});
+							$("#employee-search").focus();
+							$('#shoutout-popup2').dequeue();
+						} else {
+
+							$('#employee-search-field').addClass('swing animated');
+							//highlight the frontend summary and drop down the employee search
+							var dpos = $('.front-end').parent('details').position();
+							$('#shoutout-popup1').css({top: dpos.top-30 + 'px', left: dpos.left+530 + 'px', position:'absolute'});
+							$("#employee-search").focus();
+							$('#shoutout-popup2').dequeue();
+						}
+
+						nar = true;
+					});
+
+
+				} else {
+					//if they click it again, hide all the popups
+					$('#shoutout-popup2').fadeOut('fast');
+					$('#shoutout-popup2').addClass('hide-field');
+					$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
+						$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
+						$('#employee-search-field').fadeOut('slow');
+						$('#employee-search-field').removeClass('swing animated');
+						$('.front-end').parent('details').removeClass('greyed-out');
+						next();
+					});
+					nar = true;
+				}
+			});
+
+					//SHOW ME POPUPS - remove popups if someone starts typing
+					$("#employee-search").keypress(function() {
+						//check and remove popup styles IF true
+						if ($("#employee-search").val().length == 1 && nar==true) {
+							if ($('.front-end').parent('details').hasClass('greyed-out')) {
+								$('#shoutout-popup2').attr('style','display:none;');
+								$('#employee-search-field').removeClass('swing animated');
+								$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
+									$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
+									$('.front-end').parent('details').removeClass('greyed-out');
+									next();
+								});
+								nar = false;
+							}
+						}
+					});
+
+
+			//close button
+			$('#close-button').click(function() {
+				if ($(this).parent('div').hasClass('show-field')) {
+					$(this).parent('div').removeClass('show-field').addClass('bounceOutTop animated');
+				} else {
+					$(this).parent('div').addClass('bounceOutUp animated');
+				}
 
 			});
 

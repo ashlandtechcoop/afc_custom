@@ -12,7 +12,7 @@ div#shoutout-page-main-content {
     font-family: 'Raleway', arial, sans-serif !important;
 }
 .shout-menu-header .menu-div {
-    display: inline;
+    display: inline-block;
 }
 div#what-is-it {
     float: right;
@@ -122,7 +122,16 @@ summary.dept-header::-webkit-details-marker {
     display: none;
     margin-left: 10px;
 }
-
+.greyed-out {
+ /*used by jquery to highlight the row when someone clicks the "show me" button*/
+    cursor: pointer;
+    background: #676767;
+    color: #fff;
+    box-shadow: 1px 1px 7px 1px #a3a3a3;
+    padding-bottom: 10px;
+    width: 95%;
+    margin-left: 20px;
+}
 summary.dept-header {
     padding: 8px;
     font-size: 25px;
@@ -402,6 +411,9 @@ span.dept {
     font-size: 18px;
     line-height: 50px;
 }
+.cursor:hover {
+    cursor: pointer;
+}
 .hide-field {
     display: none;
 }
@@ -479,7 +491,6 @@ div#shoutout-popup0 {
     width: 49%;
     background: white;
     z-index: 1005;
-    display: inline-block;
     /* font-size: 35px !important; */
     /* width: auto; */
     padding: 10px 25px;
@@ -488,18 +499,68 @@ div#shoutout-popup0 {
     border-radius: 2px;
 
 }
-div#shoutout-popup1 {
-    position: absolute;
-    top: 265px;
-    left: 360px;
-    background: white;
+div#close-button:hover {
+    cursor: pointer;
+    background: rgba(210, 210, 210, 0.66);
+}
+div#close-button {
+    background: #fff;
+    border-radius: 50%;
+    padding: 8px 12px;
+    color: #777777;
+    position: relative;
+    top: -20px;
+    left: 100%;
+    font-size: 25px;
+    line-height: 20px;
     display: inline-block;
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.54);
+}
+div#shoutout-popup1:after {
+    position: relative;
+    width: 0;
+    left: -759px;
+    top: -18px;
+    content: "\25C0";
+    color: #03A9F4;
+    font-size: 55px;
+    line-height: 0;
+    z-index: 900;
+}
+div#shoutout-popup1 {
+    /*position: absolute;*/
+    /*top: 415px;*/
+    /*left: 380px;*/
+    background: white;
     font-size: 35px;
-    /* width: auto; */
     padding: 10px 25px;
     border: 1px solid #2196F3;
     border-left: 14px solid #2196F3;
     border-radius: 2px;
+    box-shadow: 5px 5px 17px grey;
+}
+div#shoutout-popup2 {
+    position: absolute;
+    top: 196px;
+    left: 312px;
+    background: white;
+    font-size: 35px;
+    padding: 10px 25px;
+    border: 1px solid #2196F3;
+    border-left: 14px solid #2196F3;
+    border-radius: 2px;
+    box-shadow: 5px 5px 17px grey;
+}
+div#shoutout-popup2:after {
+    position: relative;
+    width: 0;
+    left: -450px;
+    top: 58px;
+    content: "\25BC";
+    line-height: 0;
+    color: #03A9F4;
+    z-index: 900;
+    font-size: 51px;
 }
 div#popup-shoutout-info:after {
     content: "";
@@ -660,3 +721,34 @@ div#popup-shoutout-submit {
     transition: all 0.3s ease-out;
 }
 
+div#make-shoutout {
+    background: #8d299e;
+    /* padding: 3px; */
+    margin: -18px 5px;
+    font-size: 21px;
+    font-weight: bold;
+    text-align: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    /* margin-top: -65px; */
+    color: #d2d2d2;
+    text-shadow: 2px 2px 2px #170f0f;
+    box-shadow: 2px 2px 15px #424242;
+    border-left: 1px solid #cacaca;
+    transition: .5s;
+}
+div#make-shoutout div:first-child {
+    position: relative;
+    top: 10px;
+    left: 0px;
+}
+div#make-shoutout div:nth-child(2) {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+div#make-shoutout:hover {
+    transform: scale(1.1);
+    background: rgb(182, 55, 204);
+}
