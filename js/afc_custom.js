@@ -3,7 +3,10 @@
  * This file contains all jQuery for the forms used in afc_custom
  */
 
-
+function updateTextInput(val) {
+	document.getElementById('edit-submitted-greenway-miles').value=val;
+	document.getElementById('rangeLabel').innerHTML=val;
+}
 function timerIncrement() {
 //1 = 15s
 	idleTime = idleTime + 1;
@@ -16,6 +19,7 @@ function timerIncrement() {
 	}
 }
 var idleTime = 0;
+
 (function ($) {
 	  Drupal.behaviors.ec_app = {
 		attach: function (context, settings) {
@@ -29,21 +33,44 @@ var idleTime = 0;
 			$(this).keypress(function(e) {
 				idleTime = 0;
 			});
+
 		});
 
 
 		//Shoutout page scripts and handlers
 		if ($('#shoutout-page-main-content').length > 0) {
 
-			//POPUPS
+			//Add primary animations to major blocks when page first loads
+			$(document).ready(function(){
+
+				//only run the animation once by checking for processed class
+				if ($('.processed').length == 0) {
+					//add animation classes
+					$('.shout-col-1').addClass('fadeInLeftBig animated');
+					$('.shout-col-2').addClass('bounceInDown animated');
+					$('.shout-col-3').addClass('bounceInUp animated');
+					$('.shout-col-4').addClass('bounceInRight animated');
+					$('#make-shoutout').addClass('bounceInDown animated');
+
+					//remove animation classes
+					setTimeout(function() {
+						$('.shout-col-1').removeClass("fadeInLeftBig animated").addClass('processed');
+						$('.shout-col-2').removeClass("bounceInDown animated").addClass('processed');
+						$('.shout-col-3').removeClass("bounceInUp animated").addClass('processed');
+						$('.shout-col-4').removeClass("bounceInRight animated").addClass('processed');
+						$('#make-shoutout').removeClass("bounceInDown animated").addClass('processed');
+					}, 1000);
+				}
+			});
+
+			//"What is it?" POPUP BUTTON
 			$('#what-is-it').click(function() {
 				$('#shoutout-popup0').removeClass('hide-field').addClass('item bounceInDown animated');
 			});
 
 
-
-			//SHOW ME ON CLICK POPUPS
-			var nar = false;
+			//"SHOW ME" ON CLICK POPUPS
+			var nar = false; //true = show me was clicked
 			$('#make-shoutout').once().click(function() {
 				if ($('#shoutout-popup1').hasClass('hide-field')) {
 
@@ -82,7 +109,6 @@ var idleTime = 0;
 						nar = true;
 					});
 
-
 				} else {
 					//if they click it again, hide all the popups
 					$('#shoutout-popup2').fadeOut('fast');
@@ -102,6 +128,23 @@ var idleTime = 0;
 					$("#employee-search").keypress(function() {
 						//check and remove popup styles IF true
 						if ($("#employee-search").val().length == 1 && nar==true) {
+							if ($('.front-end').parent('details').hasClass('greyed-out')) {
+								$('#shoutout-popup2').attr('style','display:none;');
+								$('#employee-search-field').removeClass('swing animated');
+								$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
+									$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
+									$('.front-end').parent('details').removeClass('greyed-out');
+									next();
+								});
+								nar = false;
+							}
+						}
+					});
+
+					//SHOW ME POPUPS CLOSE IF AN EMPLOYEE NAME IS CLICKED
+					$('.dept-group a').click(function() {
+						//nar true = popups are on
+						if (nar==true) {
 							if ($('.front-end').parent('details').hasClass('greyed-out')) {
 								$('#shoutout-popup2').attr('style','display:none;');
 								$('#employee-search-field').removeClass('swing animated');
@@ -142,11 +185,6 @@ var idleTime = 0;
 
 			}
 
-			//
-			$('.shout-buttons').click(function() {
-
-			});
-
 			//onclick of search employees
 			$('#employee-search-icon').once().click(function() {
 				if ($('#employee-search-field').is(":hidden")) {
@@ -167,8 +205,7 @@ var idleTime = 0;
 				}
 			});
 
-			//IDLE COUNTER
-			//Increment the idle time counter every minute.
+			//IDLE COUNTER Increment the idle time counter every minute.
 			var idleInterval = setInterval(timerIncrement, 15000); // 1 minute 60000
 			//shout stats search icon button
 			$('#reset').once().click(function() {
@@ -222,44 +259,78 @@ var idleTime = 0;
 					$(this).addClass('comment-hover');
 					$(this).removeClass('gray-out');
 
-
-
 				}
 
 			});
 
-			//$( ".shoutout-comment-row" ).each(function( index ) {
-			//	$(this).addClass("bounceIn animated").delay(2000).queue(function(next){
-			//		$(this).removeClass("bounceIn animated");
-			//		next();
-			//	});
-			//	//$(this).delay(5000).addClass('bounceIn animated');
-			//	//$(this).removeClass('bounceIn animated');
-            //
-			//});
-
-			$(".shoutout-comment-row").each(function(index) {
+			//Each shoutout comment add the animation classes on page load
+			$(".shoutout-comment-row").once().each(function(index) {
 				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
 					$(this).removeClass("bounceIn animated");
 					next();
 				});
 			});
-			//gradient shine
-			//$('.shout-header2').gradientify({
-			//	gradients: [
-			//		{ start: [0,0,0], stop: [50,50,50] },
-			//		{ start: [15,15,15], stop: [0,0,0] },
-			//		{ start: [0,0,0], stop: [10,10,10] }
-			//	]
-			//});
+
+
+			$(".shoutout-comment-row").once().each(function(index) {
+				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
+					$(this).removeClass("bounceIn animated");
+					next();
+				});
+			});
 
 			//activate bootstrap tooltips
 			$(function () {
 				$("[rel='tooltip']").tooltip();
 			});
 
+		} //end shoutout page check
 
-		}
+
+			//Green way to work webform animated for hover of circular images
+			$('.form-item-submitted-transportation-method img').hover(function() {
+				$(this).addClass('pulse animated');
+				$(this).delay(1000).queue(function(next){
+					$(this).removeClass('pulse animated');
+					next();
+				});
+			});
+
+
+			//Function for value slider on Green way to work form
+			var rangeSlider = function(){
+				var slider = $('.range-slider'),
+					range = $('.range-slider__range'),
+					value = $('.range-slider__value');
+
+				slider.each(function(){
+
+					value.each(function(){
+						var value = $(this).prev().attr('value');
+						$(this).html(value);
+					});
+
+					range.on('input', function(){
+						$(this).next(value).html(this.value);
+					});
+				});
+			};
+
+			rangeSlider();
+			//$('.range-slider-target').after('<div class="range-slider"> \
+			//	<input class="range-slider__range" type="range" value="0" min="0" max="10" step=".25"> \
+			//	<span class="range-slider__value">0</span> \
+			//	</div>');
+			$('#rangeInput').defaultValue=.25;
+			var rangeHTML = '<div class="rangeDesc">Appx. distance</div>' +
+							'<div class="rangeCont row">' +
+							'<div class="rangeCell cell"><input id="rangeInput" type="range" name="rangeInput" min="0" max="10" step="0.25" onchange="updateTextInput(this.value);"></div>' +
+							'<div class="rangeLabelCell cell"><div id="rangeLabel">5</div><div class="rangeMiles">miles</div></div>' +
+							'</div>';
+			//
+			$('.range-slider-target').before(rangeHTML);
+			//$('.range-slider-target').before('<div id="rangeLabel"></div>');
+
     }
   };
 })(jQuery);

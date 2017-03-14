@@ -562,45 +562,13 @@ div#shoutout-popup2:after {
     z-index: 900;
     font-size: 51px;
 }
-div#popup-shoutout-info:after {
-    content: "";
-    position: absolute;
-    bottom: -20px;
-    left: 50px;
-    border-width: 20px 0 0 20px;
-    border-style: solid;
-    border-color: #075698 transparent;
-    display: block;
-    width: 0;
-    top: 17px;
-    right: -40px;
-    bottom: auto;
-    left: auto;
-    border-width: 15px 0 0 40px;
-    border-color: transparent #075698;
-}
-
 div#popup-shoutout-info {
-    position: absolute;
-    z-index: 1002;
-    top: 35%;
-    left: 18%;
     width: 300px;
-    font-size: 20px;
-    text-align: center;
-    padding: 15px;
-    margin: 1em 0 3em;
-    color: #fff;
-    background: #075698;
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
-    background: -moz-linear-gradient(#2e88c4, #075698);
-    background: -o-linear-gradient(#2e88c4, #075698);
-    background: linear-gradient(#2e88c4, #075698);
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
 }
-div#popup-shoutout-choose:after {
+div#popup-shoutout-choose {
+    width: 300px;
+}
+.popups-left:after {
     content: "";
     position: absolute;
     bottom: -20px;
@@ -615,60 +583,60 @@ div#popup-shoutout-choose:after {
     bottom: auto;
     left: auto;
     border-width: 15px 0 0 40px;
-    border-color: transparent #075698;
+    border-color: transparent #2196F3;
 }
-
-div#popup-shoutout-choose {
-    position: absolute;
+.popups-left {
     z-index: 1002;
-    top: 40%;
-    left: 18%;
-    width: 300px;
-    font-size: 20px;
+    font-size: 22px;
     text-align: center;
     padding: 15px;
     margin: 1em 0 3em;
-    color: #fff;
+    color: #4a4a4a;
     background: #075698;
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
-    background: -moz-linear-gradient(#2e88c4, #075698);
-    background: -o-linear-gradient(#2e88c4, #075698);
-    background: linear-gradient(#2e88c4, #075698);
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f9f9f9));
+    background: -moz-linear-gradient(#ffffff, #f9f9f9);
+    background: -o-linear-gradient(#ffffff, #f9f9f9);
+    background: linear-gradient(#ffffff, #f9f9f9);
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
-    border-radius: 10px;
+    border: 1px solid #2196F3;
+    border-radius: 3px;
+    border-left: 9px solid #2196F3;
 }
-
-div#popup-shoutout-submit:after {
-    top: -20px;
-    right: 50px;
-    bottom: auto;
-    left: auto;
-    border-width: 20px 20px 0 0;
-    border-color: transparent #075698;
-}
-
-div#popup-shoutout-submit {
-    position: absolute;
-    left: 54%;
-    top: 73%;
+.popups-top {
     z-index: 1002;
+    font-size: 22px;
+    text-align: center;
     padding: 15px;
     margin: 1em 0 3em;
-    font-size: 20px;
-    color: #fff;
+    color: #4a4a4a;
     background: #075698;
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
-    background: -moz-linear-gradient(#2e88c4, #075698);
-    background: -o-linear-gradient(#2e88c4, #075698);
-    background: linear-gradient(#2e88c4, #075698);
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f9f9f9));
+    background: -moz-linear-gradient(#ffffff, #f9f9f9);
+    background: -o-linear-gradient(#ffffff, #f9f9f9);
+    background: linear-gradient(#ffffff, #f9f9f9);
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
-    border-radius: 10px;
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#075698), to(#2e88c4));
-    background: -moz-linear-gradient(#075698, #2e88c4);
-    background: -o-linear-gradient(#075698, #2e88c4);
-    background: linear-gradient(#075698, #2e88c4);
+    border: 1px solid #2196F3;
+    border-radius: 3px;
+    border-left: 9px solid #2196F3;
+}
+.popups-top:after {
+    content: "";
+    position: absolute;
+    /* bottom: -20px; */
+    /* left: 50px; */
+    border-width: 20px 0 0 20px;
+    border-style: solid;
+    border-color: #075698 transparent;
+    display: block;
+    width: 23px;
+    top: -36px;
+    right: 22px;
+    bottom: auto;
+    /* left: auto; */
+    border-width: 36px 23px 0px 0px;
+    border-color: transparent #2196F3;
 }
 
 /* normal button style */
@@ -722,9 +690,10 @@ div#popup-shoutout-submit {
 }
 
 div#make-shoutout {
+    z-index: 1005;
     background: #8d299e;
     /* padding: 3px; */
-    margin: -18px 5px;
+    margin: -10px 5px;
     font-size: 21px;
     font-weight: bold;
     text-align: center;
@@ -732,12 +701,15 @@ div#make-shoutout {
     height: 68px;
     border-radius: 50%;
     /* margin-top: -65px; */
-    color: #d2d2d2;
+    color: #f1f1f1;
     text-shadow: 2px 2px 2px #170f0f;
     box-shadow: 2px 2px 15px #424242;
-    border-left: 1px solid #cacaca;
-    transition: .5s;
+    position: absolute;
+    top: 289px;
+    left: 10px;
+
 }
+
 div#make-shoutout div:first-child {
     position: relative;
     top: 10px;
@@ -751,4 +723,90 @@ div#make-shoutout div:nth-child(2) {
 div#make-shoutout:hover {
     transform: scale(1.1);
     background: rgb(182, 55, 204);
+}
+
+
+/*GREEN WAY TO WORK FORM STYLES*/
+.form-item-submitted-transportation-method {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+}
+.form-item-submitted-transportation-method img:hover {
+    cursor: pointer;
+}
+.form-item-submitted-transportation-method img {
+    border-radius: 50%;
+    height: 65px;
+    box-shadow: 4px 3px 6px #b3b3b3;
+    -webkit-transition: .5s time;
+    -moz-transition: .5s time;
+    -ms-transition: .5s time;
+    -o-transition: .5s time;
+    transition: .5s time;
+}
+.form-item-submitted-transportation-method input {
+    display: none;
+}
+div#edit-submitted-transportation-method {
+    margin: 10px auto;
+    position: relative;
+    text-align: center;
+}
+.form-item-submitted-transportation-method input[type="radio"]:checked+label {
+    font-weight: bolder;
+    /* color: #4CAF50; */
+    background: rgba(76, 175, 80, 0.36);
+    /* padding: 10px; */
+    border-radius: 4px 4px;
+    /* padding: 2px; */
+}
+input#edit-submitted-greenway-miles {
+    width: 50px;
+    text-align: center;
+    font-size: 18px;
+    padding: 5px;
+}
+/*range slider and label*/
+.range-slider-target {
+    display: none;
+}
+.ctools-modal-content.modal-forms-modal-content {
+    /*height: auto !important;*/
+}
+input#rangeInput {
+    width: 220px;
+}
+div#rangeLabel {
+    font-size: 1.5em;
+    color: white;
+    background: linear-gradient(#9ad848, #84b742);
+    width: 50px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+form#webform-client-form-83 .form-actions input.form-submit {
+    position: relative;
+    top: -60px;
+}
+
+.rangeLabelCell div {
+    display: inline-block;
+}
+.rangeMiles {
+    margin-left: 5px;
+    font-size: 20px;
+    color: rgba(119, 119, 119, 0.8);
+    text-shadow: 1px 1px 0px #d7d7d7, 0 0 0 #000, 1px 1px 0px #d7d7d7;
+}
+.rangeDesc {
+    display: inline;
+    position: relative;
+    top: -9px;
+    font-size: 15px;
+    font-style: italic;
 }

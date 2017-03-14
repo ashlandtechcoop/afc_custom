@@ -306,10 +306,27 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
     }
 
 
-    //BIKE TO WORK FORM
+    //GREEN WAY TO WORK FORM
     if ($form_id == 'webform_client_form_83') {
-        //Add validatE
+
+        //for each option load its image from the taxonomy term and display it
+        foreach ($form['submitted']['transportation_method']['#options'] as $key => $option) {
+            $tid = explode('_',$key);
+            $tid = taxonomy_term_load(trim($tid[1]));
+            $fid = $tid->field_transportation_pic['und'][0]['fid'];
+            $file = file_load($fid);
+            $uri = $file->uri;
+            $url = file_create_url($uri);
+            $form['submitted']['transportation_method']['#options'][$key] = '<img src="'.$url.'">'.$option;
+
+        }
+
+        //Add the miles range slider
+
+
+        //Add validate - checks employee id make sure its valid
         $form['#validate'][] = 'afc_custom_validate_webform_83';
+
     }
 
 
