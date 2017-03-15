@@ -186,7 +186,7 @@ var idleTime = 0;
 			}
 
 			//onclick of search employees
-			$('#employee-search-icon').once().click(function() {
+			$('#employee-search-icon1').once().click(function() {
 				if ($('#employee-search-field').is(":hidden")) {
 					$('#employee-search-field').fadeIn('slow');
 					$("#employee-search").focus();
