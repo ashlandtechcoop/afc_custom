@@ -4,6 +4,12 @@ article#node-70 {
 .dept-group .views-row div {
     display: inline;
 }
+#modalContent form {
+    font-family: 'Raleway', arial, sans-serif;
+}
+#modalContent form input {
+    font-size: 15px;
+}
 
 .shout-header {
 
@@ -361,9 +367,7 @@ div#ajax-msg {
 }
 
 /*search box*/
-div#employee-search-icon:hover,div.search-icon {
-    cursor: pointer;
-}
+
 div.search-icon {
     float: right;
     position: relative;
@@ -689,42 +693,42 @@ div#popup-shoutout-choose {
     transition: all 0.3s ease-out;
 }
 
-div#make-shoutout {
-    z-index: 1005;
+div.show-me {
     background: #8d299e;
-    /* padding: 3px; */
-    margin: -10px 5px;
     font-size: 21px;
     font-weight: bold;
     text-align: center;
     width: 68px;
     height: 68px;
     border-radius: 50%;
-    /* margin-top: -65px; */
     color: #f1f1f1;
     text-shadow: 2px 2px 2px #170f0f;
     box-shadow: 2px 2px 15px #424242;
-    position: absolute;
-    top: 289px;
-    left: 10px;
 
 }
-
-div#make-shoutout div:first-child {
+div.show-me div:first-child {
     position: relative;
     top: 10px;
     left: 0px;
 }
-div#make-shoutout div:nth-child(2) {
+div.show-me div:nth-child(2) {
     position: relative;
     top: 0;
     left: 0;
 }
-div#make-shoutout:hover {
+div.show-me:hover {
     transform: scale(1.1);
     background: rgb(182, 55, 204);
 }
-
+.view-shoutout-department-emp-list {
+    clear: both;
+}
+.left-block-header {
+    float: left;
+    position: relative;
+    top: -6px;
+    margin-right: -65px;
+}
 
 /*GREEN WAY TO WORK FORM STYLES*/
 .form-item-submitted-transportation-method {
@@ -809,4 +813,6 @@ form#webform-client-form-83 .form-actions input.form-submit {
     top: -9px;
     font-size: 15px;
     font-style: italic;
+    color: rgba(119, 119, 119, 0.8);
+    text-shadow: 1px 1px 0px #d7d7d7, 0 0 0 #000, 1px 1px 0px #d7d7d7;
 }

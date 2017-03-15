@@ -50,7 +50,7 @@ var idleTime = 0;
 					$('.shout-col-2').addClass('bounceInDown animated');
 					$('.shout-col-3').addClass('bounceInUp animated');
 					$('.shout-col-4').addClass('bounceInRight animated');
-					$('#make-shoutout').addClass('bounceInDown animated');
+					$('#make-shoutout1').addClass('bounceInDown animated');
 
 					//remove animation classes
 					setTimeout(function() {
@@ -58,7 +58,7 @@ var idleTime = 0;
 						$('.shout-col-2').removeClass("bounceInDown animated").addClass('processed');
 						$('.shout-col-3').removeClass("bounceInUp animated").addClass('processed');
 						$('.shout-col-4').removeClass("bounceInRight animated").addClass('processed');
-						$('#make-shoutout').removeClass("bounceInDown animated").addClass('processed');
+						$('#make-shoutout1').removeClass("bounceInDown animated").addClass('processed');
 					}, 1000);
 				}
 			});
@@ -71,7 +71,7 @@ var idleTime = 0;
 
 			//"SHOW ME" ON CLICK POPUPS
 			var nar = false; //true = show me was clicked
-			$('#make-shoutout').once().click(function() {
+			$('#make-shoutout1').once().click(function() {
 				if ($('#shoutout-popup1').hasClass('hide-field')) {
 
 					//show first popup
@@ -321,13 +321,15 @@ var idleTime = 0;
 			//	<input class="range-slider__range" type="range" value="0" min="0" max="10" step=".25"> \
 			//	<span class="range-slider__value">0</span> \
 			//	</div>');
-			$('#rangeInput').defaultValue=.25;
+
 			var rangeHTML = '<div class="rangeDesc">Appx. distance</div>' +
 							'<div class="rangeCont row">' +
-							'<div class="rangeCell cell"><input id="rangeInput" type="range" name="rangeInput" min="0" max="10" step="0.25" onchange="updateTextInput(this.value);"></div>' +
-							'<div class="rangeLabelCell cell"><div id="rangeLabel">5</div><div class="rangeMiles">miles</div></div>' +
+							'<div class="rangeCell cell"><input id="rangeInput" type="range" name="rangeInput" min="0" max="10" step="0.25" value="0.25" onchange="updateTextInput(this.value);"></div>' +
+							'<div class="rangeLabelCell cell"><div id="rangeLabel">.25</div><div class="rangeMiles">miles</div></div>' +
 							'</div>';
 			//
+			//var x = document.getElementById("rangeInput").defaultValue;
+			//x = .25;
 			$('.range-slider-target').before(rangeHTML);
 			//$('.range-slider-target').before('<div id="rangeLabel"></div>');
 
