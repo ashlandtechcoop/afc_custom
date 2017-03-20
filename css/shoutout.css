@@ -179,6 +179,7 @@ details.dept-group div.views-row:hover {
 details.dept-group[open] summary {
     color: #fff;
     font-weight: 500;
+    background: linear-gradient(#383838,#3c3c3c,#222);
 }
 .view-shoutout-huddle-news div.views-field-body p {
     color: #3e3e3e;
@@ -544,9 +545,9 @@ div#shoutout-popup1 {
     box-shadow: 5px 5px 17px grey;
 }
 div#shoutout-popup2 {
-    position: absolute;
-    top: 196px;
-    left: 312px;
+    /*position: absolute;*/
+    /*top: 196px;*/
+    /*left: 312px;*/
     background: white;
     font-size: 35px;
     padding: 10px 25px;
@@ -554,6 +555,11 @@ div#shoutout-popup2 {
     border-left: 14px solid #2196F3;
     border-radius: 2px;
     box-shadow: 5px 5px 17px grey;
+}
+.btn-got-it {
+    font-size: 25px;
+    margin-left: 20px;
+    margin-right: -17px;
 }
 div#shoutout-popup2:after {
     position: relative;

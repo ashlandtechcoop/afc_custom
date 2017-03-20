@@ -40,6 +40,11 @@ var idleTime = 0;
 		//Shoutout page scripts and handlers
 		if ($('#shoutout-page-main-content').length > 0) {
 
+			//When a details is clicked collapse all others
+			$('details').click(function (event) {
+				$('details').not(this).removeAttr("open");
+			});
+
 			//Add primary animations to major blocks when page first loads
 			$(document).ready(function(){
 
@@ -80,8 +85,12 @@ var idleTime = 0;
 					$('#shoutout-popup1').removeClass('hide-field').addClass('bounceInRight animated');
 
 					$('.front-end').parent('details').addClass('greyed-out');
+					$('details').not(this).removeAttr("open");
 
 					//show second popup and que the employee search field display
+					//get the position of the search icon first
+						var spos = $('#employee-search-icon1').position();
+						$('#shoutout-popup2').css({top: spos.top-110 + 'px', left: spos.left-215 + 'px', position:'absolute'});
 					$('#shoutout-popup2').delay(2000).fadeIn('fast').queue(function(next){
 
 						$('#shoutout-popup2').removeClass('hide-field');
@@ -92,7 +101,7 @@ var idleTime = 0;
 							$('#employee-search-field').addClass('swing animated');
 
 							//highlight the frontend summary and drop down the employee search
-							var dpos = $('.front-end').parent('details').position();
+							var dpos = $('.front-end').parent('details').position();-
 							$('#shoutout-popup1').css({top: dpos.top-30 + 'px', left: dpos.left+530 + 'px', position:'absolute'});
 							$("#employee-search").focus();
 							$('#shoutout-popup2').dequeue();
@@ -110,7 +119,7 @@ var idleTime = 0;
 					});
 
 				} else {
-					//if they click it again, hide all the popups
+					//if they click SHOW ME again, hide all the popups
 					$('#shoutout-popup2').fadeOut('fast');
 					$('#shoutout-popup2').addClass('hide-field');
 					$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
@@ -128,6 +137,23 @@ var idleTime = 0;
 					$("#employee-search").keypress(function() {
 						//check and remove popup styles IF true
 						if ($("#employee-search").val().length == 1 && nar==true) {
+							if ($('.front-end').parent('details').hasClass('greyed-out')) {
+								$('#shoutout-popup2').attr('style','display:none;');
+								$('#employee-search-field').removeClass('swing animated');
+								$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
+									$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
+									$('.front-end').parent('details').removeClass('greyed-out');
+									next();
+								});
+								nar = false;
+							}
+						}
+					});
+
+					//SHOW ME POPUPS remove popups if GOT IT is clicked
+					$('#got-it').click(function() {
+						//check and remove popup styles IF true
+						if (nar==true) {
 							if ($('.front-end').parent('details').hasClass('greyed-out')) {
 								$('#shoutout-popup2').attr('style','display:none;');
 								$('#employee-search-field').removeClass('swing animated');
@@ -317,21 +343,13 @@ var idleTime = 0;
 			};
 
 			rangeSlider();
-			//$('.range-slider-target').after('<div class="range-slider"> \
-			//	<input class="range-slider__range" type="range" value="0" min="0" max="10" step=".25"> \
-			//	<span class="range-slider__value">0</span> \
-			//	</div>');
-
 			var rangeHTML = '<div class="rangeDesc">Appx. distance</div>' +
 							'<div class="rangeCont row">' +
 							'<div class="rangeCell cell"><input id="rangeInput" type="range" name="rangeInput" min="0" max="10" step="0.25" value="0.25" onchange="updateTextInput(this.value);"></div>' +
 							'<div class="rangeLabelCell cell"><div id="rangeLabel">.25</div><div class="rangeMiles">miles</div></div>' +
 							'</div>';
-			//
-			//var x = document.getElementById("rangeInput").defaultValue;
-			//x = .25;
+
 			$('.range-slider-target').before(rangeHTML);
-			//$('.range-slider-target').before('<div id="rangeLabel"></div>');
 
     }
   };
