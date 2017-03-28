@@ -10,7 +10,10 @@ article#node-70 {
 #modalContent form input {
     font-size: 15px;
 }
-
+.table-tell-img:first-child {
+    width: 125px;
+    /* background: black; */
+}
 .shout-header {
 
 }
@@ -19,6 +22,17 @@ div#shoutout-page-main-content {
 }
 .shout-menu-header .menu-div {
     display: inline-block;
+}
+.table-row {
+    display: table-row;
+}
+.table-cell {
+    display: table-cell;
+    padding:5px 10px 5px 0px;
+    vertical-align:middle;
+}
+.table-cell.table-cell-img {
+    width: 150px;
 }
 div#what-is-it {
     float: right;
@@ -36,12 +50,19 @@ div#what-is-it {
     border-right: 10px solid #8bc53f;
 
 }
-
+strong.green {
+    color: #709e32;
+    text-shadow: 1px 1px #c8c8c8;
+}
+span.btn-text {
+    position: relative;
+    top: -10px;
+}
 .shout-container-right {
     float:left;
-    width:36%;
+    width: 35%;
     height: 2060px;
-    overfloy: scroll;
+    overflow-y: scroll;
     background: #464646;
 }
 .shout-header2 {
@@ -482,13 +503,17 @@ form#webform-client-form-84 {
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
+    text-align: left;
 }
 /*popups*/
 div#shoutout-popup0 p {
-    font-size: 32px;
-    line-height: 45px;
+    font-size: 1.6em;
+    line-height: 1.2em;
 }
 
+.clear {
+    clear:both;
+}
 div#shoutout-popup0 {
     position: absolute;
     top: 200px;
@@ -549,7 +574,7 @@ div#shoutout-popup2 {
     /*top: 196px;*/
     /*left: 312px;*/
     background: white;
-    font-size: 35px;
+    font-size: 2.3em;
     padding: 10px 25px;
     border: 1px solid #2196F3;
     border-left: 14px solid #2196F3;
@@ -710,6 +735,7 @@ div.show-me {
     color: #f1f1f1;
     text-shadow: 2px 2px 2px #170f0f;
     box-shadow: 2px 2px 15px #424242;
+    transition: .5s;
 
 }
 div.show-me div:first-child {
@@ -728,6 +754,7 @@ div.show-me:hover {
 }
 .view-shoutout-department-emp-list {
     clear: both;
+    text-align:left;
 }
 .left-block-header {
     float: left;
@@ -821,4 +848,47 @@ form#webform-client-form-83 .form-actions input.form-submit {
     font-style: italic;
     color: rgba(119, 119, 119, 0.8);
     text-shadow: 1px 1px 0px #d7d7d7, 0 0 0 #000, 1px 1px 0px #d7d7d7;
+}
+.do-twice {
+    -webkit-animation-iteration-count: 2;
+    -moz-animation-iteration-count: 2;
+    -o-animation-iteration-count: 2;
+    animation-iteration-count: 2;
+}
+.green-btn {
+    background: linear-gradient(#8bc53f,#75a735);
+    color: white;
+    padding: 5px 15px 5px 4px;
+}
+.shout-btn-primary {
+    font-size: 1.5em;
+    text-align: center;
+    border-radius: 2px;
+    float: right;
+}
+div#got-it {
+    font-size: .8em;
+}
+.shout-btn-primary img {
+    display: inline;
+}
+
+/*FIXES FOR NEW THEME*/
+body.html.not-front.logged-in.no-sidebars.page-node.page-node-.page-node-70.node-type-page{
+margin: 0 !important;
+}
+.shout-container-right::-webkit-scrollbar {
+    display: none;
+}
+input[type="text"], input[type="email"], input[type="password"], textarea, input.form-text, textarea.form-textarea, select {
+    width:95%;
+    padding: 2px;
+    margin-left: 5px;
+}
+article#node-70 {
+    margin: 0 !important;
+    text-align: left;
+}
+div.ctools-modal-content .modal-header {
+    background:#efefef;
 }

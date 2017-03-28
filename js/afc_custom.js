@@ -68,11 +68,55 @@ var idleTime = 0;
 				}
 			});
 
+
 			//"What is it?" POPUP BUTTON
 			$('#what-is-it').click(function() {
-				$('#shoutout-popup0').removeClass('hide-field').addClass('item bounceInDown animated');
+				$('#shoutout-popup0').removeClass('hide-field').addClass('bounceInDown animated');
+				setTimeout(function(){
+					$("#check-out-prizes").addClass("pulse animated do-twice").delay(3000).queue(function(next){
+						$("#check-out-prizes").removeClass("pulse animated do-twice");
+					});
+				}, 1500);
 			});
 
+			//SHOW ME THE PRIZES
+			$('#check-out-prizes').click(function() {
+				$('#shoutout-pg').addClass('bounceOutUp animated').delay(500).queue(function(next){
+					$('#check-out-prizes').hide().animate({height: "0px"}, 500);
+					$('#shoutout-pg').hide().animate({height: "0px"}, 500);
+				});
+				$('#prizes').removeClass('hide-field').addClass('bounceInUp animated');
+				//$("#check-out-prizes").addClass("pulse animated do-twice").delay(3000).queue(function(next){
+				//	$("#check-out-prizes").removeClass("pulse animated do-twice");
+				//});
+			});
+
+			//GOT IT BUTTON POPUP0
+			$('#prizes-got-it').click(function() {
+				//$('#prizes').removeClass('hide-field').addClass('bounceInUp animated');
+				$('#shoutout-popup0').addClass('bounceOutDown animated').delay(2000).queue(function(next) {
+					$('#shoutout-popup0').removeClass('bounceInDown bounceOutDown animated');
+					$('#shoutout-popup0').addClass('hide-field');
+					$('#shoutout-pg').removeClass('bounceOutUp animated');
+					$('#shoutout-pg').removeAttr('style');
+					$('#check-out-prizes').removeAttr('style');
+					//set these back to auto height
+					$('#check-out-prizes').css({height:'auto'});
+					$('#shoutout-pg').css({height:'auto'});
+				});
+
+			});
+
+			//close button
+			$('#close-button').click(function() {
+				if ($(this).parent('div').hasClass('show-field')) {
+					$(this).parent('div').removeClass('show-field').addClass('bounceOutTop animated');
+				} else {
+					$(this).parent('div').addClass('bounceOutUp animated');
+					$(this).parent('div').removeClass().addClass('hide-field');
+				}
+
+			});
 
 			//"SHOW ME" ON CLICK POPUPS
 			var nar = false; //true = show me was clicked
@@ -90,7 +134,7 @@ var idleTime = 0;
 					//show second popup and que the employee search field display
 					//get the position of the search icon first
 						var spos = $('#employee-search-icon1').position();
-						$('#shoutout-popup2').css({top: spos.top-110 + 'px', left: spos.left-215 + 'px', position:'absolute'});
+						$('#shoutout-popup2').css({top: spos.top-100 + 'px', left: spos.left-100 + 'px', position:'absolute'});
 					$('#shoutout-popup2').delay(2000).fadeIn('fast').queue(function(next){
 
 						$('#shoutout-popup2').removeClass('hide-field');
@@ -183,18 +227,6 @@ var idleTime = 0;
 							}
 						}
 					});
-
-
-			//close button
-			$('#close-button').click(function() {
-				if ($(this).parent('div').hasClass('show-field')) {
-					$(this).parent('div').removeClass('show-field').addClass('bounceOutTop animated');
-				} else {
-					$(this).parent('div').addClass('bounceOutUp animated');
-				}
-
-			});
-
 
 			//display ajax messages after posting shoutout
 			if ($('#ajax-msg').length > 0) {

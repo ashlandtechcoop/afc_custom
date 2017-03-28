@@ -10,7 +10,6 @@ scripts[] = js/jquery-gradientify/jquery.gradientify.min.js
 scripts[] = js/afc_custom.js
 scripts[] = js/shoutout_stats_refresh.js
 
-stylesheets[all][] = css/shoutout.css
 stylesheets[all][] = css/animate.css
 
 ; Information added by  packaging script on 2013-12-03

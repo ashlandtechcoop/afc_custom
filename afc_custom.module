@@ -437,7 +437,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
     $uid = afc_custom_return_uid_for_badge(9806);
-    dpm($uid);
+
 }
     switch ($node->type) {
         case 'page':
@@ -458,10 +458,10 @@ if (isset($_GET['ss'])) {
 
                 //JOB POSTINGS
 
-                $node->content['job_postings'] = array(
-                    '#markup' => $job_postings,
-                    '#weight' => 2,
-                );
+//                $node->content['job_postings'] = array(
+//                    '#markup' => $job_postings,
+//                    '#weight' => 2,
+//                );
 
 
             }
@@ -471,6 +471,59 @@ if (isset($_GET['ss'])) {
     }
 }
 
+function afc_custom_css_alter(&$css) {
+    // Remove defaults.css file.
+    $kk = false;
+    $uri = $_SERVER['REQUEST_URI'];
+    switch($uri) {
+
+        case stristr($uri,'/content/page/shoutout-box'):
+            $kk = true;
+        break;
+        case stristr($uri,'/modal_forms/ajax/webform/83'):
+            $kk = true;
+        break;
+        case stristr($uri,'/modal_forms/ajax/webform/84'):
+            $kk = true;
+        break;
+        case stristr($uri,'/modal_forms/ajax/webform/106'):
+            $kk = true;
+        break;
+        default:
+            $kk = false;
+        break;
+    }
+
+    if ($kk == true) {
+        watchdog('afc_custom', 'Removed CSS from @uri', array('@uri' => $_SERVER['REQUEST_URI']));
+        foreach ($css as $key => $style) {
+            if (strpos($key, 'sites/all/themes/ashland_theme') !== false){
+                unset($css[$key]);
+            }
+        }
+    }
+
+
+
+}
+/**
+ * Implementation of hook_preprocess_HOOK().
+ */
+function afc_custom_preprocess_html(&$variables){
+
+    //only load css on our shoutout page
+    if (isset($variables['page']['content']['system_main']['nodes'][70])) {
+
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/form-elements.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/style.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/theme-style.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/animations.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/comments.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/local.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/org_bootpress/responsive.css");
+        drupal_add_css(drupal_get_path('module', 'afc_custom') . "/css/shoutout.css");
+    }
+}
 /**
  * Implementation of hook_preprocess_HOOK().
  */
@@ -490,7 +543,6 @@ function afc_custom_preprocess_node(&$variables){
         $variables['huddle_news']=$huddle_new;
         $variables['shout_list']=$shout_list;
         $variables['job_postings']=$job_postings;
-
 
     }
 }
