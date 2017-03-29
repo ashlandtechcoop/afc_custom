@@ -251,9 +251,17 @@ var idleTime = 0;
 				$(this).addClass('dark-line-click');
 				var uurl = $(this).find("[id^=job-url-to-file-]").html();
 				$(this).find("[id^=job-url-to-file-]").after('<div id="modal-dialog"><iframe width="100%" height="100%" src="'+ $.trim(uurl)+'"></iframe></div>');
-				$("#modal-dialog").dialog({width: 1160,height:1000, dialogClass: 'pdf-job-dialog',resizable: false, draggable: false});
+				$("#modal-dialog").dialog({width: 1160,height:1000, close: function() {
+					$('.dark-line').removeClass('dark-line-click');
+				}, dialogClass: 'pdf-job-dialog',resizable: false, draggable: false, show:{
+					effect: 'fade',
+					duration: 200 //at your convenience
+				},
+					hide: {
+						effect: 'fade',
+						duration: 200 //at your convenience
+					}});
 			});
-
 
 			//onclick of search employees
 			$('#employee-search-icon1').once().click(function() {
