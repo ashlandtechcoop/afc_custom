@@ -228,6 +228,7 @@ var idleTime = 0;
 						}
 					});
 
+
 			//display ajax messages after posting shoutout
 			if ($('#ajax-msg').length > 0) {
 				$('#ajax-msg').addClass('bounce');
@@ -242,6 +243,17 @@ var idleTime = 0;
 				});
 
 			}
+
+			//Job Posting on Click of Main Div
+			$('.dark-line').click(function(event) {
+				$("#modal-dialog").dialog('close');
+				$('.dark-line').removeClass('dark-line-click');
+				$(this).addClass('dark-line-click');
+				var uurl = $(this).find("[id^=job-url-to-file-]").html();
+				$(this).find("[id^=job-url-to-file-]").after('<div id="modal-dialog"><iframe width="100%" height="100%" src="'+ $.trim(uurl)+'"></iframe></div>');
+				$("#modal-dialog").dialog({width: 1160,height:1000, dialogClass: 'pdf-job-dialog',resizable: false, draggable: false});
+			});
+
 
 			//onclick of search employees
 			$('#employee-search-icon1').once().click(function() {

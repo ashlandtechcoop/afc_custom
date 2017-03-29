@@ -130,12 +130,46 @@ span.btn-text {
 textarea#edit-submitted-shoutout-message {
     height: 65px !important;
 }
+/*JOB POSTINGS*/
+.dark-line img {
+    margin-right: 15px;
+}
+.dark-line .views-field-title {
+    font-weight: 500;
+    margin-top: 5px;
+}
+.dark-line:hover {
+    cursor: pointer;
+    box-shadow: 0 2px 10px #656565;
+    background: #a2a2a2;
+    color: #ffffff;
+}
+.dark-line-click {
+    cursor: pointer;
+    box-shadow: 0 2px 10px #656565 !important;
+    background: #a2a2a2 !important;
+    color: #ffffff !important;
+    border: 1px solid gray;
+}
 .dark-line {
     padding: 10px;
     background: #f7f7f7;
     color: #101010;
     font-size: 22px;
-    box-shadow: 2px 4px 16px #a9a9a9;
+    box-shadow: 2px 3px 4px #a9a9a9;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    min-height: 120px;
+    height: auto;
+    transition:.5s;
+    /* border-bottom: 4px solid #8bc53f; */
+}
+.job-pic {
+    float: left;
+}
+.job-dept {
+    float:right;
 }
 .shout-col-4 {
     clear: both;
@@ -874,9 +908,11 @@ div#got-it {
 }
 
 /*FIXES FOR NEW THEME*/
-body.html.not-front.logged-in.no-sidebars.page-node.page-node-.page-node-70.node-type-page{
-margin: 0 !important;
+.page-node {
+    padding: 0;
+    margin: 0;
 }
+
 .shout-container-right::-webkit-scrollbar {
     display: none;
 }
@@ -891,4 +927,46 @@ article#node-70 {
 }
 div.ctools-modal-content .modal-header {
     background:#efefef;
+}
+
+.views-field-field-application-deadline div {
+    display: inline-block;
+}
+
+/*BANNER CORNER CRAP*/
+.box {
+    position: relative;
+    background: linear-gradient(#8cc343, #8bc53f);
+    height: 70px;
+    width: 140px;
+    text-align: center;
+    top: -13px;
+    color: white;
+    font-weight: 500;
+    border-top: 2px solid #77a63a;
+}
+.box:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 0;
+    height: 0;
+    border-top: solid 37px #8bc53f;
+    border-left: solid 72px transparent;
+    border-right: solid 63px transparent;
+}
+button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui-dialog-titlebar-close {
+    float: right;
+    background: white;
+    border-radius: 50%;
+    height: 50px;
+    position: absolute;
+    top: -10px;
+    left: 1120px;
+    cursor: pointer;
+    border: 1px solid white;
+    box-shadow: -1px 2px 5px #9a9a9a;
 }
