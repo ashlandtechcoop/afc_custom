@@ -251,7 +251,7 @@ var idleTime = 0;
 				$(this).addClass('dark-line-click');
 				var uurl = $(this).find("[id^=job-url-to-file-]").html();
 				$(this).find("[id^=job-url-to-file-]").after('<div id="modal-dialog"><iframe width="100%" height="100%" src="'+ $.trim(uurl)+'"></iframe></div>');
-				$("#modal-dialog").dialog({width: 1160,height:1000, close: function() {
+				$("#modal-dialog").dialog({modal: true, width: 1160,height:1000, close: function() {
 					$('.dark-line').removeClass('dark-line-click');
 				}, dialogClass: 'pdf-job-dialog',resizable: false, draggable: false, show:{
 					effect: 'fade',
@@ -308,38 +308,7 @@ var idleTime = 0;
 				}
 
 			});
-
-			//onclick of shoutout comment
-			$('.shoutout-comment-row').click(function(e) {
-
-				if ($(this).hasClass('comment-hover')) {
-					//make it small
-					$(this).removeClass('comment-hover');
-					$(".shoutout-comment-row").each(function(index) {
-						$(this).removeClass("gray-out");
-						//$(this).removeClass("bounceIn animated");
-					});
-					$(this).css({position:'inherit'});
-				} else {
-					//make it big
-					//before you make it big make all of them small
-					$(".shoutout-comment-row").each(function(index) {
-						$(this).removeClass("comment-hover");
-						$(this).css({position:'inherit'});
-					});
-
-					//set position and assign gray out class to everything else
-					$(this).css({top: e.pageY + 'px', left: e.pageX-340 + 'px', position:'absolute'});
-					$(".shoutout-comment-row").each(function(index) {
-						$(this).addClass("gray-out");
-					});
-					//assign class to focus div
-					$(this).addClass('comment-hover');
-					$(this).removeClass('gray-out');
-
-				}
-
-			});
+			
 
 			//Each shoutout comment add the animation classes on page load
 			$(".shoutout-comment-row").once().each(function(index) {
