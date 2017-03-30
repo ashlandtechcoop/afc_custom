@@ -308,7 +308,7 @@ var idleTime = 0;
 				}
 
 			});
-			
+
 
 			//Each shoutout comment add the animation classes on page load
 			$(".shoutout-comment-row").once().each(function(index) {
