@@ -215,6 +215,101 @@ function afc_custom_return_uid_for_badge($badge) {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function afc_custom_menu() {
+    $items = array();
+
+    $items['badge/%ctools_js'] = array(
+        'page callback' => 'afc_custom_badge_callback',
+        'page arguments' => array(1),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+/**
+ * Ajax menu callback.
+ */
+function afc_custom_badge_callback($ajax) {
+    if ($ajax) {
+
+        ctools_include('ajax');
+        ctools_include('modal');
+
+        $form_state = array(
+            'ajax' => TRUE,
+            'title' => t('Enter Staff #'),
+        );
+
+        // Use ctools to generate ajax instructions for the browser to create
+        // a form in a modal popup.
+        $output = ctools_modal_form_wrapper('badge_number_form', $form_state);
+
+        // If the form has been submitted, there may be additional instructions
+        // such as dismissing the modal popup.
+        if (!empty($form_state['ajax_commands'])) {
+            $output = $form_state['ajax_commands'];
+        }
+
+        // Return the ajax instructions to the browser via ajax_render().
+        print ajax_render($output);
+        drupal_exit();
+    }
+    else {
+        return drupal_get_form('badge_number_form');
+    }
+}
+
+function badge_number_form_submit($form, $form_state) {
+    $badge = $form_state['values']['staff_number'];
+    $uid = afc_custom_return_uid_for_badge($badge);
+    $user = user_load($uid);
+    //get users email and email them the pdf
+
+}
+
+function badge_number_form_validate($form, $form_state) {
+    if(isset($form_state['values']['staff_number'])) {
+        $badge = $form_state['values']['staff_number'];
+        $uid = afc_custom_return_uid_for_badge($badge);
+        if (!$uid) {
+            //error if we can't find a matching uid for that badge
+            form_set_error('', t('It looks like your badge# is incorrect :('));
+//            $form_state['rebuild'] = TRUE;
+        } else {
+            $form_state['values']['submitted']['employee_id'] = $uid;
+
+        }
+    } else {
+        form_set_error('', t('No badge# given'));
+    }
+}
+
+/**
+ * hook_form
+ */
+function badge_number_form($form, $form_state) {
+    $form = array();
+
+    $form['staff_number'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your Staff #'),
+    );
+
+    $form['cancel'] = array(
+        '#type' => 'cancel',
+        '#value' => t('Cancel'),
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+    );
+    return $form;
+}
+/**
  * hook_form_alter
  */
 function afc_custom_form_alter(&$form, &$form_state, $form_id) {
@@ -333,6 +428,13 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
     //for webforms that are modals, use ajax to dismiss them once submitted
     if(strstr($form_id, 'webform_client_form_')) {
         if(strstr($form['#action'], 'modal_forms')) {
+            //if there is a body in modal then display it. The rest is css
+            if (!empty($form['#node']->body['und'][0]['value'])) {
+                $form['desc'] = array(
+                    '#markup' => '<div class="desc">'.$form['#node']->body['und'][0]['value'].'</div>',
+                    '#weight' => -10,
+                );
+            }
 
             //if submitted
             if (!empty($form_state['executed'])) {
@@ -408,7 +510,6 @@ function afc_custom_validate_webform_84(&$form, &$form_state) {
     }
 }
 
-
 function afc_custom_webform_js_submit($form, $form_state) {
     watchdog('afc_custom', 'calling js submit');
     // define the $sid variable (submission id from webform)
@@ -444,6 +545,44 @@ if (isset($_GET['ss'])) {
 
             //SHOUTOUT BOARD
             if ($node->nid ==70 ){
+
+                //EMAIL ME PDF JOB POSTING BUTTON -----------------------------------------------------------------------------------------
+//                $btn = '<div >';
+//                $btn .= '<a href=".?email-pdf&pid=';
+//                ctools_include('modal');
+//                ctools_include('ajax');
+//                ctools_modal_add_js();
+//
+//                $customModalStyle = array(
+//                    'custom-modal-style' => array(
+//                        'modalSize' => array(
+//                            'type' => 'fixed',
+//                            'width' => 300,
+//                            'height' => 'auto',
+//                            'addWidth' => 20,
+//                            'addHeight' => 20,
+//                            'contentRight' => 20,
+//                            'contentBottom' => 20,
+//                        ),
+//                        'modalOptions' => array(
+//                            'opacity' => (float) 0.6,
+//                            'background-color' => '#000000',
+//                        ),
+//                        'closeText' => '',
+//                        'loadingText' => '',
+//                        'animation' => 'fadeIn',
+//                        'animationSpeed' => 'fast',
+//                    ),
+//                );
+//
+//                drupal_add_js($customModalStyle, 'setting');
+//                $shit = '<div id="email-me-pdf" class="show-field">' . l('Email Me', 'badge/nojs', array('attributes' => array('class' => 'ctools-use-modal ctools-modal-custom-modal-style'))) . '</div>';
+//                $node->content['email_me_pdf'] = array(
+//                    '#markup' => $shit,
+//                    '#weight' => 1,
+//                );
+
+                //--------------------------------------------------------------------------------------------------------------------------------
 
 
                 //SHOUTOUT BUTTONS BLOCK

@@ -107,6 +107,11 @@ var idleTime = 0;
 
 			});
 
+			//refresh button
+			$('.main-refresh-icon').click(function() {
+				window.location.reload();
+			});
+
 			//close button
 			$('#close-button').click(function() {
 				if ($(this).parent('div').hasClass('show-field')) {
@@ -246,13 +251,16 @@ var idleTime = 0;
 
 			//Job Posting on Click of Main Div
 			$('.dark-line').click(function(event) {
+
+				//close other dialogs and such
 				$("#modal-dialog").dialog('close');
 				$('.dark-line').removeClass('dark-line-click');
 				$(this).addClass('dark-line-click');
 				var uurl = $(this).find("[id^=job-url-to-file-]").html();
 				$(this).find("[id^=job-url-to-file-]").after('<div id="modal-dialog"><iframe width="100%" height="100%" src="'+ $.trim(uurl)+'"></iframe></div>');
-				$("#modal-dialog").dialog({modal: true, width: 1160,height:1000, close: function() {
+				$("#modal-dialog").dialog({modal: true, width: 900,height:1000, close: function() {
 					$('.dark-line').removeClass('dark-line-click');
+					$('#job-posting-popup').fadeOut('fast');
 				}, dialogClass: 'pdf-job-dialog',resizable: false, draggable: false, show:{
 					effect: 'fade',
 					duration: 200 //at your convenience
@@ -261,6 +269,15 @@ var idleTime = 0;
 						effect: 'fade',
 						duration: 200 //at your convenience
 					}});
+
+				//open the how to apply popup
+				$('#job-posting-popup').fadeIn('fast');
+				var nav = $('.pdf-job-dialog');
+				if (nav.length) {
+					var off = $('.pdf-job-dialog').offset();
+					$('#job-posting-popup').css({top: off.top + 'px', left: off.left + 'px', position:'absolute'});
+				}
+
 			});
 
 			//onclick of search employees

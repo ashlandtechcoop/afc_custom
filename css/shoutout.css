@@ -7,8 +7,8 @@ article#node-70 {
 #modalContent form {
     font-family: 'Raleway', arial, sans-serif;
 }
-#modalContent form input {
-    font-size: 15px;
+#modalContent form input, #modalContent form textarea {
+    font-size: 1.5em;
 }
 .table-tell-img:first-child {
     width: 125px;
@@ -16,6 +16,20 @@ article#node-70 {
 }
 .shout-header {
 
+}
+form#webform-client-form-106 .desc p {
+    font-size: 1.3em;
+    vertical-align: middle;
+    line-height: 20px;
+}
+form#webform-client-form-106 .desc {
+    position: absolute;
+    font-size: 1.5em;
+    top: 17px;
+    left: 383px;
+    width: 660px;
+    background: green;
+    padding: 10px;
 }
 div#shoutout-page-main-content {
     font-family: 'Raleway', arial, sans-serif !important;
@@ -932,7 +946,47 @@ div.ctools-modal-content .modal-header {
 .views-field-field-application-deadline div {
     display: inline-block;
 }
-
+form#webform-client-form-106 #edit-submitted-employee-id {
+    width: 210px;
+}
+.main-refresh-icon {
+    position: fixed;
+    top: 10px;
+    left: -7px;
+    background: linear-gradient(#313131,#040404);
+    padding: 5px 5px 5px 10px;
+    border-radius: 5px 14px 14px 5px;
+    box-shadow: 0 1px 3px rgba(226, 226, 226, 0.67);
+    transition:.5s;
+}
+.main-refresh-icon img {
+    width: 31px;
+}
+.main-refresh-icon:hover {
+    background: #000000;
+    transform: scale(1.1);
+    border: 1px solid #828282;
+}
+div#job-posting-popup {
+    position: absolute;
+    top: 60%;
+    left: 68%;
+    width: 500px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #8bc53f;
+    z-index: 9999;
+    box-shadow: 5px 5px 8px rgba(95, 95, 95, 0.58);
+}
+ol#how-to-apply li {
+    font-size: 1.5em;
+    color: #505050;
+}
+ol#how-to-apply p {
+    font-size: 1em;
+    line-height: 25px;
+    margin-bottom: 30px;
+}
 /*BANNER CORNER CRAP*/
 .box {
     position: relative;
@@ -965,7 +1019,7 @@ button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui
     height: 50px;
     position: absolute;
     top: -10px;
-    left: 1120px;
+    left: 870px;
     cursor: pointer;
     border: 1px solid white;
     box-shadow: -1px 2px 5px #9a9a9a;
