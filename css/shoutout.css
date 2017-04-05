@@ -968,10 +968,8 @@ form#webform-client-form-106 #edit-submitted-employee-id {
     border: 1px solid #828282;
 }
 div#job-posting-popup {
-    position: absolute;
-    top: 60%;
-    left: 68%;
     width: 500px;
+    height: auto;
     background: white;
     border-radius: 5px;
     border: 1px solid #8bc53f;
@@ -987,7 +985,85 @@ ol#how-to-apply p {
     line-height: 25px;
     margin-bottom: 30px;
 }
+.help-me {
+    float: left;
+    /* background: #8d299e; */
+    border-radius: 50%;
+    /* border: 2px solid #8d299e; */
+    transition: .5s;
+    border-top: 1px solid #888888;
+    box-shadow: 0 1px 1px #5f5f5f;
+}
+.help-me:hover {
+    transform: scale(1.1);
+    background: rgb(76, 76, 76);
+}
+.help-me-black {
+    background: #282828;
+    float: left;
+    border-radius: 50%;
+    transition: .5s;
+}
+.help-me-black:hover {
+    transform: scale(1.1);
+    background: rgb(76, 76, 76);
+}
+
+/*POPUPS FOR SHOUTOUT BUTTONS*/
+.sbp-popups p {
+    font-size: 1.6em;
+    line-height: 25px;
+}
+div#sbp-1 {
+    width: 520px;
+}
+div#sbp-3 {
+    width: 450px;
+}
+div#sbp-2 {
+    width: 510px;
+}
+.sbp-popups {
+    background: #fff;
+    border: 1px solid #2196F3;
+    border-radius: 2px;
+    padding: 5px;
+    border-left: 4px solid #2196F3;
+    box-shadow: 5px 5px 17px grey;
+}
+
+div#sbp-2:after {
+    position: relative;
+    left: 216px;
+    top: 37px;
+    content: "\25BC";
+    color: #03A9F4;
+    font-size: 40px;
+    line-height: 0;
+    z-index: 100;
+}
+div#sbp-3:after {
+    position: relative;
+    left: -40px;
+    top: -61px;
+    content: "\25C4";
+    color: #03A9F4;
+    font-size: 40px;
+    line-height: 0;
+    z-index: 100;
+}
+div#sbp-1:after {
+    position: relative;
+    left: 520px;
+    top: -21px;
+    content: "\25BA";
+    color: #03A9F4;
+    font-size: 40px;
+    line-height: 0;
+    z-index: 100;
+}
 /*BANNER CORNER CRAP*/
+
 .box {
     position: relative;
     background: linear-gradient(#8cc343, #8bc53f);

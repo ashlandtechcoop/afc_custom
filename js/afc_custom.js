@@ -251,13 +251,14 @@ var idleTime = 0;
 
 			//Job Posting on Click of Main Div
 			$('.dark-line').click(function(event) {
-
 				//close other dialogs and such
-				$("#modal-dialog").dialog('close');
+				$("#modal-dialog").dialog('close'); //close other dialogs if open
 				$('.dark-line').removeClass('dark-line-click');
+
 				$(this).addClass('dark-line-click');
 				var uurl = $(this).find("[id^=job-url-to-file-]").html();
 				$(this).find("[id^=job-url-to-file-]").after('<div id="modal-dialog"><iframe width="100%" height="100%" src="'+ $.trim(uurl)+'"></iframe></div>');
+
 				$("#modal-dialog").dialog({modal: true, width: 900,height:1000, close: function() {
 					$('.dark-line').removeClass('dark-line-click');
 					$('#job-posting-popup').fadeOut('fast');
@@ -275,9 +276,16 @@ var idleTime = 0;
 				var nav = $('.pdf-job-dialog');
 				if (nav.length) {
 					var off = $('.pdf-job-dialog').offset();
-					$('#job-posting-popup').css({top: off.top + 'px', left: off.left + 'px', position:'absolute'});
+					$('#job-posting-popup').css({top: '100px', right: '10px', position:'fixed'});
+					//$('#job-posting-popup').css({top: off.top + 'px', left: off.left + 'px', position:'absolute'});
 				}
 
+			});
+
+			//Job PDF POPUP GOT IT
+			$('#job-got-it').click(function() {
+				//check and remove popup styles
+				$('#job-posting-popup').fadeOut('fast');
 			});
 
 			//onclick of search employees
@@ -335,7 +343,7 @@ var idleTime = 0;
 				});
 			});
 
-
+			//Bounce in effects to shoutout comments
 			$(".shoutout-comment-row").once().each(function(index) {
 				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
 					$(this).removeClass("bounceIn animated");
@@ -343,10 +351,29 @@ var idleTime = 0;
 				});
 			});
 
-			//activate bootstrap tooltips
-			$(function () {
-				$("[rel='tooltip']").tooltip();
+			//Popups for shoutout buttons greenway to work -  job openings - ideas
+			$('#help-me-shoutout-btns').click(function() {
+				//get the data id which matches the id of the div to unhide and position over
+				var id1 = $('#sbp-1').attr('data-id');
+				var id2 = $('#sbp-2').attr('data-id');
+				var id3 = $('#sbp-3').attr('data-id');
+
+				var off1 = $('#'+id1).offset();
+				var off2 = $('#'+id2).offset();
+				var off3 = $('#'+id3).offset();
+
+				$('#sbp-1').css({top: off1.top - 50 +'px', left: '50px', position:'absolute'});
+				$('#sbp-2').css({top: off2.top - 210 +'px', left: off2.left -160 +'px', position:'absolute'});
+				$('#sbp-3').css({top: off3.top +30 + 'px', left: off3.left + 190 + 'px', position:'absolute'});
+				$('#sbp-got-it').css({top: off2.top +150 + 'px', left: off2.left + 'px', position:'absolute'});
+
+				$('#sbp-1').fadeIn('slow').addClass('pulse animated');
+				$('#sbp-2').delay(600).fadeIn('slow').addClass('pulse animated');
+				$('#sbp-3').delay(1000).fadeIn('slow').addClass('pulse animated');
+				$('#sbp-got-it').delay(1100).fadeIn('slow').addClass('pulse animated');
+
 			});
+
 
 		} //end shoutout page check
 
