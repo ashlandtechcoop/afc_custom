@@ -49,11 +49,9 @@ div#shoutout-page-main-content {
     width: 150px;
 }
 div#what-is-it {
+    display: inline-block;
+    font-size: 2em;
     float: right;
-    text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
-    color: #f9f9f9;
-    opacity: 0.3;
-    font-size: 30px;
 }
 .shout-container-left {
     float: left;
@@ -951,21 +949,24 @@ form#webform-client-form-106 #edit-submitted-employee-id {
 }
 .main-refresh-icon {
     position: fixed;
-    top: 10px;
-    left: -7px;
-    background: linear-gradient(#313131,#040404);
-    padding: 5px 5px 5px 10px;
-    border-radius: 5px 14px 14px 5px;
-    box-shadow: 0 1px 3px rgba(226, 226, 226, 0.67);
-    transition:.5s;
+    top: -7px;
+    left: -4px;
+    background: #313131;
+    padding: 17px 5px 10px 10px;
+    border-radius: 2px 2px 44px 2px;
+    box-shadow: 0 3px 6px rgba(117, 117, 117, 0.67);
+    transition: .5s;
+    z-index: 101;
 }
 .main-refresh-icon img {
     width: 31px;
+    left: -5px;
+    position: relative;
+    top: -3px;
 }
-.main-refresh-icon:hover {
-    background: #000000;
-    transform: scale(1.1);
-    border: 1px solid #828282;
+.main-refresh-icon:active, .main-refresh-icon:hover, .main-refresh-icon:focus {
+    top: -4px;
+    left: 0px;
 }
 div#job-posting-popup {
     width: 500px;
@@ -1055,7 +1056,7 @@ div#sbp-3:after {
 div#sbp-1:after {
     position: relative;
     left: 520px;
-    top: -21px;
+    top: -120px;
     content: "\25BA";
     color: #03A9F4;
     font-size: 40px;
@@ -1099,4 +1100,75 @@ button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only.ui
     cursor: pointer;
     border: 1px solid white;
     box-shadow: -1px 2px 5px #9a9a9a;
+}
+
+/*DROPDOWNS
+MENU
+*/
+.menu-overlay {
+    height: 100%;
+    width: 250px;
+    background: #000;
+    opacity:.9;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    border-right: 1px solid #3a3a3a;
+    box-shadow: 0 2px 10px #353535;
+    z-index: 102;
+    -webkit-transform: .6s;
+    -moz-transform: .6s;
+    -ms-transform: .6s;
+    -o-transform: .6s;
+    transform: .6s;
+}
+.menu-overlay .dropdown-content a {
+    text-decoration: none;
+    display: block;
+    padding: 15px;
+    text-align: center;
+    color: #fff;
+    font-size: 1.7em;
+}
+.menu-overlay .dropdown-content {
+    position: relative;
+    top: 20%;
+
+}
+.menu-overlay .dropdown-content a:hover {
+    color: #8bc53f;
+}
+.sec-menu div:first-child {
+    float: left;
+    margin-right: 8px;
+    margin-left: 8px;
+    margin-top: 3px;
+}
+.sec-menu div:last-child {
+    font-size: 2em;
+    text-shadow: 1px 1px 0 rgba(140,140,140,0.6) , -1px -1px 1px rgba(0,0,0,0.67) ;
+}
+.sec-menu {
+    width: 160px;
+    height: 40px;
+    display: inline-block;
+}
+.inset-text-effect {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    border: none;
+    color: rgba(48,48,48,1);
+    text-align: center;
+    text-transform: normal;
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    white-space: pre;
+    text-shadow: 1px 1px 0 rgba(140,140,140,0.6) , -1px -1px 1px rgba(0,0,0,0.67) ;
+}
+.menu-logo img {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    display: block;
 }

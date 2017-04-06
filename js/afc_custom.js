@@ -300,36 +300,30 @@ var idleTime = 0;
 
 
 			//onclick of huddle news
+			var zoomin_clicked = false;
+			var cc = 0;
 			$('.view.view-shoutout-huddle-news .views-row').click(function() {
 				if ($(this).hasClass('zoomin')) {
 					$(this).removeClass('zoomin');
 				} else {
 					$(this).addClass('zoomin');
+					zoomin_clicked = true; //this is for the document(click) function down below
+					cc = 1;
+					console.log(1);
 				}
 			});
 
 			//IDLE COUNTER Increment the idle time counter every minute.
 			var idleInterval = setInterval(timerIncrement, 15000); // 1 minute 60000
 			//shout stats search icon button
-			$('#reset').once().click(function() {
-				if ($('div.view-shoutout-comment-list div.view-filters').is(":hidden")) {
-				} else {
-					$('div.view-shoutout-comment-list div.view-filters').fadeOut('slow');
-					$('#reset').remove();
-				}
-			});
+
 			//shout stats search icon button
 			$('#shout-search-icon').once().click(function() {
 				if ($('div.view-shoutout-comment-list div.view-filters').is(":hidden")) {
 					$('div.view-shoutout-comment-list div.view-filters').fadeIn('slow');
 					$('#edit-field-full-name-value-shout-out').focus();
-					if ($('#reset').length <= 0) {
-						$('.view-shoutout-comment-list').before('<button id="reset">Reset</button>');
-					}
-
 				} else {
 					$('div.view-shoutout-comment-list div.view-filters').fadeOut('slow');
-					$('#reset').remove();
 				}
 
 			});
@@ -352,7 +346,10 @@ var idleTime = 0;
 			});
 
 			//Popups for shoutout buttons greenway to work -  job openings - ideas
+			var they_clicked = false;
+			var shit = 0;
 			$('#help-me-shoutout-btns').click(function() {
+
 				//get the data id which matches the id of the div to unhide and position over
 				var id1 = $('#sbp-1').attr('data-id');
 				var id2 = $('#sbp-2').attr('data-id');
@@ -362,18 +359,66 @@ var idleTime = 0;
 				var off2 = $('#'+id2).offset();
 				var off3 = $('#'+id3).offset();
 
-				$('#sbp-1').css({top: off1.top - 50 +'px', left: '50px', position:'absolute'});
-				$('#sbp-2').css({top: off2.top - 210 +'px', left: off2.left -160 +'px', position:'absolute'});
+				$('#sbp-1').css({top: off1.top + 70 +'px', left: '40px', position:'absolute'});
+				$('#sbp-2').css({top: off2.top - 215 +'px', left: off2.left -160 +'px', position:'absolute'});
 				$('#sbp-3').css({top: off3.top +30 + 'px', left: off3.left + 190 + 'px', position:'absolute'});
-				$('#sbp-got-it').css({top: off2.top +150 + 'px', left: off2.left + 'px', position:'absolute'});
 
 				$('#sbp-1').fadeIn('slow').addClass('pulse animated');
 				$('#sbp-2').delay(600).fadeIn('slow').addClass('pulse animated');
 				$('#sbp-3').delay(1000).fadeIn('slow').addClass('pulse animated');
-				$('#sbp-got-it').delay(1100).fadeIn('slow').addClass('pulse animated');
-
+				they_clicked = true;
+				shit = 1;
+				console.log(shit);
 			});
 
+			//remove animations if document is clicked a second time
+			$(document).click(function() {
+				//they_clicked is for shoutout button popups
+				if ((they_clicked = true) && (shit == 2)) {
+					$('#sbp-1').fadeOut('fast');
+					$('#sbp-2').fadeOut('fast');
+					$('#sbp-3').fadeOut('fast');
+					they_clicked=false;
+					shit = 0;
+				}
+				if ((they_clicked == true) && (shit == 1)) {
+					shit = shit +1;
+				}
+
+				//zoomin_clicked is for the zoomin class on click
+				if ((zoomin_clicked == true) && (cc == 2)) {
+					$('.view.view-shoutout-huddle-news .views-row').removeClass('zoomin'); //remove zoomin class
+					zoomin_clicked=false;
+					cc = 0;
+					console.log(3);
+				}
+				if ((zoomin_clicked == true) && (cc == 1)) {
+					cc = cc +1;
+					console.log(2);
+				}
+			});
+			//end popups or shoutout buttons. the document on click dismisses the popups is they_clicked = true
+
+			//MENU NAVIGATION ON CLICK DISPLAY OVERLAY MENU. MENU CODE IS IN AFC_CUSTOM.MODULE IN HOOK_PREPROCESS_NODE
+			$("#menu-btn").click(function(){
+				$("#menu-wrapper").animate({left:'0px'}, 500);
+			});
+
+			var timeoutId = 0;
+            //
+			//$('#menu-wrapper').on('mousedown', function() {
+			//	timeoutId = setTimeout(myFunction, 1000);
+			//	console.log('wtf');
+			//}).on('mouseup mouseleave', function() {
+			//	clearTimeout(timeoutId);
+			//	console.log('wtf2');
+			//});
+			$('#menu-wrapper').click(function(){
+				$(this).myFunction();
+			});
+			$.fn.myFunction = function() {
+				alert('test');
+			}
 
 		} //end shoutout page check
 

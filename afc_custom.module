@@ -421,7 +421,7 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
         //Add validate - checks employee id make sure its valid
         $form['#validate'][] = 'afc_custom_validate_webform_83';
-//        dpm($form);
+
     }
 
 
@@ -678,10 +678,22 @@ function afc_custom_preprocess_node(&$variables){
 
         $job_postings = views_embed_view('shoutout_job_postings','block');
 
+        $shout_menu = menu_load_links('menu-shoutout-menu');
+
+        $shout_menu_html = '<div class="dropdown-content">';
+        foreach($shout_menu as $shout_item => $item) {
+            $link_path = $item['link_path'];
+            $link_title = $item['link_title'];
+            $shout_menu_html .= '<a href="'.$link_path.'">'.$link_title.'</a>';
+        }
+        $shout_menu_html .='</div>';
+
         $variables['dept_list'] = $dept_list;
         $variables['huddle_news']=$huddle_new;
         $variables['shout_list']=$shout_list;
         $variables['job_postings']=$job_postings;
+
+        $variables['shout_menu'] = $shout_menu_html;
 
     }
 }
