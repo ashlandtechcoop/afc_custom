@@ -18,18 +18,26 @@ article#node-70 {
 
 }
 form#webform-client-form-106 .desc p {
-    font-size: 1.3em;
+    font-size: 1.2em;
     vertical-align: middle;
-    line-height: 20px;
+    line-height: 26px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    margin-left: 20px;
+    padding-bottom: 0;
 }
 form#webform-client-form-106 .desc {
     position: absolute;
     font-size: 1.5em;
-    top: 17px;
+    top: 3px;
     left: 383px;
-    width: 660px;
-    background: green;
-    padding: 10px;
+    width: 71%;
+    /* line-height: 61px; */
+    background: rgba(136, 199, 136, 0.17);
+    border: 1px solid #99d099;
+    padding: 0px;
+    margin: 0;
+    height: 117px;
 }
 div#shoutout-page-main-content {
     font-family: 'Raleway', arial, sans-serif !important;
@@ -1132,7 +1140,7 @@ MENU
 }
 .menu-overlay .dropdown-content {
     position: relative;
-    top: 20%;
+    top: 10%;
 
 }
 .menu-overlay .dropdown-content a:hover {
@@ -1147,6 +1155,7 @@ MENU
 .sec-menu div:last-child {
     font-size: 2em;
     text-shadow: 1px 1px 0 rgba(140,140,140,0.6) , -1px -1px 1px rgba(0,0,0,0.67) ;
+    text-align: left;
 }
 .sec-menu {
     width: 160px;

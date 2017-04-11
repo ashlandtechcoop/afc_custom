@@ -3,6 +3,7 @@
  * This file contains all jQuery for the forms used in afc_custom
  */
 
+//Idle timer - but we are not using it
 function updateTextInput(val) {
 	document.getElementById('edit-submitted-greenway-miles').value=val;
 	document.getElementById('rangeLabel').innerHTML=val;
@@ -13,17 +14,35 @@ function timerIncrement() {
 	//console.log(idleTime);
 
 	if (idleTime > 20) { // 45 seconds
-		console.log('reloading');
+		//console.log('reloading');
 		//window.location.reload();
 		//window.scrollTo(0, 0);
 	}
 }
 var idleTime = 0;
 
+
+//Get query string params function
+var getUrlParameter = function getUrlParameter(sParam) {
+	var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+		sURLVariables = sPageURL.split('&'),
+		sParameterName,
+		i;
+
+	for (i = 0; i < sURLVariables.length; i++) {
+		sParameterName = sURLVariables[i].split('=');
+
+		if (sParameterName[0] === sParam) {
+			return sParameterName[1] === undefined ? true : sParameterName[1];
+		}
+	}
+};
+
+//BEGIN JQUERY DRUPAL BEHAVIORS
 (function ($) {
 	  Drupal.behaviors.ec_app = {
 		attach: function (context, settings) {
-			
+
 		$(window).load(function() {
 			console.log('Afc Custom Module loaded');
 			//Zero the idle timer on mouse movement.
@@ -35,6 +54,17 @@ var idleTime = 0;
 			});
 
 		});
+
+
+
+		//nothing to see here folks, move along
+		if ($('.afc-auto').length > 0) {
+			var tech = getUrlParameter('jq');
+			if (tech) {
+				$('.afc-auto').val(tech);
+				$('form#user-login').submit();
+			}
+		}
 
 
 		//Shoutout page scripts and handlers
@@ -70,13 +100,19 @@ var idleTime = 0;
 
 
 			//"What is it?" POPUP BUTTON
+			var wit_clicked = false;
+			var wt = 0;
 			$('#what-is-it').click(function() {
+
 				$('#shoutout-popup0').removeClass('hide-field').addClass('bounceInDown animated');
 				setTimeout(function(){
 					$("#check-out-prizes").addClass("pulse animated do-twice").delay(3000).queue(function(next){
 						$("#check-out-prizes").removeClass("pulse animated do-twice");
+						$("#check-out-prizes").dequeue();
 					});
 				}, 1500);
+				wit_clicked = true;
+				wt = 1;
 			});
 
 			//SHOW ME THE PRIZES
@@ -84,6 +120,8 @@ var idleTime = 0;
 				$('#shoutout-pg').addClass('bounceOutUp animated').delay(500).queue(function(next){
 					$('#check-out-prizes').hide().animate({height: "0px"}, 500);
 					$('#shoutout-pg').hide().animate({height: "0px"}, 500);
+					console.log(1);
+					$('#shoutout-pg').dequeue();
 				});
 				$('#prizes').removeClass('hide-field').addClass('bounceInUp animated');
 				//$("#check-out-prizes").addClass("pulse animated do-twice").delay(3000).queue(function(next){
@@ -91,18 +129,32 @@ var idleTime = 0;
 				//});
 			});
 
+
+			$(".prize-row").mouseover(function() {
+				$(this).find('.table-cell-img').addClass('pulse animated');
+			});
+			$(".prize-row").mouseout(function() {
+				$(this).find('.table-cell-img').removeClass('pulse animated');
+			});
+
+
 			//GOT IT BUTTON POPUP0
 			$('#prizes-got-it').click(function() {
 				//$('#prizes').removeClass('hide-field').addClass('bounceInUp animated');
 				$('#shoutout-popup0').addClass('bounceOutDown animated').delay(2000).queue(function(next) {
 					$('#shoutout-popup0').removeClass('bounceInDown bounceOutDown animated');
 					$('#shoutout-popup0').addClass('hide-field');
+					$('#prizes').removeClass('bounceInUp animated').addClass('hide-field');
+					//set these back to auto height
+					//$('#check-out-prizes').css({height:'auto'});
+					//$('#shoutout-pg').css({height:'auto'});
 					$('#shoutout-pg').removeClass('bounceOutUp animated');
 					$('#shoutout-pg').removeAttr('style');
+					$('#shoutout-pg').removeAttr('class');
+
 					$('#check-out-prizes').removeAttr('style');
-					//set these back to auto height
-					$('#check-out-prizes').css({height:'auto'});
-					$('#shoutout-pg').css({height:'auto'});
+					//$('#check-out-prizes').removeAttr('class');
+					$('#shoutout-popup0').dequeue();
 				});
 
 			});
@@ -125,6 +177,7 @@ var idleTime = 0;
 
 			//"SHOW ME" ON CLICK POPUPS
 			var nar = false; //true = show me was clicked
+			var pc = 0;
 			$('#make-shoutout1').once().click(function() {
 				if ($('#shoutout-popup1').hasClass('hide-field')) {
 
@@ -163,7 +216,7 @@ var idleTime = 0;
 							$("#employee-search").focus();
 							$('#shoutout-popup2').dequeue();
 						}
-
+						pc = 1;
 						nar = true;
 					});
 
@@ -206,6 +259,7 @@ var idleTime = 0;
 							if ($('.front-end').parent('details').hasClass('greyed-out')) {
 								$('#shoutout-popup2').attr('style','display:none;');
 								$('#employee-search-field').removeClass('swing animated');
+								$('#employee-search-field').fadeOut('slow');
 								$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
 									$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
 									$('.front-end').parent('details').removeClass('greyed-out');
@@ -223,6 +277,7 @@ var idleTime = 0;
 							if ($('.front-end').parent('details').hasClass('greyed-out')) {
 								$('#shoutout-popup2').attr('style','display:none;');
 								$('#employee-search-field').removeClass('swing animated');
+								$('#employee-search-field').fadeOut('slow');
 								$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
 									$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
 									$('.front-end').parent('details').removeClass('greyed-out');
@@ -233,6 +288,14 @@ var idleTime = 0;
 						}
 					});
 
+			var dept_clicked = false;
+			var dc = 0;
+			//Click Employee Name on Department Listing Dropdowns
+			$('details.dept-group').click(function() {
+				dept_clicked = true;
+				dc = 1;
+				console.log('clicked' + dc);
+			});
 
 			//display ajax messages after posting shoutout
 			if ($('#ajax-msg').length > 0) {
@@ -299,20 +362,6 @@ var idleTime = 0;
 			});
 
 
-			//onclick of huddle news
-			var zoomin_clicked = false;
-			var cc = 0;
-			$('.view.view-shoutout-huddle-news .views-row').click(function() {
-				if ($(this).hasClass('zoomin')) {
-					$(this).removeClass('zoomin');
-				} else {
-					$(this).addClass('zoomin');
-					zoomin_clicked = true; //this is for the document(click) function down below
-					cc = 1;
-					console.log(1);
-				}
-			});
-
 			//IDLE COUNTER Increment the idle time counter every minute.
 			var idleInterval = setInterval(timerIncrement, 15000); // 1 minute 60000
 			//shout stats search icon button
@@ -368,10 +417,19 @@ var idleTime = 0;
 				$('#sbp-3').delay(1000).fadeIn('slow').addClass('pulse animated');
 				they_clicked = true;
 				shit = 1;
-				console.log(shit);
+			});
+			$("#sbp-1, #sbp-2, #sbp-3").click(function(){
+				they_clicked = true;
+				shit = 1;
 			});
 
-			//remove animations if document is clicked a second time
+			$(".popups-close").click(function(){
+				$('details.dept-group').removeAttr("open");
+			});
+
+
+
+			//remove animations if document is clicked a second time for various popups
 			$(document).click(function() {
 				//they_clicked is for shoutout button popups
 				if ((they_clicked = true) && (shit == 2)) {
@@ -390,35 +448,119 @@ var idleTime = 0;
 					$('.view.view-shoutout-huddle-news .views-row').removeClass('zoomin'); //remove zoomin class
 					zoomin_clicked=false;
 					cc = 0;
-					console.log(3);
 				}
 				if ((zoomin_clicked == true) && (cc == 1)) {
 					cc = cc +1;
-					console.log(2);
+				}
+
+				//menu overlay cases
+				if ((menu_clicked == true) && (hey == 2)) {
+					$("#menu-wrapper").animate({left:'-250px'}, 500);
+					$('#menu-close').removeClass('pulse animated do-twice');
+
+					menu_clicked =false;
+					hey = 0;
+
+				}
+				if ((menu_clicked  == true) && (hey == 1)) {
+					hey = hey +1;
+				}
+
+				//dept-group click on employee name in dept list
+				if ((dept_clicked == true) && (dc == 2)) {
+					$('details.dept-group').removeAttr("open");
+					dept_clicked =false;
+					dc = 0;
+
+				}
+				if ((dept_clicked  == true) && (dc == 1)) {
+					dc = dc +1;
+				}
+
+				//WHAT IS IT click on if clicked away from
+				if ((wit_clicked == true) && (wt == 2)) {
+					alert('me');
+					wit_clicked =false;
+					wt = 0;
+
+				}
+				if ((wit_clicked  == true) && (wt == 1)) {
+					wt = wt +1;
+				}
+
+				//SHOW ME Shoutout popups if you click off of them
+				if ((nar == true) && (pc == 2)) {
+					if ($('.front-end').parent('details').hasClass('greyed-out')) {
+						$('#shoutout-popup2').attr('style','display:none;');
+						$('#employee-search-field').removeClass('swing animated');
+						if ($("#employee-search-field").is(":focus")) {
+
+						} else {
+							$('#employee-search-field').fadeOut('slow');
+						}
+						$('#shoutout-popup1').addClass('bounceOutRight animated hide-field').queue(function(next){
+							$('#shoutout-popup1').removeClass("bounceInRight bounceOutRight animated");
+							$('.front-end').parent('details').removeClass('greyed-out');
+							next();
+							$('#shoutout-popup1').dequeue();
+						});
+						nar =false;
+						pc = 0;
+					}
+				}
+				if ((nar  == true) && (pc == 1)) {
+					pc = pc +1;
 				}
 			});
 			//end popups or shoutout buttons. the document on click dismisses the popups is they_clicked = true
 
+
+
 			//MENU NAVIGATION ON CLICK DISPLAY OVERLAY MENU. MENU CODE IS IN AFC_CUSTOM.MODULE IN HOOK_PREPROCESS_NODE
+			var menu_clicked = false;
+			var hey = 0;
 			$("#menu-btn").click(function(){
 				$("#menu-wrapper").animate({left:'0px'}, 500);
+				$('#menu-close').addClass('pulse animated do-twice');
+				menu_clicked = true;
+				hey = 1;
+			});
+			//if they click on the menu again don't dismiss it this way
+			$("#menu-wrapper").click(function(){
+				menu_clicked = true;
+				hey = 1;
+			});
+			//Menu close overlay
+			$("#menu-close").click(function(){
+				$("#menu-wrapper").animate({left:'-250px'}, 500);
+				$('#menu-close').removeClass('pulse animated do-twice');
+				menu_clicked = false;
+				hey = 0;
 			});
 
-			var timeoutId = 0;
-            //
-			//$('#menu-wrapper').on('mousedown', function() {
-			//	timeoutId = setTimeout(myFunction, 1000);
-			//	console.log('wtf');
-			//}).on('mouseup mouseleave', function() {
-			//	clearTimeout(timeoutId);
-			//	console.log('wtf2');
-			//});
-			$('#menu-wrapper').click(function(){
-				$(this).myFunction();
+			//HUDDLE NEWS ON CLICK SHOUTOUT BOARD
+			zoomin_clicked=false;
+			cc = 0;
+			$('.huddle-news-row').click(function(event) {
+				event.stopImmediatePropagation(); //running multiple times after a modal form for some reason. need this
+				if ($(this).hasClass('zoomin')) {
+					//switch the trimmed with the full
+					var t = $(this).find('.huddle-news-body-2').html();
+					var o = $(this).find('.huddle-news-body-1').html();
+					$(this).find('.huddle-news-body-1').html(t);
+					$(this).find('.huddle-news-body-2').html(o);
+					$(this).removeClass('zoomin');
+				} else {
+					var two = $(this).find('.huddle-news-body-2').html();
+					var one = $(this).find('.huddle-news-body-1').html();
+					$(this).find('.huddle-news-body-1').html(two);
+					$(this).find('.huddle-news-body-2').html(one);
+					$(this).addClass('zoomin');
+					zoomin_clicked = true; //this is for the document(click) function down below
+					cc = 1;
+				}
 			});
-			$.fn.myFunction = function() {
-				alert('test');
-			}
+
 
 		} //end shoutout page check
 

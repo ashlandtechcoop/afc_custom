@@ -314,6 +314,20 @@ function badge_number_form($form, $form_state) {
  */
 function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
+
+
+
+    if ($form_id == 'user_login' && isset($_GET['afc_auto'])) {
+        if($_SERVER['REMOTE_ADDR'] == '66.241.66.120') {
+            //auto service_account check afc_custom.js for the other field needed
+            $un = $_GET['un'];
+            $form['name']['#default_value'] = $un;
+            $form['pass']['#attributes']['class'][] = 'afc-auto';
+        }
+        //1679 is the uid for svc account
+    }
+
+
     //exposed filter for shoutout stats
     if($form['#id']=='views-exposed-form-shoutout-comment-list-block') {
         $form['field_full_name_value_shout_out']['#attributes']['placeholder'] = 'Employee name';
@@ -684,7 +698,8 @@ function afc_custom_preprocess_node(&$variables){
         foreach($shout_menu as $shout_item => $item) {
             $link_path = $item['link_path'];
             $link_title = $item['link_title'];
-            $shout_menu_html .= '<a href="'.$link_path.'">'.$link_title.'</a>';
+            $link_alias = drupal_get_path_alias($link_path);
+            $shout_menu_html .= '<a href="/'.$link_alias.'">'.$link_title.'</a>';
         }
         $shout_menu_html .='</div>';
 
