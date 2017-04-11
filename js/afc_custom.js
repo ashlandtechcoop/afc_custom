@@ -103,7 +103,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
 			var wit_clicked = false;
 			var wt = 0;
 			$('#what-is-it').click(function() {
-
 				$('#shoutout-popup0').removeClass('hide-field').addClass('bounceInDown animated');
 				setTimeout(function(){
 					$("#check-out-prizes").addClass("pulse animated do-twice").delay(3000).queue(function(next){
@@ -479,7 +478,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 				//WHAT IS IT click on if clicked away from
 				if ((wit_clicked == true) && (wt == 2)) {
-					alert('me');
+					$('#shoutout-popup0').removeClass('show-field').addClass('bounceOutTop animated');
 					wit_clicked =false;
 					wt = 0;
 
