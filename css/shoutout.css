@@ -9,6 +9,7 @@ article#node-70 {
 }
 #modalContent form input, #modalContent form textarea {
     font-size: 1em;
+    font-family: 'Raleway', arial, sans-serif;
 }
 .table-tell-img:first-child {
     width: 125px;
@@ -370,7 +371,7 @@ div.shoutout-user-pic img {
     font-weight: 500;
     color: #3e3e3e;
 }
-.view.view-shoutout-comment-list .views-field-field-current-shoutouts {
+.view.view-shoutout-comment-list .views-field-field-total-shoutouts {
     float: right;
     position: relative;
     left: 9px;
