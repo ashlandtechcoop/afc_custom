@@ -8,7 +8,7 @@ article#node-70 {
     font-family: 'Raleway', arial, sans-serif;
 }
 #modalContent form input, #modalContent form textarea {
-    font-size: 1.5em;
+    font-size: 1em;
 }
 .table-tell-img:first-child {
     width: 125px;
@@ -153,6 +153,9 @@ textarea#edit-submitted-shoutout-message {
 /*JOB POSTINGS*/
 .dark-line img {
     margin-right: 15px;
+}
+.views-field-field-hiring-manager div {
+    display: inline-block;
 }
 .dark-line .views-field-title {
     font-weight: 500;

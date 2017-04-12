@@ -114,12 +114,17 @@ var getUrlParameter = function getUrlParameter(sParam) {
 				wt = 1;
 			});
 
+			//reset the click counter to 1 if clicking on this div
+			$('#shoutout-popup0').click(function() {
+				wit_clicked = true;
+				wt = 1;
+			});
+
 			//SHOW ME THE PRIZES
 			$('#check-out-prizes').click(function() {
 				$('#shoutout-pg').addClass('bounceOutUp animated').delay(500).queue(function(next){
 					$('#check-out-prizes').hide().animate({height: "0px"}, 500);
 					$('#shoutout-pg').hide().animate({height: "0px"}, 500);
-					console.log(1);
 					$('#shoutout-pg').dequeue();
 				});
 				$('#prizes').removeClass('hide-field').addClass('bounceInUp animated');
@@ -165,13 +170,21 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 			//close button
 			$('#close-button').click(function() {
-				if ($(this).parent('div').hasClass('show-field')) {
-					$(this).parent('div').removeClass('show-field').addClass('bounceOutTop animated');
-				} else {
-					$(this).parent('div').addClass('bounceOutUp animated');
-					$(this).parent('div').removeClass().addClass('hide-field');
-				}
+				$('#shoutout-popup0').addClass('bounceOutDown animated').delay(2000).queue(function(next) {
+					$('#shoutout-popup0').removeClass('bounceInDown bounceOutDown animated');
+					$('#shoutout-popup0').addClass('hide-field');
+					$('#prizes').removeClass('bounceInUp animated').addClass('hide-field');
+					//set these back to auto height
+					//$('#check-out-prizes').css({height:'auto'});
+					//$('#shoutout-pg').css({height:'auto'});
+					$('#shoutout-pg').removeClass('bounceOutUp animated');
+					$('#shoutout-pg').removeAttr('style');
+					$('#shoutout-pg').removeAttr('class');
 
+					$('#check-out-prizes').removeAttr('style');
+					//$('#check-out-prizes').removeAttr('class');
+					$('#shoutout-popup0').dequeue();
+				});
 			});
 
 			//"SHOW ME" ON CLICK POPUPS
@@ -350,6 +363,14 @@ var getUrlParameter = function getUrlParameter(sParam) {
 				$('#job-posting-popup').fadeOut('fast');
 			});
 
+			//Job Openings shoutout buttons scroll to anchor
+			$('#jo a').click(function() {
+				$('html, body').animate({
+					scrollTop: $( $(this).attr('href') ).offset().top
+				}, 500);
+				return false;
+			});
+
 			//onclick of search employees
 			$('#employee-search-icon1').once().click(function() {
 				if ($('#employee-search-field').is(":hidden")) {
@@ -478,7 +499,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 				//WHAT IS IT click on if clicked away from
 				if ((wit_clicked == true) && (wt == 2)) {
-					$('#shoutout-popup0').removeClass('show-field').addClass('bounceOutTop animated');
+					if ($('#shoutout-popup0').hasClass('show-field')) {
+						$('#shoutout-popup0').removeClass('show-field').addClass('bounceOutTop animated');
+					} else {
+						$('#shoutout-popup0').addClass('bounceOutUp animated');
+						$('#shoutout-popup0').removeClass().addClass('hide-field');
+					}
+					//$('#shoutout-popup0').removeClass('bounceInDown').addClass('bounceOutTop animated');
 					wit_clicked =false;
 					wt = 0;
 
