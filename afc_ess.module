@@ -1,0 +1,8 @@
+<?php
+/**
+ * @file
+ * Module file for custom behaviours and functions used by AFC
+ * Basic hook implementations and helper functions will be found here.
+ *
+ *
+ */
