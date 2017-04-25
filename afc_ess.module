@@ -18,13 +18,17 @@ dpm($node);
 		$mypin = $profile->field_pin[LANGUAGE_NONE][0]['value'];
 
 		if ($mypin == '') {
-			$text1 = '<H2>Your account has not been configured to sign in to Attendance Enterprise.';
+			$text1 = '<div class="essWrapper">';
+			$text1.= '<H2>Your account has not been configured to sign in to Attendance Enterprise.';
 			$text1.= 'This could be because you have a manager account, or because your account has been left in-complete. ';
 			$text1.= 'If you think this is in error, please contact the Tech Department at ext. 777 </h1>';
 			$text1.= '</br>';
 			$text1.='<h2>Thank you!</h2>';
+			$text1.= '<div>';
 		} else {
-			$text1 = "<iframe name=\"AE\" id=\"AE\" width=\"900\" height=\"650\" src=\"https://ashlandfood.attendanceondemand.com/ess/LOGIN?AE_BadgeID=$myval&AE_PIN=$mypin\" frameborder=\"0\"></iframe>";
+			$text1 = '<div class="essWrapper">';
+			$text1.= "<iframe name=\"AE\" id=\"AE\" width=\"900\" height=\"650\" src=\"https://ashlandfood.attendanceondemand.com/ess/LOGIN?AE_BadgeID=$myval&AE_PIN=$mypin\" frameborder=\"0\"></iframe>";
+			$text1.= '</div>';
 			}
 
 		$node->content['body'][0]['#markup'] = $text1;
