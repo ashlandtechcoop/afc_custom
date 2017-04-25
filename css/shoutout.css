@@ -351,6 +351,10 @@ div#block-block-3 .content {
 .view-shoutout-comment-list .views-row:hover {
     cursor:pointer;
 }
+.shoutout-comment-row .views-field-body {
+    display: table-cell;
+    /* clear: both; */
+}
 /*USER PICS AND SHOUTOUT LIST*/
 div.shoutout-user-pic img {
     float: left;
