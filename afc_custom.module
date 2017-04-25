@@ -139,9 +139,12 @@ function shoutout_create_reward($uid) {
 //    get the user_
 //    add a field collection item to field_employee_rewards
 //    programatically create field collection item on user profile
-
+    dpm($uid);
     $user_account = user_load($uid);
     $user_profile = get_profile($uid);
+    dpm($user_profile);
+    return true;
+    dpm(entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][0]['value'])));
 //    $field = entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][1]['value']));
     if ($user_account && $user_profile) {
         $mydate =date("Y-m-d") . ' 00:00:00'; //get todays date for reward date
@@ -150,13 +153,14 @@ function shoutout_create_reward($uid) {
         $field_collection_item->field_reward_ref[LANGUAGE_NONE][]['target_id'] = 67; //68 PAID DAY OFF' 67 COFFEE TOKEN
         $field_collection_item->field_recognized_bool[LANGUAGE_NONE][]['value'] = 1; //whats 1
         $field_collection_item->field_date_of_recognition[LANGUAGE_NONE][0]['value'] = $mydate;
-
+        dpm($field_collection_item);
         $field_collection_item->save(TRUE);
         profile2_save($user_profile);
         dpm($user_profile);
         watchdog('afc_custom', 'Function: shoutout_create_reward - Created FC item on user profile. Uid: @uid', array('@uid' => $uid));
         return true;
     } else {
+        watchdog('afc_custom', 'Function: FALSE shoutout_create_reward - Uid: @uid', array('@uid' => $uid));
         return false;
     }
 }
@@ -623,7 +627,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-//    dpm(_get_shoutout_count(999));
+    shoutout_create_reward(999);
 }
     switch ($node->type) {
         case 'page':
@@ -821,7 +825,7 @@ function afc_custom_mail ($key, &$message, $params) {
             $message['body'][] = t("Click this link after you're done to show that you've taken care of this.");
             $message['body'][] = t('Thank you!');
 
-            watchdog('afc_custom', 'Function: hook_mail - finished submitted mail');
+            watchdog('afc_custom', 'Function: hook_mail - finished submitting mail to email address: @em', array('@em' => $params['manager_email']));
 
             break;
     }
@@ -857,3 +861,4 @@ function user_full_name($user){
   $title = $firstname . ' ' . $lastname;
   return $title;
 }
+
