@@ -139,12 +139,11 @@ function shoutout_create_reward($uid) {
 //    get the user_
 //    add a field collection item to field_employee_rewards
 //    programatically create field collection item on user profile
-    dpm($uid);
+
     watchdog('afc_custom', 'Function: shoutout_create_reward Started - Uid: @uid', array('@uid' => $uid));
     $user_account = user_load($uid);
     $user_profile = get_profile($uid);
-    dpm($user_profile);
-    dpm(entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][0]['value'])));
+
 //    $field = entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][1]['value']));
     if ($user_account && $user_profile) {
         $mydate =date("Y-m-d") . ' 00:00:00'; //get todays date for reward date
@@ -153,10 +152,10 @@ function shoutout_create_reward($uid) {
         $field_collection_item->field_reward_ref[LANGUAGE_NONE][]['target_id'] = 67; //68 PAID DAY OFF' 67 COFFEE TOKEN
         $field_collection_item->field_recognized_bool[LANGUAGE_NONE][]['value'] = 1; //whats 1
         $field_collection_item->field_date_of_recognition[LANGUAGE_NONE][0]['value'] = $mydate;
-        dpm($field_collection_item);
+
         $field_collection_item->save(TRUE);
         profile2_save($user_profile);
-        dpm($user_profile);
+
         watchdog('afc_custom', 'Function: shoutout_create_reward - Created FC item on user profile. Uid: @uid', array('@uid' => $uid));
         return true;
     } else {
@@ -218,6 +217,7 @@ function afc_custom_calculate_shoutout($uid) {
                 $profile = get_profile($uid);
                 $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = 0;
                 profile2_save($profile);
+
                 watchdog('afc_custom','Function: afc_custom_calculate_shoutout - sent manager email, created reward record on employee profile and reset current shoutouts to 0');
                 return true;
             }
