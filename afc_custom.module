@@ -150,8 +150,9 @@ function shoutout_create_reward($uid) {
         $field_collection_item = entity_create('field_collection_item', array('field_name' => 'field_employee_rewards'));
         $field_collection_item->setHostEntity('profile2', $user_profile);
         $field_collection_item->field_reward_ref[LANGUAGE_NONE][]['target_id'] = 67; //68 PAID DAY OFF' 67 COFFEE TOKEN
-        $field_collection_item->field_recognized_bool[LANGUAGE_NONE][]['value'] = 1; //whats 1
-        $field_collection_item->field_date_of_recognition[LANGUAGE_NONE][0]['value'] = $mydate;
+        $field_collection_item->field_recognized_bool[LANGUAGE_NONE][]['value'] = 0; //whats 1
+//        $field_collection_item->field_date_of_recognition[LANGUAGE_NONE][0]['value'] = $mydate;
+        $field_collection_item->field_reward_post_date[LANGUAGE_NONE][0]['value'] = $mydate;
 
         $field_collection_item->save(TRUE);
         profile2_save($user_profile);
@@ -628,7 +629,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-    shoutout_create_reward(1479);
+//    shoutout_create_reward(1479);
 }
     switch ($node->type) {
         case 'page':
