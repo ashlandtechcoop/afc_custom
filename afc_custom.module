@@ -121,7 +121,7 @@ function shoutout_alert($uid) {
 //                drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $from = NULL, $send = TRUE);
                 watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
                 drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
-
+                return true;
             }
         } else {
             return false;
@@ -140,10 +140,10 @@ function shoutout_create_reward($uid) {
 //    add a field collection item to field_employee_rewards
 //    programatically create field collection item on user profile
     dpm($uid);
+    watchdog('afc_custom', 'Function: shoutout_create_reward Started - Uid: @uid', array('@uid' => $uid));
     $user_account = user_load($uid);
     $user_profile = get_profile($uid);
     dpm($user_profile);
-    return true;
     dpm(entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][0]['value'])));
 //    $field = entity_load('field_collection_item', array($user_profile->field_employee_rewards['und'][1]['value']));
     if ($user_account && $user_profile) {
@@ -208,18 +208,18 @@ function afc_custom_calculate_shoutout($uid) {
             profile2_save($profile);
 
             if ($profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] == 3) {
-                //alert manager of shoutout prize
+                //alert manager of shoutout prize with an email
                 shoutout_alert($uid);
-                //alerts manager of shoutout
-                //calculates current and total shoutouts
-                shoutout_create_reward($uid);
-                //also send over the shoutouts so the manager sees the last one in the email?
-                //also create a reward node and send a link to the manager to aknowledge it
-                //reset current shoutouts to 0
 
+                //create a reward field collection item for the user if theyve reached 3
+                shoutout_create_reward($uid);
+
+                //reset current shoutouts to 0. Since we load the $profile in shoutout_create_reward and save it, we MUST re-load the $profile here before we save it again
+                $profile = get_profile($uid);
                 $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = 0;
                 profile2_save($profile);
                 watchdog('afc_custom','Function: afc_custom_calculate_shoutout - sent manager email, created reward record on employee profile and reset current shoutouts to 0');
+                return true;
             }
         } else {
             watchdog('afc_custom','Function: afc_custom_calculate_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
@@ -229,7 +229,6 @@ function afc_custom_calculate_shoutout($uid) {
         watchdog('afc_custom','Function: afc_custom_calculate_shoutout - no profile was found');
         return false;
     }
-    return true;
 }
 
 
@@ -444,14 +443,16 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                         $nodeinfo['employee_from'] = $emp_from;
                         $nodeinfo['body'] = (trim(strlen($other_msg)) == 0) ? $can_msg : $other_msg;
 
-                        if (!afc_custom_add_new_shoutout($nodeinfo)) {
-                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_add_new_shoutout failed and returned false');
-                        }
-
-                        if (!afc_custom_calculate_shoutout($emp_to)) {
-                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_calculate_shoutout failed and returned false');
-                            //send an email to an admin letting them know if this happens
-                        }
+                        afc_custom_add_new_shoutout($nodeinfo);
+                        afc_custom_calculate_shoutout($emp_to);
+//                        if (!afc_custom_add_new_shoutout($nodeinfo)) {
+//                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_add_new_shoutout failed and returned false');
+//                        }
+//
+//                        if (!afc_custom_calculate_shoutout($emp_to)) {
+//                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_calculate_shoutout failed and returned false');
+//                            //send an email to an admin letting them know if this happens
+//                        }
 
 //                        $output[] = ctools_modal_command_dismiss(); //Close modal automatically
 //                        $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg"></div>');
@@ -627,7 +628,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-    shoutout_create_reward(999);
+    shoutout_create_reward(1479);
 }
     switch ($node->type) {
         case 'page':
