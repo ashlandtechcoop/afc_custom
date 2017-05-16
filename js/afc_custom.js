@@ -204,7 +204,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 					//show second popup and que the employee search field display
 					//get the position of the search icon first
 						var spos = $('#employee-search-icon1').position();
-						$('#shoutout-popup2').css({top: spos.top-100 + 'px', left: spos.left-100 + 'px', position:'absolute'});
+						$('#shoutout-popup2').css({top: spos.top-138 + 'px', left: spos.left-100 + 'px', position:'absolute'});
 					$('#shoutout-popup2').delay(2000).fadeIn('fast').queue(function(next){
 
 						$('#shoutout-popup2').removeClass('hide-field');

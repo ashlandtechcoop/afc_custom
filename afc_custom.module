@@ -796,7 +796,13 @@ function afc_custom_preprocess_node(&$variables){
             $link_path = $item['link_path'];
             $link_title = $item['link_title'];
             $link_alias = drupal_get_path_alias($link_path);
-            $shout_menu_html .= '<a href="/'.$link_alias.'">'.$link_title.'</a>';
+            if (substr( $link_alias, 0, 4 ) === "http") {
+                $shout_menu_html .= '<a href="'.$link_alias.'">'.$link_title.'</a>';
+            } else {
+                $shout_menu_html .= '<a href="/'.$link_alias.'">'.$link_title.'</a>';
+            }
+
+
         }
         $shout_menu_html .='</div>';
 

@@ -611,13 +611,21 @@ div#close-button {
 div#shoutout-popup1:after {
     position: relative;
     width: 0;
-    left: -759px;
-    top: -18px;
+    left: -718px;
+    top: -65px;
     content: "\25C0";
     color: #03A9F4;
     font-size: 55px;
     line-height: 0;
     z-index: 900;
+}
+.view-shoutout-job-postings::-webkit-scrollbar {
+    display: none;
+}
+.view-shoutout-job-postings {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 935px;
 }
 div#shoutout-popup1 {
     /*position: absolute;*/
@@ -630,6 +638,7 @@ div#shoutout-popup1 {
     border-left: 14px solid #2196F3;
     border-radius: 2px;
     box-shadow: 5px 5px 17px grey;
+    width: 700px;
 }
 div#shoutout-popup2 {
     /*position: absolute;*/
@@ -642,6 +651,7 @@ div#shoutout-popup2 {
     border-left: 14px solid #2196F3;
     border-radius: 2px;
     box-shadow: 5px 5px 17px grey;
+    width: 550px;
 }
 .btn-got-it {
     font-size: 25px;
@@ -651,8 +661,8 @@ div#shoutout-popup2 {
 div#shoutout-popup2:after {
     position: relative;
     width: 0;
-    left: -450px;
-    top: 58px;
+    left: -5px;
+    top: 57px;
     content: "\25BC";
     line-height: 0;
     color: #03A9F4;
@@ -1188,4 +1198,9 @@ MENU
     margin-right: auto;
     margin-top: 30px;
     display: block;
+}
+
+
+.messages.error {
+    display: none;
 }
