@@ -588,17 +588,29 @@ watchdog('afc_custom', 'running validate 83');
 function afc_custom_validate_webform_84(&$form, &$form_state) {
 //function to replace employee badge# with uid
     watchdog('afc_custom', 'running validate 84');
-    if(isset($form_state['values']['submitted']['employee_id_from'])) {
+    if(isset($form_state['values']['submitted']['employee_id_from']) && isset($form_state['values']['submitted']['employee_id_from'])) {
         watchdog('afc_custom', 'running validate 84 its set');
+
         $badge = $form_state['values']['submitted']['employee_id_from'];
+        $badge_to = $form_state['values']['submitted']['employee_id_to'];
+        //employee_id_to is already a UID by this time - its not a badge#
+
         $uid = afc_custom_return_uid_for_badge($badge);
-        if (!$uid) {
+        $uid_to = $badge_to;
+
+        if (!$uid || !$uid_to) {
             //error if we can't find a matching uid for that badge
             form_set_error('', t('It looks like your badge# is incorrect :('));
-//            $form_state['rebuild'] = TRUE;
+            //$form_state['rebuild'] = TRUE;
         } else {
+            if ($uid == $uid_to) {
+                //if the person is submitting a shoutout to themselves
+                form_set_error('', t('You can\'t shout yourself out, sorry. Shout someone else out!'));
+            }
             $form_state['values']['submitted']['employee_id_from'] = $uid;
         }
+    } else {
+        form_set_error('', t('Something got all jacked up, sorry :('));
     }
 }
 
