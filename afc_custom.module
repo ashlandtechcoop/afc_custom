@@ -184,6 +184,53 @@ function get_profile($uid) {
     }
 }
 
+
+/**
+ * Custom function to remove a shoutout
+ *  and change number when a shoutout is unpublished or deleted
+ */
+function afc_custom_remove_shoutout($uid) {
+
+    if (empty($uid)) {
+        return false;
+    }
+    watchdog('afc_custom', 'Function: afc_custom_remove_shoutout - Begin remove shoutout');
+    $profile = get_profile($uid);
+
+    if ($profile) {
+        if (isset($profile->field_total_shoutouts) && isset($profile->field_current_shoutouts)) {
+
+            $total_so = $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'];
+            $current_so = $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'];
+
+            if ($current_so != 0 && $total_so != 0) {
+                dpm('current not 0 total not 0');
+                $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so - 1;
+                $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
+            }
+            
+            if ($current_so == 0 && $total_so > 0 && $total_so % 3 == 0) {
+                //if its equal to 0 then we need to remove a reward
+                dpm('current not 0 total not 0');
+                dpm('need to remove reward');
+
+                $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
+
+            }
+
+            profile2_save($profile);
+
+
+        } else {
+            watchdog('afc_custom','Function: afc_custom_calculate_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
+            return false;
+        }
+    } else {
+        watchdog('afc_custom','Function: afc_custom_calculate_shoutout - no profile was found');
+        return false;
+    }
+}
+
 /**
  * Custom function to count shoutouts
  *  and change number when new shoutout is given
@@ -856,6 +903,18 @@ function afc_custom_menu_alter(&$items) {
  
     $items['user/%user']['title callback'] = 'afc_custom_user_page_title';
 
+}
+
+function afc_custom_node_update($node){
+
+    //count down shoutouts if one gets unpublished
+    if ($node->type == 'article') {
+        if (isset($node->original->status) && $node->original->status == 1 && $node->status == 0){
+            //unpublishing node
+            watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
+            afc_custom_remove_shoutout(999);
+        }
+    }
 }
 
 function afc_custom_user_page_title() {
