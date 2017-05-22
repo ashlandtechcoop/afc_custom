@@ -313,6 +313,8 @@ div#block-block-3 .content {
     border-radius: 5px;
     box-shadow: -4px 5px 13px #545454;
     padding: 5px;
+    z-index: 100;
+    position: relative;
 }
 .view.view-shoutout-huddle-news .views-row {
     transition: .5s;
@@ -1204,3 +1206,12 @@ MENU
 /*.messages.error {*/
     /*display: none;*/
 /*}*/
+a.not-active {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+}
+p.info {
+    background: rgba(3, 169, 244, 0.1);
+    border: 1px solid rgba(33, 150, 243, 0.25);
+}
