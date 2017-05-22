@@ -132,6 +132,32 @@ function shoutout_alert($uid) {
 }
 
 /**
+ * Custom function to delete the last reward field collection item
+ */
+function shoutout_delete_reward($uid) {
+//removing reward field collection item
+    if(!$uid) {
+        return false;
+    }
+
+    $user_account = user_load($uid);
+    $user_profile = get_profile($uid);
+
+    if ($user_account && $user_profile) {
+        if(isset($user_profile->field_employee_rewards[LANGUAGE_NONE])) {
+            $key_to_select = max(array_keys($user_profile->field_employee_rewards[LANGUAGE_NONE]));
+            entity_delete_multiple('field_collection_item', array($user_profile->field_employee_rewards[LANGUAGE_NONE][$key_to_select]['value']));
+        }
+
+        watchdog('afc_custom', 'Function: shoutout_delete_reward - Created FC item on user profile. Uid: @uid', array('@uid' => $uid));
+        return true;
+    } else {
+        watchdog('afc_custom', 'Function: FALSE shoutout_delete_reward - Uid: @uid', array('@uid' => $uid));
+        return false;
+    }
+}
+
+/**
  * Custom function to create a reward field collection for a user who received 3 shoutouts
  * uid is the user who has received the 3rd shoutout
  */
@@ -204,29 +230,26 @@ function afc_custom_remove_shoutout($uid) {
             $current_so = $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'];
 
             if ($current_so != 0 && $total_so != 0) {
-                dpm('current not 0 total not 0');
                 $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so - 1;
                 $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
+                profile2_save($profile);
+                return true;
             }
-            
+
             if ($current_so == 0 && $total_so > 0 && $total_so % 3 == 0) {
                 //if its equal to 0 then we need to remove a reward
-                dpm('current not 0 total not 0');
-                dpm('need to remove reward');
-
+                shoutout_delete_reward($uid);
                 $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
-
+                profile2_save($profile);
+                return true;
             }
 
-            profile2_save($profile);
-
-
         } else {
-            watchdog('afc_custom','Function: afc_custom_calculate_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
+            watchdog('afc_custom','Function: afc_custom_remove_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
             return false;
         }
     } else {
-        watchdog('afc_custom','Function: afc_custom_calculate_shoutout - no profile was found');
+        watchdog('afc_custom','Function: afc_custom_remove_shoutout - no profile was found');
         return false;
     }
 }
@@ -688,7 +711,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-//    shoutout_create_reward(1479);
+
 }
     switch ($node->type) {
         case 'page':
@@ -829,9 +852,7 @@ function afc_custom_preprocess_user_profile(&$variables){
             $variables['total_shoutouts'] = 0;
         }
     }
-
-
-//    dpm(_get_shoutout_count(999));
+    
 }
 
 /**
@@ -908,11 +929,14 @@ function afc_custom_menu_alter(&$items) {
 function afc_custom_node_update($node){
 
     //count down shoutouts if one gets unpublished
-    if ($node->type == 'article') {
+    if ($node->type == 'shoutout') {
         if (isset($node->original->status) && $node->original->status == 1 && $node->status == 0){
-            //unpublishing node
-            watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
-            afc_custom_remove_shoutout(999);
+            if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                //unpublishing node
+                $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
+                afc_custom_remove_shoutout($userid);
+            }
         }
     }
 }
