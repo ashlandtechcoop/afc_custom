@@ -38,6 +38,47 @@ function _get_shoutout_count($uid) {
 }
 
 /**
+ * Custom Function to retrun users full name from user id
+ */
+function user_full_name($user){
+    $user_fields = user_load($user);
+    $userProfile = profile2_load_by_user($user_fields, $type_name = 'main');
+    $firstname = $userProfile->field_nick_name['und']['0']['value'];
+    $lastname = $userProfile->field_last_name['und']['0']['value'];
+    $title = $firstname . ' ' . $lastname;
+    return $title;
+}
+
+/**
+ * Custom function to test IP if it is private
+ * 
+ */
+function ip_is_private ($ip) {
+    $pri_addrs = array (
+        '10.0.0.0|10.255.255.255', // single class A network
+        '172.16.0.0|172.31.255.255', // 16 contiguous class B network
+        '192.168.0.0|192.168.255.255', // 256 contiguous class C network
+        '169.254.0.0|169.254.255.255', // Link-local address also refered to as Automatic Private IP Addressing
+        '127.0.0.0|127.255.255.255' // localhost
+    );
+
+    $long_ip = ip2long ($ip);
+    if ($long_ip != -1) {
+
+        foreach ($pri_addrs AS $pri_addr) {
+            list ($start, $end) = explode('|', $pri_addr);
+
+            // IF IS PRIVATE
+            if ($long_ip >= ip2long ($start) && $long_ip <= ip2long ($end)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
  * Custom function get the uid of the user inside
  * the department who is labeled 'manager'
  */
@@ -852,7 +893,7 @@ function afc_custom_preprocess_user_profile(&$variables){
             $variables['total_shoutouts'] = 0;
         }
     }
-    
+
 }
 
 /**
@@ -955,13 +996,3 @@ function afc_custom_user_page_title() {
     }
     return $output;
 }
-
-function user_full_name($user){
-  $user_fields = user_load($user);
-  $userProfile = profile2_load_by_user($user_fields, $type_name = 'main');
-  $firstname = $userProfile->field_nick_name['und']['0']['value'];
-  $lastname = $userProfile->field_last_name['und']['0']['value'];
-  $title = $firstname . ' ' . $lastname;
-  return $title;
-}
-
