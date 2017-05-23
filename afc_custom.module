@@ -762,9 +762,6 @@ if (isset($_GET['ss'])) {
 
             //SHOUTOUT BOARD
             if ($node->nid ==70 ){
-                ip_is_afc($_SERVER['REMOTE_ADDR']);
-
-
 
                 //SHOUTOUT BUTTONS BLOCK
                 $block = block_load('block', 3);
@@ -871,6 +868,19 @@ function afc_custom_preprocess_node(&$variables){
 
     //shoutout node - Pass variables to node-70 tpl file
     if ($variables['nid'] == 70) {
+
+        //check if ip is from ashland food coop . If it's not, apply a class that displays a message.
+        //this class is applied in node--70.tpl.php and css in shoutout.css
+        if (!ip_is_afc($_SERVER['REMOTE_ADDR'])) {
+            //SHOUTOUT BUTTONS BLOCK
+            $block = block_load('block', 4);
+            $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
+            $output = drupal_render($render_array);
+            $variables['afc_or_not']='not-afc';
+            $variables['sorry_display']=$output;
+        } else {
+            $variables['afc_or_not']='yes-afc';
+        }
 
         $dept_list = views_embed_view('shoutout_department_emp_list', 'block');
         $huddle_new = views_embed_view('shoutout_huddle_news', 'block');

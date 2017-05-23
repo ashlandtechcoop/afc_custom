@@ -1215,3 +1215,6 @@ p.info {
     background: rgba(3, 169, 244, 0.1);
     border: 1px solid rgba(33, 150, 243, 0.25);
 }
+article#node-70.not-afc {
+    display: none;
+}
