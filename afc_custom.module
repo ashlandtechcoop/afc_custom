@@ -50,29 +50,32 @@ function user_full_name($user){
 }
 
 /**
- * Custom function to test IP if it is private
- * 
+ * Custom function to test IP is ours
+ * This is used to restrict access to the shoutout page
+ * so it can only be viewed from on this campus
  */
-function ip_is_private ($ip) {
+function ip_is_afc ($ip) {
+    if (!$ip) {
+        watchdog('afc_custom','Called function ip_is_afc but no IP was given');
+        return false;
+    }
+
+    //these will need to be updated when we change our IPs
     $pri_addrs = array (
-        '10.0.0.0|10.255.255.255', // single class A network
-        '172.16.0.0|172.31.255.255', // 16 contiguous class B network
-        '192.168.0.0|192.168.255.255', // 256 contiguous class C network
-        '169.254.0.0|169.254.255.255', // Link-local address also refered to as Automatic Private IP Addressing
-        '127.0.0.0|127.255.255.255' // localhost
+        '66.241.66.114', //afn ips
+        '66.241.66.115',
+        '66.241.66.116',
+        '66.241.66.117',
+        '66.241.66.118',
+        '69.9.146.34', //dsl infostructure ips
+        '69.9.146.25',
     );
 
-    $long_ip = ip2long ($ip);
-    if ($long_ip != -1) {
-
-        foreach ($pri_addrs AS $pri_addr) {
-            list ($start, $end) = explode('|', $pri_addr);
-
-            // IF IS PRIVATE
-            if ($long_ip >= ip2long ($start) && $long_ip <= ip2long ($end)) {
-                return true;
-            }
-        }
+    if (in_array($ip, $pri_addrs)) {
+        return true;
+    } else {
+        watchdog('afc_custom','Function ip_is_afc returned false!');
+        return false;
     }
 
     return false;
@@ -759,6 +762,8 @@ if (isset($_GET['ss'])) {
 
             //SHOUTOUT BOARD
             if ($node->nid ==70 ){
+                ip_is_afc($_SERVER['REMOTE_ADDR']);
+
                 //EMAIL ME PDF JOB POSTING BUTTON -----------------------------------------------------------------------------------------
 //                $btn = '<div >';
 //                $btn .= '<a href=".?email-pdf&pid=';
