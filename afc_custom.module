@@ -764,43 +764,6 @@ if (isset($_GET['ss'])) {
             if ($node->nid ==70 ){
                 ip_is_afc($_SERVER['REMOTE_ADDR']);
 
-                //EMAIL ME PDF JOB POSTING BUTTON -----------------------------------------------------------------------------------------
-//                $btn = '<div >';
-//                $btn .= '<a href=".?email-pdf&pid=';
-//                ctools_include('modal');
-//                ctools_include('ajax');
-//                ctools_modal_add_js();
-//
-//                $customModalStyle = array(
-//                    'custom-modal-style' => array(
-//                        'modalSize' => array(
-//                            'type' => 'fixed',
-//                            'width' => 300,
-//                            'height' => 'auto',
-//                            'addWidth' => 20,
-//                            'addHeight' => 20,
-//                            'contentRight' => 20,
-//                            'contentBottom' => 20,
-//                        ),
-//                        'modalOptions' => array(
-//                            'opacity' => (float) 0.6,
-//                            'background-color' => '#000000',
-//                        ),
-//                        'closeText' => '',
-//                        'loadingText' => '',
-//                        'animation' => 'fadeIn',
-//                        'animationSpeed' => 'fast',
-//                    ),
-//                );
-//
-//                drupal_add_js($customModalStyle, 'setting');
-//                $shit = '<div id="email-me-pdf" class="show-field">' . l('Email Me', 'badge/nojs', array('attributes' => array('class' => 'ctools-use-modal ctools-modal-custom-modal-style'))) . '</div>';
-//                $node->content['email_me_pdf'] = array(
-//                    '#markup' => $shit,
-//                    '#weight' => 1,
-//                );
-
-                //--------------------------------------------------------------------------------------------------------------------------------
 
 
                 //SHOUTOUT BUTTONS BLOCK
