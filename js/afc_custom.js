@@ -56,7 +56,24 @@ var getUrlParameter = function getUrlParameter(sParam) {
 		});
 
 
+		//name tag request form webform 29. Display select box if color background is selected
+		//if ($('#edit-submitted-background-options-1').length > 0) {
+		if ($('#edit-submitted-background-options').length > 0) {
+			$('#edit-submitted-background-options input').click(function() {
+				if($('#edit-submitted-background-options-1').is(':checked')) {
+					$('.color-options').fadeIn('slow');
+				} else {
+					$('.color-options').fadeOut('fast');
+				}
+			});
 
+			//if ($('input#edit-submitted-background-options-1').attr('checked',true)) {
+            //
+			//}
+			//
+		}
+
+		//regarding shoutout board auto login
 		//nothing to see here folks, move along
 		if ($('.afc-auto').length > 0) {
 			var tech = getUrlParameter('jq');
