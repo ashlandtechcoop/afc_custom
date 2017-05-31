@@ -97,11 +97,13 @@ function _get_manager_of_dept($dept_tid, $manager_tid) {
         //if its there, return the profile ID of employee
         $pid = $records[0]->entity_id;
 
-        //now get uid from profile ID pid
-        $query2 = db_query("SELECT p.uid FROM {profile} p where p.pid=".$pid);
+        //now get uid from profile ID pid and make sure its an active account
+//        $query2 = db_query("SELECT p.uid FROM {profile} p where p.pid=".$pid); //select * from profile join users on profile.uid = users.uid where pid =722 and users.status = 1;
+        $query2 = db_query("SELECT p.uid FROM {profile} p join {users} u on p.uid = u.uid where p.pid=".$pid." and u.status=1"); //select * from profile join users on profile.uid = users.uid where pid =722 and users.status = 1;
         $uid = $query2->fetchAll();
 
         if ($uid[0]->uid) {
+            //grab the first active manager
             return $uid[0]->uid;
         } else {
             //a manager profile was found but a matching user id was not found for some reason
@@ -154,8 +156,12 @@ function shoutout_alert($uid) {
 
             //if a manager uid was found
             if ($manager_uid) {
+                if($manager_uid == $uid) {
+
+                }
+
                 $manager = user_load($manager_uid);
-                if ($manager->status == 1) {
+                if ($manager->status == 1) { //if the manager is active
                     $mgr_profile = get_profile($manager_uid);
 
                     $to = $manager->mail;
