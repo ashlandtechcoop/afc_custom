@@ -98,7 +98,6 @@ function _get_manager_of_dept($dept_tid, $manager_tid) {
         $pid = $records[0]->entity_id;
 
         //now get uid from profile ID pid and make sure its an active account
-//        $query2 = db_query("SELECT p.uid FROM {profile} p where p.pid=".$pid); //select * from profile join users on profile.uid = users.uid where pid =722 and users.status = 1;
         $query2 = db_query("SELECT p.uid FROM {profile} p join {users} u on p.uid = u.uid where p.pid=".$pid." and u.status=1"); //select * from profile join users on profile.uid = users.uid where pid =722 and users.status = 1;
         $uid = $query2->fetchAll();
 
@@ -156,15 +155,13 @@ function shoutout_alert($uid) {
 
             //if a manager uid was found
             if ($manager_uid) {
-                if($manager_uid == $uid) {
 
-                }
 
                 $manager = user_load($manager_uid);
                 if ($manager->status == 1) { //if the manager is active
                     $mgr_profile = get_profile($manager_uid);
 
-                    $to = $manager->mail;
+
                     $site_email = variable_get('site_mail', '');
                     $users_name = $user_profile->field_nick_name[LANGUAGE_NONE][0]['value'].' '.$user_profile->field_last_name[LANGUAGE_NONE][0]['value'];
 
@@ -179,15 +176,28 @@ function shoutout_alert($uid) {
                         watchdog('afc_custom','The field_employee_rewards field collection is not on the users profile. No beuno son');
                     }
 
-                    $values = array(
-                        'manager_email' => $manager->mail,
-                        'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
-                        'employee_name' => $users_name,
-                        'update_link' => $link,
-                    );
-
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
-                    drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+
+                    if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM
+                        $to = 'gm@ashlandfood.coop';
+                        $values = array(
+                            'manager_email' => $to,
+                            'manager_nick_name' => 'General Manager',
+                            'employee_name' => $users_name,
+                            'update_link' => $link,
+                        );
+                        drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+                    } else { //normal shoutout
+                        $to = $manager->mail;
+                        $values = array(
+                            'manager_email' => $manager->mail,
+                            'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
+                            'employee_name' => $users_name,
+                            'update_link' => $link,
+                        );
+                        drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+                    }
+
                     return true;
                 } else {
                     watchdog('afc_custom','Function: shoutout_alert - There was NO Active Manager found for this user.');
@@ -838,7 +848,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-    shoutout_alert(1511);
+
 }
     switch ($node->type) {
         case 'page':
