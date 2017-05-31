@@ -100,6 +100,7 @@ function _get_manager_of_dept($dept_tid, $manager_tid) {
         //now get uid from profile ID pid
         $query2 = db_query("SELECT p.uid FROM {profile} p where p.pid=".$pid);
         $uid = $query2->fetchAll();
+
         if ($uid[0]->uid) {
             return $uid[0]->uid;
         } else {
@@ -134,10 +135,13 @@ function _get_manager_tid() {
 /**
  * Custom function to alert manager of shoutout prize
  * uid is the user who has received the 3rd shoutout
+ *
+ * @return bool
  */
 function shoutout_alert($uid) {
 //    get the user_
 //    get the department
+//    get the tid used for the term 'manager'
 //    get the manager of that department
 
     $user_profile = get_profile($uid);
@@ -147,44 +151,61 @@ function shoutout_alert($uid) {
         if (isset($user_profile->field_department[LANGUAGE_NONE])) {
             $dept_tid = $user_profile->field_department[LANGUAGE_NONE][0]['tid'];
             $manager_uid = _get_manager_of_dept($dept_tid,$manager_tid);
+
+            //if a manager uid was found
             if ($manager_uid) {
                 $manager = user_load($manager_uid);
-                $mgr_profile = get_profile($manager_uid);
+                if ($manager->status == 1) {
+                    $mgr_profile = get_profile($manager_uid);
 
-                $to = $manager->mail;
-                $site_email = variable_get('site_mail', '');
-                $users_name = $user_profile->field_nick_name[LANGUAGE_NONE][0]['value'].' '.$user_profile->field_last_name[LANGUAGE_NONE][0]['value'];
+                    $to = $manager->mail;
+                    $site_email = variable_get('site_mail', '');
+                    $users_name = $user_profile->field_nick_name[LANGUAGE_NONE][0]['value'].' '.$user_profile->field_last_name[LANGUAGE_NONE][0]['value'];
 
-                //get the last reward field collection item id and send it to the email
-                if (isset($user_profile->field_employee_rewards[LANGUAGE_NONE])) {
-                    global $base_url;
-                    $last = end($user_profile->field_employee_rewards[LANGUAGE_NONE]);
-                    $reward_fc_id = $last['value'];
-                    $link = $base_url.'/update_recognized/'.$reward_fc_id;
+                    //get the last reward field collection item id and send it to the email
+                    if (isset($user_profile->field_employee_rewards[LANGUAGE_NONE])) {
+                        global $base_url;
+                        $last = end($user_profile->field_employee_rewards[LANGUAGE_NONE]);
+                        $reward_fc_id = $last['value'];
+                        $link = $base_url.'/update_recognized/'.$reward_fc_id;
+                    } else {
+                        $link = 'An error has occurred please contact your admin. Check watchdog log';
+                        watchdog('afc_custom','The field_employee_rewards field collection is not on the users profile. No beuno son');
+                    }
+
+                    $values = array(
+                        'manager_email' => $manager->mail,
+                        'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
+                        'employee_name' => $users_name,
+                        'update_link' => $link,
+                    );
+
+                    watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
+                    drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+                    return true;
                 } else {
-                    $link = 'An error has occurred please contact your admin. Check watchdog log';
-                    watchdog('afc_custom','The field_employee_rewards field collection is not on the users profile. No beuno son');
+                    watchdog('afc_custom','Function: shoutout_alert - There was NO Active Manager found for this user.');
+                    //if there is no manager, then email hrteam
                 }
-
-                $values = array(
-                    'manager_email' => $manager->mail,
-                    'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
-                    'employee_name' => $users_name,
-                    'update_link' => $link,
-                );
-//                drupal_mail('ec_app', 'notify_ec_user', $user->mail, 'en', $values, $user->name . ' <' . $user->mail . '>');
-//                drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $from = NULL, $send = TRUE);
-                watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
-                drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
-                return true;
+            } else {
+                watchdog('afc_custom','Function: shoutout_alert - There was NO Manager found for this user. This could mean the department field is not set on the users account or there is no user in that department marked as a manager in field employee type');
+                //if there is no manager, then email hrteam
             }
         } else {
-            watchdog('afc_custom','Function: shoutout_alert - There is NO Manager associated with this user. This could be because the users department value is not set');
-            return false;
+            watchdog('afc_custom','Function: shoutout_alert - There is NO field_department on the users profile');
         }
     } else {
+        //if these fail - send an email to hrteam@ashlandfood.coop letting them no someone needs a shoutout but doesnt have a manager.
         return false;
     }
+    $values = array(
+        'manager_email' => 'hrteam@ashlandfood.coop',
+        'to' => 'hrteam@ashlandfood.coop',
+        'employee_name' => ($user_profile->field_full_name[LANGUAGE_NONE][0]['value']) ? $user_profile->field_full_name[LANGUAGE_NONE][0]['value'] : 'No Name Found',
+    );
+
+    drupal_mail('afc_custom', 'shoutout_alert_no_manager', 'hrteam@ashlandfood.coop', 'en', $values, variable_get('site_mail', ''));
+    return false;
 }
 
 /**
@@ -811,7 +832,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-
+    shoutout_alert(1511);
 }
     switch ($node->type) {
         case 'page':
@@ -991,6 +1012,15 @@ function afc_custom_mail ($key, &$message, $params) {
 
             watchdog('afc_custom', 'Function: hook_mail - finished submitting mail to email address: @em', array('@em' => $params['manager_email']));
 
+            break;
+        case 'shoutout_alert_no_manager':
+            $message['to'] = $params['to']; //$params['manager_email'];
+            $message['subject'] = t('!Shoutout alert for @user_name', array('@user_name' => $params['employee_name']));
+            $message['body'][] = t('Attn: @manager_name', array('@manager_name' => 'HRTeam'));
+            $message['body'][] = t('An employee has received 3 shoutouts and needs a reward, however no manager was found for them.');
+            $message['body'][] = t('Please address this and review why there is no manager assigned to this employees department.');
+
+            watchdog('afc_custom', 'Function: hook_mail - email sent to hrteam because no manager was found');
             break;
     }
 }
