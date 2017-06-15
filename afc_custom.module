@@ -748,7 +748,9 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 }
   //Restrict employee access to edit their own photos - Phil 6-15-17
 function afc_custom_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
-    if(in_array('employee', $user->roles)  {
+  global $user;
+  $roles = $user->roles;
+    if(in_array('employee', $roles))  {
       $form['picture']['#disabled'] = TRUE;
 }
 
