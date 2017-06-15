@@ -744,6 +744,10 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
      if ($form_id == 'user_profile_form') {
             $form['contact']['#access'] = FALSE;
+            //Restrict employee access to edit their own photos - Phil 6-15-17
+        if(in_array('employee',$user->roles) && isset($form['account'])) {
+            $form['account']['picture']['#disabled']=TRUE;
+          }
   }
 
 }
@@ -1048,7 +1052,7 @@ function afc_custom_mail ($key, &$message, $params) {
 
 function afc_custom_menu_alter(&$items) {
     // Change the title of user profile pages to the user's name.  Gak.
- 
+
     $items['user/%user']['title callback'] = 'afc_custom_user_page_title';
 
 }
@@ -1069,7 +1073,7 @@ function afc_custom_node_update($node){
 }
 
 function afc_custom_user_page_title() {
- 
+
     if (arg(0) == 'user') {
         // Load uid from url
         $user = user_load(arg(1));
