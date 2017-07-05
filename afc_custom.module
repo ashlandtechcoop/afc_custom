@@ -516,6 +516,7 @@ function afc_custom_ajax_get_ajax($nid) {
 }
 
 function afc_custom_ajax_callback($page_callback_result) {
+    //the value comes from the function afc_custom_ajax_get_ajax return
    //if its true send back some html to invoke a heart or some other imagery
     if ($page_callback_result) {
         //dpm($page_callback_result);
@@ -929,10 +930,11 @@ if (isset($_GET['ss'])) {
                     '#markup' => $output,
                     '#weight' => 1,
                 );
-                $node->content['test'] = array(
-                    '#markup' => '<a class="btn" href="#" onclick="myModule_ajax_load()">Ajax Test</a>',
-                    '#weight' => 1,
-                );
+//                $node->content['test'] = array(
+//                    '#markup' => '<a class="btn" href="#" onclick="myModule_ajax_load()">Ajax Test</a>',
+//                    '#weight' => 1,
+//                );
+                //setup an empty ajax element to receive a call back from jquery
                 $node->content['acallback'] = array(
                     '#markup' => '<div id="ajax-target">Ajax goes here!!!</div>',
                     '#weight' => 1,
