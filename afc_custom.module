@@ -518,7 +518,7 @@ function afc_custom_ajax_get_ajax($nid) {
 function afc_custom_ajax_callback($page_callback_result) {
    //if its true send back some html to invoke a heart or some other imagery
     if ($page_callback_result) {
-        dpm($page_callback_result);
+        //dpm($page_callback_result);
         print "its true";
    }
 
