@@ -414,7 +414,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
 
 			});
 
-
 			//Each shoutout comment add the animation classes on page load
 			$(".shoutout-comment-row").once().each(function(index) {
 				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
@@ -424,12 +423,12 @@ var getUrlParameter = function getUrlParameter(sParam) {
 			});
 
 			//Bounce in effects to shoutout comments
-			$(".shoutout-comment-row").once().each(function(index) {
-				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
-					$(this).removeClass("bounceIn animated");
-					next();
-				});
-			});
+			//$(".shoutout-comment-row").once().each(function(index) {
+			//	$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
+			//		$(this).removeClass("bounceIn animated");
+			//		next();
+			//	});
+			//});
 
 			//Popups for shoutout buttons greenway to work -  job openings - ideas
 			var they_clicked = false;

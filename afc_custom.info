@@ -9,6 +9,7 @@ scripts[] = js/jquery-gradientify/jquery.gradientify.js
 scripts[] = js/jquery-gradientify/jquery.gradientify.min.js
 scripts[] = js/afc_custom.js
 scripts[] = js/shoutout_stats_refresh.js
+scripts[] = js/jQuery.scrollSpeed/jQuery.scrollSpeed.js
 
 stylesheets[all][] = css/animate.css
 stylesheets[all][] = css/afc_custom.css
