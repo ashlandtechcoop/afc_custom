@@ -40,7 +40,9 @@ form#webform-client-form-106 .desc {
     margin: 0;
     height: 117px;
 }
-div#shoutout-page-main-content {
+div#shoutout-page-main-content,
+div#shoutout-page-main-content p,
+div#shoutout-page-main-content span {
     font-family: 'Raleway', arial, sans-serif !important;
 }
 .shout-menu-header .menu-div {
@@ -298,8 +300,16 @@ div#block-block-3 .content {
     padding: 0;
 }
 
-.view.view-shoutout-huddle-news p {
+.view-shoutout-huddle-news p, .view.view-shoutout-huddle-news span, .view.view-shoutout-huddle-news {
     font-size: 20px;
+
+}
+
+.huddle-news-image {
+    float: right;
+}
+.huddle-news-image img {
+    border-radius: 8px 8px;
 }
 .view.view-shoutout-huddle-news .views-field-created {
     font-size: 20px;

@@ -417,7 +417,6 @@ function myModule_ajax_load(node_id) {
 
 			});
 
-
 			//Each shoutout comment add the animation classes on page load
 			$(".shoutout-comment-row").once().each(function(index) {
 				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
@@ -426,6 +425,7 @@ function myModule_ajax_load(node_id) {
 				});
 			});
 
+<<<<<<< HEAD
 			//shout stats search icon button
 			$('.shoutout-comment-row').click(function() {
 				//data id comes from a field thats on the view in drupal. Shoutout Comments view
@@ -437,6 +437,8 @@ function myModule_ajax_load(node_id) {
 			});
 
 
+=======
+>>>>>>> origin
 			//Bounce in effects to shoutout comments
 			//$(".shoutout-comment-row").once().each(function(index) {
 			//	$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
