@@ -470,8 +470,60 @@ function afc_custom_menu() {
         'type' => MENU_CALLBACK,
     );
 
+    $items['add_like/%'] = array(
+        'page callback' => 'afc_custom_update_recognized_callback',
+        'page arguments' => array(1),
+        'access callback' => 'update_recognized_access_check',
+        'access arguments' => array(1, array('Manager','HR Admin','administrator')),
+        'type' => MENU_CALLBACK,
+    );
+    $items['node/get/ajax/%'] = array(
+        'page callback' => 'afc_custom_ajax_get_ajax', // Render HTML.
+        'page arguments' => array(3),
+        'type' => MENU_CALLBACK,
+        'access arguments' => array('access content'),
+        'delivery callback' => 'afc_custom_ajax_callback',  // Magic goes here.
+    );
     return $items;
 }
+
+function afc_custom_ajax_get_ajax($nid) {
+    //https://www.drupal.org/docs/7/api/javascript-api/simple-drupal-ajax-load-with-jquery-and-delivery-callback
+
+    //if the node id was in the url
+    if (!empty($nid)) {
+        $shoutout_node = node_load($nid);
+        //if the shoutout_likes field is present on the content type
+        if (isset($shoutout_node->field_shoutout_likes)) {
+
+            //the current number in the field. or if it's empty make it 0
+            $current_likes = (empty($shoutout_node->field_shoutout_likes[LANGUAGE_NONE][0]['value'])) ? 0 : $shoutout_node->field_shoutout_likes[LANGUAGE_NONE][0]['value'];
+            $new_likes = $current_likes + 1;
+            $shoutout_node->field_shoutout_likes[LANGUAGE_NONE][0]['value'] = $new_likes;
+            node_save($shoutout_node);
+            watchdog('afc_custom', 'Function afc_custom_ajax_get_ajax: New like added for node: @nid', array('@nid' => $nid));
+            $html = '<div id=';
+
+            return $nid;
+        } else {
+            watchdog('afc_custom', 'Function afc_custom_ajax_get_ajax: Could not run AJAX command to like the shoutout because the field_shoutout_likes does not exist on the node provided');
+            return null;
+        }
+    } else {
+        //node nid was supplied
+        return null;
+    }
+}
+
+function afc_custom_ajax_callback($page_callback_result) {
+   //if its true send back some html to invoke a heart or some other imagery
+    if ($page_callback_result) {
+        dpm($page_callback_result);
+        print "its true";
+   }
+
+}
+
 
 function update_recognized_access_check($user, $roles = array()) {
     global $user;
@@ -870,6 +922,16 @@ if (isset($_GET['ss'])) {
                     '#markup' => $output,
                     '#weight' => 1,
                 );
+                $node->content['test'] = array(
+                    '#markup' => '<a class="btn" href="#" onclick="myModule_ajax_load()">Ajax Test</a>',
+                    '#weight' => 1,
+                );
+                $node->content['acallback'] = array(
+                    '#markup' => '<div id="ajax-target">Ajax goes here!!!</div>',
+                    '#weight' => 1,
+                );
+
+
 
                 //JOB POSTINGS
 
