@@ -678,26 +678,11 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                     $emp_from = $form_state['input']['submitted']['employee_id_from'];
                     $emp_to = $form['submitted']['employee_id_to']['#default_value'];
 
-                    //get text from canned message drop down
-                    if (!empty($form['submitted']['shoutout_canned_responses']['#default_value'])) {
-                        $can_tid = $form['submitted']['shoutout_canned_responses']['#default_value'];
-                        if (array_key_exists($can_tid, $form['submitted']['shoutout_canned_responses']['#options'])) {
-                            $can_msg = $form['submitted']['shoutout_canned_responses']['#options'][$can_tid];
-                        } else {
-                            //tid cant be found in the drop down array
-                            $can_msg = null;
-                        }
-
-                    } else {
-
-                        $can_msg = null;
-                    }
-
                         $other_msg = $form_state['input']['submitted']['shoutout_message'];
                         $nodeinfo = array();
                         $nodeinfo['employee_to'] = $emp_to;
                         $nodeinfo['employee_from'] = $emp_from;
-                        $nodeinfo['body'] = (trim(strlen($other_msg)) == 0) ? $can_msg : $other_msg;
+                        $nodeinfo['body'] = $other_msg;
 
                         afc_custom_add_new_shoutout($nodeinfo);
                         afc_custom_calculate_shoutout($emp_to);
@@ -852,9 +837,9 @@ function afc_custom_validate_webform_84(&$form, &$form_state) {
     watchdog('afc_custom', 'running validate 84');
 
     //must have message
-    if (empty($form_state['values']['submitted']['shoutout_canned_responses'] || $form_state['values']['submitted']['shoutout_message'])) {
-        form_set_error('', t('Tell us what amazing thing this person did. Don\'t leave it blank, that\'s lame.'));
-    }
+//    if (empty($form_state['values']['submitted']['shoutout_canned_responses'] || $form_state['values']['submitted']['shoutout_message'])) {
+//        form_set_error('', t('Tell us what amazing thing this person did. Don\'t leave it blank, that\'s lame.'));
+//    }
 
     //must have badge numbers
     if(isset($form_state['values']['submitted']['employee_id_from']) && isset($form_state['values']['submitted']['employee_id_from'])) {
