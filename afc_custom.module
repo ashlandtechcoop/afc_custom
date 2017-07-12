@@ -703,19 +703,7 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
                         afc_custom_add_new_shoutout($nodeinfo);
                         afc_custom_calculate_shoutout($emp_to);
-//                        if (!afc_custom_add_new_shoutout($nodeinfo)) {
-//                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_add_new_shoutout failed and returned false');
-//                        }
-//
-//                        if (!afc_custom_calculate_shoutout($emp_to)) {
-//                            watchdog('afc_custom', 'Function: hook_form_alter - afc_custom_calculate_shoutout failed and returned false');
-//                            //send an email to an admin letting them know if this happens
-//                        }
 
-//                        $output[] = ctools_modal_command_dismiss(); //Close modal automatically
-//                        $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg"></div>');
-//                        print ajax_render($output);
-//                        drupal_exit();
                     }
                     //END EMPLOYEE SUBMITTED SHOUTOUT FORM
 
