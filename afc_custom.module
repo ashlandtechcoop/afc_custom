@@ -678,6 +678,8 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                     $emp_from = $form_state['input']['submitted']['employee_id_from'];
                     $emp_to = $form['submitted']['employee_id_to']['#default_value'];
 
+                    $general_or_cxi = $form['submitted']['general_or_cxi']['#default_value'];
+
                         $other_msg = $form_state['input']['submitted']['shoutout_message'];
                         $nodeinfo = array();
                         $nodeinfo['employee_to'] = $emp_to;
