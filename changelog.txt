@@ -8,3 +8,7 @@ Add vocab "shoutout_option" for general of CXi
     description: Choose if this is a general shoutout, or if it's customer experience related and counts toward prizes
     above field
     add css wrapper: .general-cxi-options
+
+Add general_cxi field to shoutout content type
+    type:boolean
+    values: yes, no

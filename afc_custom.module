@@ -406,10 +406,22 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
         watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - no badge number given');
         return false;
     }
+    if (empty($nodeinfo['general_or_cxi'])) {
+        watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - no general or cxi value given');
+        return false;
+    }
     watchdog('afc_custom', 'Function: afc_custom_add_new_shoutout - begin making new shoutout');
     global $user; //should be service account
 
     $emp_from = afc_custom_return_uid_for_badge($nodeinfo['employee_from']);
+    //if value is general then it doesnt get calculated into amount
+    //just set value on node for now
+    if ($nodeinfo['general_or_cxi'] == 'tid_71') {
+        //tid_72 = CXi //tid_71 = general
+        $general_or_cxi = 1;
+    } else {
+        $general_or_cxi = 0;
+    }
 
     $title = 'shoutout to ' . $nodeinfo['employee_to'] . date('m-d-y');
     $new_message = null;
@@ -425,6 +437,7 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
     $new_message->comment = 0;
     $new_message->field_employee[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_to'];
     $new_message->field_employee_from[LANGUAGE_NONE][0]['uid'] = $emp_from;
+    $new_message->field_general_cxi[LANGUAGE_NONE][0]['value'] = $general_or_cxi;
 
     $new_message = node_submit($new_message);
     node_save($new_message);
@@ -677,13 +690,15 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
 
                     $emp_from = $form_state['input']['submitted']['employee_id_from'];
                     $emp_to = $form['submitted']['employee_id_to']['#default_value'];
-
                     $general_or_cxi = $form['submitted']['general_or_cxi']['#default_value'];
+                    //tid_72 = CXi
+                    //tid_71 = general
 
                         $other_msg = $form_state['input']['submitted']['shoutout_message'];
                         $nodeinfo = array();
                         $nodeinfo['employee_to'] = $emp_to;
                         $nodeinfo['employee_from'] = $emp_from;
+                        $nodeinfo['general_or_cxi'] = $general_or_cxi;
                         $nodeinfo['body'] = $other_msg;
 
                         afc_custom_add_new_shoutout($nodeinfo);
