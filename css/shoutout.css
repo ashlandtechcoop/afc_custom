@@ -40,6 +40,9 @@ form#webform-client-form-106 .desc {
     margin: 0;
     height: 117px;
 }
+.shoutout-likes {
+    display: none;
+}
 div#shoutout-page-main-content,
 div#shoutout-page-main-content p,
 div#shoutout-page-main-content span {
