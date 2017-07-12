@@ -924,7 +924,7 @@ if (isset($_GET['ss'])) {
                     '#markup' => '<div id="ajax-target" class="hide-field">Ajax goes here!!!</div>',
                     '#weight' => 1,
                 );
-               
+
 
 
                 //JOB POSTINGS

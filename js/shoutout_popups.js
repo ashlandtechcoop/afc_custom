@@ -23,7 +23,7 @@
 
 
                         $( ".modal-scroll" ).append('<div id="popup-shoutout-info" class="popups-left" style="display:none;">Enter your employee# so we know who the shoutout is from</div>');
-                        $( ".modal-scroll" ).after('<div id="popup-shoutout-choose" class="popups-left" style="display:none;">Choose a response or write your own</div>');
+                        $( ".modal-scroll" ).after('<div id="popup-shoutout-choose" class="popups-left" style="display:none;">Tell us what they did that was awesome</div>');
                         $( ".modal-scroll" ).after('<div id="popup-shoutout-submit" class="popups-top" style="display:none;">Then click submit</div>');
 
                         //$('#popup-shoutout-info').css({top: info_top, left: info_left, position:'absolute'});
