@@ -443,7 +443,10 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
     node_save($new_message);
 
     watchdog('afc_custom', 'Created new shoutout to user @user', array('@user' => $nodeinfo['employee_to']));
-    return true;
+
+    //return the dropdown value so we know whether or not this counted toward CXi rewards.
+    watchdog('afc_custom', 'Returning value @general', array('@general' => $general_or_cxi));
+    return $nodeinfo['general_or_cxi'];
 }
 
 /**
@@ -691,21 +694,37 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                     $emp_from = $form_state['input']['submitted']['employee_id_from'];
                     $emp_to = $form['submitted']['employee_id_to']['#default_value'];
                     $general_or_cxi = $form['submitted']['general_or_cxi']['#default_value'];
-                    //tid_72 = CXi
-                    //tid_71 = general
+                    //tid_72 = CXi  //tid_71 = general
 
-                        $other_msg = $form_state['input']['submitted']['shoutout_message'];
-                        $nodeinfo = array();
-                        $nodeinfo['employee_to'] = $emp_to;
-                        $nodeinfo['employee_from'] = $emp_from;
-                        $nodeinfo['general_or_cxi'] = $general_or_cxi;
-                        $nodeinfo['body'] = $other_msg;
+                    $other_msg = $form_state['input']['submitted']['shoutout_message'];
+                    $nodeinfo = array();
+                    $nodeinfo['employee_to'] = $emp_to;
+                    $nodeinfo['employee_from'] = $emp_from;
+                    $nodeinfo['general_or_cxi'] = $general_or_cxi;
+                    $nodeinfo['body'] = $other_msg;
 
-                        afc_custom_add_new_shoutout($nodeinfo);
+
+                    //if afc_custom_add_new_shoutout is tid_71, then the shoutout is general and does not count
+                    //toward CXi rewards. Thus, we do not want to call the calculate function (afc_custom_calculate_shoutout)
+                    $add_new_shoutout = afc_custom_add_new_shoutout($nodeinfo);
+                    if ($add_new_shoutout=='tid_71') {
+                        //finish and dont calculate
+                        watchdog('afc_custom', 'Function: form_alter - The shoutout was a general shoutout and did not count toward CXi. It was just
+                        added as a node, but not calculated into shoutout totals.');
+                    } elseif ($add_new_shoutout == FALSE) {
+                        //if false something bad happened
+                        watchdog('afc_custom', 'Function: form_alter the function afc_custom_add_new_shoutout that adds a new shoutout node has FAILED.
+                        No shoutout was created. No calculation was done.');
+                    } elseif ($add_new_shoutout == 'tid_72') {
+                        //shoutout was CXi related and should count toward rewards. Calculate, alert, etc.
                         afc_custom_calculate_shoutout($emp_to);
-
+                    } else {
+                        watchdog('afc_custom', 'Function: form_alter - An unknown response came from function afc_custom_add_new_shoutout. This response is not handled
+                        and thus nothing happened after submitting this shoutout.');
                     }
-                    //END EMPLOYEE SUBMITTED SHOUTOUT FORM
+
+                }
+                //END EMPLOYEE SUBMITTED SHOUTOUT FORM
 
         //get the user the shoutout is to
         if (isset($_GET['sho'])) {
