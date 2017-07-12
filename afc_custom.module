@@ -921,10 +921,10 @@ if (isset($_GET['ss'])) {
 //                );
                 //setup an empty ajax element to receive a call back from jquery
                 $node->content['acallback'] = array(
-                    '#markup' => '<div id="ajax-target">Ajax goes here!!!</div>',
+                    '#markup' => '<div id="ajax-target" class="hide-field">Ajax goes here!!!</div>',
                     '#weight' => 1,
                 );
-
+               
 
 
                 //JOB POSTINGS

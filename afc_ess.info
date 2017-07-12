@@ -2,16 +2,6 @@ name = Ashland Food Coop ESS Custom Portal Module
 description = Primary module for logging employees into ESS
 core = 7.x
 
-files[] = includes/helpers.inc
-files[] = includes/shoutout_logic.inc
-
-scripts[] = js/jquery-gradientify/jquery.gradientify.js
-scripts[] = js/jquery-gradientify/jquery.gradientify.min.js
-scripts[] = js/afc_custom.js
-scripts[] = js/shoutout_stats_refresh.js
-
-stylesheets[all][] = css/animate.css
-
 dependencies[] = afc_custom:afc_custom
 
 ; Information added by  packaging script on 2013-12-03
