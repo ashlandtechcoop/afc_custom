@@ -401,7 +401,25 @@ div.shoutout-user-pic img {
     font-weight: 500;
     color: #3e3e3e;
 }
-.view.view-shoutout-comment-list .views-field-field-total-shoutouts {
+.general-shoutout-yes .views-field-field-total-shoutouts .field-content {
+    display: none;
+}
+
+
+.general-shoutout-yes .views-field-field-total-shoutouts:after {
+    /* background-color: white; */
+    background-image: url(/sites/all/modules/afc_custom/images/star.png);
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 30px;
+    height: 24px;
+    content: "";
+    float: right;
+    opacity: .9;
+    /* box-shadow: 1px 1px 1px black; */
+}
+.general-shoutout-no .views-field-field-total-shoutouts {
     float: right;
     position: relative;
     left: 9px;
