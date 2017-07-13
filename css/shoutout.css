@@ -405,7 +405,9 @@ div.shoutout-user-pic img {
     display: none;
 }
 
-
+.resizable-textarea .grippie {
+    display: none;
+}
 .general-shoutout-yes .views-field-field-total-shoutouts:after {
     /* background-color: white; */
     background-image: url(/sites/all/modules/afc_custom/images/star.png);
