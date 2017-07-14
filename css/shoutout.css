@@ -41,7 +41,21 @@ form#webform-client-form-106 .desc {
     height: 117px;
 }
 .shoutout-likes {
-    display: none;
+    background-image: url(/sites/all/modules/afc_custom/images/heartfixed.png);
+    background-repeat: no-repeat;
+    background-size: 23px 23px;
+    float: right;
+    color: white;
+    width: 23px;
+    height: 25px;
+    margin: 3px 6px;
+    line-height: 20px;
+    font-size: 11px;
+    text-align: center;
+    opacity: .55;
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 .general-cxi-options div.description {
     width: 50%;
@@ -396,6 +410,7 @@ div.shoutout-user-pic img {
     background: #eaeaea;
     border-radius: 6px;
     transition:.5s;
+    position: relative;
 }
 .view.view-shoutout-comment-list .views-field-field-last-name, .view.view-shoutout-comment-list .views-field-field-department {
     font-weight: 500;
