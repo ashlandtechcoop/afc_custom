@@ -37,9 +37,11 @@ var getUrlParameter = function getUrlParameter(sParam) {
 		}
 	}
 };
+
+//custom function to load the ajax response for the like button
+//corresponds with hook_menu in afc_custom.module /shoutout/add/like/%
 function myModule_ajax_load(node_id) {
-	jQuery("#ajax-target").load("/node/get/ajax/" + node_id);
-	console.log("/node/get/ajax/" + node_id);
+	jQuery("#ajax-target").load("/shoutout/add/like/" + node_id);
 }
 
 //BEGIN JQUERY DRUPAL BEHAVIORS
@@ -425,15 +427,21 @@ function myModule_ajax_load(node_id) {
 				});
 			});
 
-			//shout stats search icon button
-			$('.shoutout-comment-row').click(function() {
+			//shoutout stats like button love button
+			$('.shoutout-like-trigger').click(function() {
 				//data id comes from a field thats on the view in drupal. Shoutout Comments view
-				var node_id = $(this).find('.nid-target').attr('data-id');
-				myModule_ajax_load(node_id);
+				var node_id = $(this).parent().find('.nid-target').attr('data-id');
+					$(this).delay(700).addClass("red-heart pulse animated").queue(function(next){
+						$(this).removeClass("red-heart pulse animated");
+						$(this).dequeue();
+					});
+				$(this).load("/shoutout/add/like/" + node_id);
+				//$('red-heart::after').css({"content":"url(/sites/all/modules/afc_custom/images/heart25red.png) !important"});
+				//$(this).css({"content":"url(/sites/all/modules/afc_custom/images/heart25red.png)"});
+				//$(this).attr('style','content: url(/sites/all/modules/afc_custom/images/heart25red.png)');
+				//myModule_ajax_load(node_id); //runs the ajax to add a like
 			});
-			$(".view-shoutout-comment-list").on( "tap", function( event ) {
-				console.log(2);
-			});
+
 
 			//Bounce in effects to shoutout comments
 			//$(".shoutout-comment-row").once().each(function(index) {

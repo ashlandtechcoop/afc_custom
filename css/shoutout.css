@@ -40,19 +40,30 @@ form#webform-client-form-106 .desc {
     margin: 0;
     height: 117px;
 }
+/*.shoutout-likes:after {*/
+    /*content: url(/sites/all/modules/afc_custom/images/heart25.png);*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: 23px 23px;*/
+/*}*/
+.shoutout-likes div:first-child {
+    position: relative;
+    right: 25px;
+    text-align: 0;
+}
 .shoutout-likes {
-    background-image: url(/sites/all/modules/afc_custom/images/heartfixed.png);
+    background-image: url(/sites/all/modules/afc_custom/images/heart25.png);
     background-repeat: no-repeat;
-    background-size: 23px 23px;
-    float: right;
-    color: white;
-    width: 23px;
-    height: 25px;
-    margin: 3px 6px;
+    background-size: 22px 20px;
+    /* padding-right: 40px; */
+    /* float: right; */
+    /* color: white; */
+    width: 26px;
+    height: 24px;
+    margin: 3px 5px;
     line-height: 20px;
     font-size: 11px;
     text-align: center;
-    opacity: .55;
+    opacity: .9;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -393,16 +404,37 @@ div#block-block-3 .content {
 }
 .shoutout-comment-row .views-field-body {
     display: table-cell;
-    /* clear: both; */
+    font-weight: normal;
 }
 /*USER PICS AND SHOUTOUT LIST*/
-div.shoutout-user-pic img {
+/*div.shoutout-user-pic img {*/
+    /*float: left;*/
+    /*border-radius: 35px;*/
+    /*margin-right: 9px;*/
+/*}*/
+.field-content.shoutout-user-pic img {
+    width: 125px !important;
+    height: 125px !important;
+    box-shadow: 2px 2px 6px #484848;
     float: left;
-    border-radius: 35px;
-    margin-right: 9px;
+    border-radius: 50%;
+    margin-right: -25px;
+}
+.views-field-field-last-name {
+    padding-top: 10px;
+}
+
+.field-content.shoutout-user-pic {
+    position: relative;
+    left: -52px;
+    top: -7px;
+    vertical-align: middle;
+    /* display: flex; */
+    /* box-shadow: 1px 2px 2px black; */
 }
 .view-shoutout-comment-list .views-row {
-    margin: 15px 10px;
+    /*margin: 15px 10px;*/
+    margin: 17px 15px 10px 53px;
     font-size: 20px;
     clear: both;
     vertical-align: middle;
@@ -425,16 +457,32 @@ div.shoutout-user-pic img {
 }
 .general-shoutout-yes .views-field-field-total-shoutouts:after {
     /* background-color: white; */
-    background-image: url(/sites/all/modules/afc_custom/images/star.png);
-    background-size: 25px 25px;
+    background-image: url(/sites/all/modules/afc_custom/images/whitestar2.png);
+    background-size: 23px 23px;
     background-repeat: no-repeat;
     display: inline-block;
-    width: 30px;
+    width: 28px;
     height: 24px;
     content: "";
+    margin-top: 3px;
     float: right;
-    opacity: .9;
+    opacity: .95;
     /* box-shadow: 1px 1px 1px black; */
+}
+.general-shoutout-yes .views-field-field-total-shoutouts {
+    float: right;
+    position: relative;
+    left: 9px;
+    top: -10px;
+    box-shadow: 0 0 8px #555;
+    background: #d7822f;
+    min-width: 35px;
+    min-height: 35px;
+    line-height: 30px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 50%;
+    color: white;
 }
 .general-shoutout-no .views-field-field-total-shoutouts {
     float: right;
@@ -1276,4 +1324,50 @@ p.info {
 }
 article#node-70.not-afc {
     display: none;
+}
+
+
+@keyframes red-heart {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes red-heart {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes red-heart {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes red-heart {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes red-heart {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+.red-heart::after {
+    content: url(/sites/all/modules/afc_custom/images/heart25red.png);
+    background-repeat: no-repeat;
+    background-size: 26px 26px;
+    position: relative;
+    top: -19px;
+    left: -2px;
+}
+.red-heart:after {
+    -webkit-animation-name: red-heart;
+    -webkit-animation-name: red-heart;
+    -moz-animation-name: red-heart;
+    -o-animation-name: red-heart;
+    animation-name: red-heart;
+    animation-duration: 1s;
 }

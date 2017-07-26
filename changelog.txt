@@ -16,3 +16,6 @@ Add general_cxi field to shoutout content type
 Add the new general_cxi field to the top of the shoutout comment view
     No label and hide from display
     Edit the format row settings and add this row class with this replacement pattern "general-shoutout-[field_general_cxi]"
+
+Add class to field on Shoutout Comments view
+    On shoutout likes field add new wrapper class shoutout-like-trigger

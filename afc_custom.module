@@ -493,7 +493,7 @@ function afc_custom_menu() {
         'access arguments' => array(1, array('Manager','HR Admin','administrator')),
         'type' => MENU_CALLBACK,
     );
-    $items['node/get/ajax/%'] = array(
+    $items['shoutout/add/like/%'] = array(
         'page callback' => 'afc_custom_ajax_get_ajax', // Render HTML.
         'page arguments' => array(3),
         'type' => MENU_CALLBACK,
@@ -518,9 +518,7 @@ function afc_custom_ajax_get_ajax($nid) {
             $shoutout_node->field_shoutout_likes[LANGUAGE_NONE][0]['value'] = $new_likes;
             node_save($shoutout_node);
             watchdog('afc_custom', 'Function afc_custom_ajax_get_ajax: New like added for node: @nid', array('@nid' => $nid));
-            $html = '<div id=';
-
-            return $nid;
+            return $new_likes;
         } else {
             watchdog('afc_custom', 'Function afc_custom_ajax_get_ajax: Could not run AJAX command to like the shoutout because the field_shoutout_likes does not exist on the node provided');
             return null;
@@ -531,12 +529,13 @@ function afc_custom_ajax_get_ajax($nid) {
     }
 }
 
+
 function afc_custom_ajax_callback($page_callback_result) {
     //the value comes from the function afc_custom_ajax_get_ajax return
    //if its true send back some html to invoke a heart or some other imagery
     if ($page_callback_result) {
-        //dpm($page_callback_result);
-        print "its true";
+        //the css targets this inner div
+        print '<div>'.$page_callback_result.'</div>';
    }
 
 }
