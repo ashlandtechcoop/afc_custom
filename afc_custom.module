@@ -437,7 +437,7 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
     $new_message->comment = 0;
     $new_message->field_employee[LANGUAGE_NONE][0]['uid'] = $nodeinfo['employee_to'];
     $new_message->field_employee_from[LANGUAGE_NONE][0]['uid'] = $emp_from;
-    $new_message->field_general_cxi[LANGUAGE_NONE][0]['value'] = $general_or_cxi;
+    $new_message->field_general_shoutout_[LANGUAGE_NONE][0]['value'] = $general_or_cxi;
 
     $new_message = node_submit($new_message);
     node_save($new_message);
@@ -517,6 +517,7 @@ function afc_custom_ajax_get_ajax($nid) {
             $new_likes = $current_likes + 1;
             $shoutout_node->field_shoutout_likes[LANGUAGE_NONE][0]['value'] = $new_likes;
             node_save($shoutout_node);
+
             watchdog('afc_custom', 'Function afc_custom_ajax_get_ajax: New like added for node: @nid', array('@nid' => $nid));
             return $new_likes;
         } else {
@@ -701,7 +702,6 @@ function afc_custom_form_alter(&$form, &$form_state, $form_id) {
                     $nodeinfo['employee_from'] = $emp_from;
                     $nodeinfo['general_or_cxi'] = $general_or_cxi;
                     $nodeinfo['body'] = $other_msg;
-
 
                     //if afc_custom_add_new_shoutout is tid_71, then the shoutout is general and does not count
                     //toward CXi rewards. Thus, we do not want to call the calculate function (afc_custom_calculate_shoutout)
@@ -918,9 +918,6 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-
-    drupal_set_message('This is a test message');
-    drupal_goto('<front>');
 
 }
     switch ($node->type) {
