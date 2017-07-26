@@ -442,7 +442,7 @@ div#block-block-3 .content {
 .view-shoutout-comment-list .views-row {
     /* margin: 15px 10px; */
     margin: 15px 15px 26px 53px;
-    font-size: 20px;
+    font-size: 18px;
     clear: both;
     vertical-align: middle;
     min-height: 125px;
@@ -466,16 +466,14 @@ div#block-block-3 .content {
 .general-shoutout-yes .views-field-field-total-shoutouts:after {
     /* background-color: white; */
     background-image: url(/sites/all/modules/afc_custom/images/whitestar2.png);
-    background-size: 19px 19px;
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     display: inline-block;
     width: 20px;
     height: 20px;
     content: "";
-    margin-top: 5px;
+    margin-top: 6px;
     margin-left: 3px;
-    /* opacity: .95; */
-    /* box-shadow: 1px 1px 1px black; */
 }
 .general-shoutout-yes .views-field-field-total-shoutouts {
     float: right;
@@ -483,7 +481,7 @@ div#block-block-3 .content {
     left: 9px;
     top: -10px;
     box-shadow: 0 0 8px #555;
-    background: #d7822f;
+    background: #fa931a;
     min-width: 35px;
     min-height: 35px;
     line-height: 30px;
