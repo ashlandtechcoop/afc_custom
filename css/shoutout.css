@@ -47,8 +47,7 @@ form#webform-client-form-106 .desc {
 /*}*/
 .shoutout-likes div:first-child {
     position: relative;
-    right: 25px;
-    text-align: 0;
+    left: 20px;
 }
 .shoutout-likes {
     background-image: url(/sites/all/modules/afc_custom/images/heart25.png);
@@ -61,12 +60,12 @@ form#webform-client-form-106 .desc {
     height: 24px;
     margin: 3px 5px;
     line-height: 20px;
-    font-size: 11px;
+    font-size: 13px;
     text-align: center;
     opacity: .9;
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 20px;
 }
 .general-cxi-options div.description {
     width: 50%;
