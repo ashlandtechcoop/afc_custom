@@ -403,8 +403,10 @@ div#block-block-3 .content {
     cursor:pointer;
 }
 .shoutout-comment-row .views-field-body {
-    display: table-cell;
     font-weight: normal;
+    width: 65%;
+    display: -webkit-box;
+    /* background: black; */
 }
 /*USER PICS AND SHOUTOUT LIST*/
 /*div.shoutout-user-pic img {*/
@@ -413,8 +415,8 @@ div#block-block-3 .content {
     /*margin-right: 9px;*/
 /*}*/
 .field-content.shoutout-user-pic img {
-    width: 125px !important;
-    height: 125px !important;
+    /*width: 125px !important;*/
+    /*height: 125px !important;*/
     box-shadow: 2px 2px 6px #484848;
     float: left;
     border-radius: 50%;
@@ -432,16 +434,23 @@ div#block-block-3 .content {
     /* display: flex; */
     /* box-shadow: 1px 2px 2px black; */
 }
+.shoutout-comment-row.general-shoutout-no {
+    background: #ccc;
+}
+.shoutout-comment-row.general-shoutout-yes {
+    background: #a9da89;
+}
 .view-shoutout-comment-list .views-row {
-    /*margin: 15px 10px;*/
-    margin: 17px 15px 10px 53px;
+    /* margin: 15px 10px; */
+    margin: 15px 15px 26px 53px;
     font-size: 20px;
     clear: both;
     vertical-align: middle;
-    min-height: 115px;
-    background: #eaeaea;
+    min-height: 125px;
+    width: 87%;
+    /*background: #eaeaea;*/
     border-radius: 6px;
-    transition:.5s;
+    transition: .5s;
     position: relative;
 }
 .view.view-shoutout-comment-list .views-field-field-last-name, .view.view-shoutout-comment-list .views-field-field-department {
@@ -458,15 +467,15 @@ div#block-block-3 .content {
 .general-shoutout-yes .views-field-field-total-shoutouts:after {
     /* background-color: white; */
     background-image: url(/sites/all/modules/afc_custom/images/whitestar2.png);
-    background-size: 23px 23px;
+    background-size: 19px 19px;
     background-repeat: no-repeat;
     display: inline-block;
-    width: 28px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     content: "";
-    margin-top: 3px;
-    float: right;
-    opacity: .95;
+    margin-top: 5px;
+    margin-left: 3px;
+    /* opacity: .95; */
     /* box-shadow: 1px 1px 1px black; */
 }
 .general-shoutout-yes .views-field-field-total-shoutouts {
@@ -492,12 +501,13 @@ div#block-block-3 .content {
     box-shadow: 0 0 8px #555;
     background: #8bc53f;
     min-width: 35px;
+    font-weight: bold;
     min-height: 35px;
-    line-height: 30px;
-    font-size: 20px;
+    line-height: 32px;
+    font-size: 17px;
     text-align: center;
     border-radius: 50%;
-    color: white;
+    color: #3d3d3d;
 }
 .view-shoutout-huddle-news .views-field-created {
     background: #8bc53f;
