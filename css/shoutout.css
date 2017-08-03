@@ -598,7 +598,14 @@ div#employee-search-field ul.ui-autocomplete li, div#edit-field-full-name-value-
     transition: .5s;
     line-height: 10px;
     height: 60px;
+    list-style: none !important;
+    list-style-image: none !important;
 }
+
+div#employee-search-field ul.ui-autocomplete li .ui-autocomplete-field-field_full_name {
+    float: left;
+}
+
 div#employee-search-field ul.ui-autocomplete li a, div#edit-field-full-name-value-shout-out-wrapper ul.ui-autocomplete li a {
     color: #fff;
     font-weight: normal;

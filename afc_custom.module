@@ -1131,14 +1131,50 @@ function afc_custom_menu_alter(&$items) {
 
 function afc_custom_node_update($node){
 
-    //count down shoutouts if one gets unpublished
+/* Handle the few cases of what should happen when a shoutout node is updated
+ * If shoutout is unpublished
+ * If the shoutout was a cxi, then count down the points
+ * If the shoutout was just normal, simply unpublish it
+ * If the shoutout is switched from general to cxi or vise versa, handle the count
+*/
+
     if ($node->type == 'shoutout') {
-        if (isset($node->original->status) && $node->original->status == 1 && $node->status == 0){
+
+    //----IF SWITCHING FROM A GENERAL SHOUTOUT TO CXI SHOUTOUT
+        if ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1
+                && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0){
+            //switched from a general shoutout to a cxi shoutout
+            if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from general to CXi, add a new point');
+                afc_custom_calculate_shoutout($userid);
+            }
+
+    //----IF SWITCHING FROM A CXI SHOUTOUT TO A GENERAL SHOUTOUT
+        } elseif ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0
+            && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1){
+
+            //switched from a CXI shoutout to a general shoutout'
             if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
                 //unpublishing node
                 $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
-                watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
+                watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. Remove a shoutout point.');
                 afc_custom_remove_shoutout($userid);
+            }
+        } else {
+            //the field was blank first and is now being updated.
+        }
+
+    //----IF UNPUBLISHING
+        if (isset($node->original->status) && $node->original->status == 1 && $node->status == 0){
+            if ($node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] != 1) {
+                //if it equals zero then its cxi and has rewards
+                if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                    //unpublishing node
+                    $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                    watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
+                    afc_custom_remove_shoutout($userid);
+                }
             }
         }
     }
