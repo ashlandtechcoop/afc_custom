@@ -1162,7 +1162,15 @@ function afc_custom_node_update($node){
                 afc_custom_remove_shoutout($userid);
             }
         } else {
-            //the field was blank first and is now being updated.
+            //the field was blank first and is now being updated to say NO
+            //do nothing, going from BLANK to NO should have no change
+            watchdog('afc_custom', 'Function: afc_custom_node_update - Do nothing');
+            if($node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0) {
+                //unpublishing node
+                $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. Remove a shoutout point.');
+                afc_custom_remove_shoutout($userid);
+            }
         }
 
     //----IF UNPUBLISHING
@@ -1175,6 +1183,8 @@ function afc_custom_node_update($node){
                     watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing shoutout');
                     afc_custom_remove_shoutout($userid);
                 }
+            } else {
+                watchdog('afc_custom', 'Function: afc_custom_node_update - Unpublishing a general shoutout do nothing');
             }
         }
     }
