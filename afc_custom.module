@@ -74,7 +74,7 @@ function ip_is_afc ($ip) {
     if (in_array($ip, $pri_addrs)) {
         return true;
     } else {
-        watchdog('afc_custom','Function ip_is_afc returned false!');
+//        watchdog('afc_custom','Function ip_is_afc returned false!');
         return false;
     }
 
@@ -179,7 +179,8 @@ function shoutout_alert($uid) {
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
 
                     if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM
-                        $to = 'gm@ashlandfood.coop';
+//                        $to = 'gm@ashlandfood.coop';
+                        $to = 'mcampbell@ashlandfood.coop';
                         $values = array(
                             'manager_email' => $to,
                             'manager_nick_name' => 'General Manager',
@@ -188,9 +189,10 @@ function shoutout_alert($uid) {
                         );
                         drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
                     } else { //normal shoutout
-                        $to = $manager->mail;
+//                        $to = $manager->mail;
+                        $to = 'mcampbell@ashlandfood.coop';
                         $values = array(
-                            'manager_email' => $manager->mail,
+                            'manager_email' => 'mcampbell@ashlandfood.coop',
                             'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
                             'employee_name' => $users_name,
                             'update_link' => $link,
@@ -215,12 +217,12 @@ function shoutout_alert($uid) {
         return false;
     }
     $values = array(
-        'manager_email' => 'hrteam@ashlandfood.coop',
-        'to' => 'hrteam@ashlandfood.coop',
+        'manager_email' => 'mcampbell@ashlandfood.coop',
+        'to' => 'mcampbell@ashlandfood.coop',
         'employee_name' => ($user_profile->field_full_name[LANGUAGE_NONE][0]['value']) ? $user_profile->field_full_name[LANGUAGE_NONE][0]['value'] : 'No Name Found',
     );
 
-    drupal_mail('afc_custom', 'shoutout_alert_no_manager', 'hrteam@ashlandfood.coop', 'en', $values, variable_get('site_mail', ''));
+    drupal_mail('afc_custom', 'shoutout_alert_no_manager', 'mcampbell@ashlandfood.coop', 'en', $values, variable_get('site_mail', ''));
     return false;
 }
 
@@ -325,19 +327,42 @@ function afc_custom_remove_shoutout($uid) {
             $total_so = $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'];
             $current_so = $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'];
 
+            //if its a normal count such as 1 current, 4 total, then simply minus one from both
             if ($current_so != 0 && $total_so != 0) {
+                watchdog('afc_custom','removal: counted down current(@ct) and total(@ttl) shoutouts',array('@ct' => $current_so, '@ttl' => $total_so));
                 $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = $current_so - 1;
                 $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
                 profile2_save($profile);
                 return true;
-            }
-
-            if ($current_so == 0 && $total_so > 0 && $total_so % 3 == 0) {
+            } elseif ($current_so == 0 && $total_so > 0 && $total_so % 3 == 0) {
                 //if its equal to 0 then we need to remove a reward
+                //if its equal to zero, then we need to countdown the total by one, and change the current from zero to two
+                watchdog('afc_custom','removal: counted down current(@ct) and total(@ttl) shoutouts',array('@ct' => $current_so, '@ttl' => $total_so));
                 shoutout_delete_reward($uid);
                 $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
+                $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] =  2;
                 profile2_save($profile);
                 return true;
+            } else {
+                watchdog('afc_custom','removal: Unhandled exception!
+                uid: @uid,
+                current:@current,
+                total:@total',
+                    array(
+                        '@uid' => $uid,
+                        '@current' => $current_so,
+                        '@total' => $total_so,
+                    )
+                );
+
+                $site_email = variable_get('site_mail', 'tech@ashlandfood.coop');
+                $to = $site_email;
+                $values = array(
+                    'uid' => $uid,
+                    'to' => $to,
+                );
+                drupal_mail('afc_custom', 'remove_shoutout_error', $to, 'en', $values, $site_email);
+                return false;
             }
 
         } else {
@@ -986,7 +1011,7 @@ function afc_custom_css_alter(&$css) {
     }
 
     if ($kk == true) {
-        watchdog('afc_custom', 'Removed CSS from @uri', array('@uri' => $_SERVER['REQUEST_URI']));
+        //watchdog('afc_custom', 'Removed CSS from @uri', array('@uri' => $_SERVER['REQUEST_URI']));
         foreach ($css as $key => $style) {
             if (strpos($key, 'sites/all/themes/ashland_theme') !== false){
                 unset($css[$key]);
@@ -1118,6 +1143,16 @@ function afc_custom_mail ($key, &$message, $params) {
             $message['body'][] = t('Please address this and review why there is no manager assigned to this employees department.');
 
             watchdog('afc_custom', 'Function: hook_mail - email sent to hrteam because no manager was found');
+            break;
+        case 'remove_shoutout_error':
+            $message['to'] = $params['to']; //$params['manager_email'];
+            $message['subject'] = t('Shoutout Error! Couldnt remove shoutout user:@uid', array('@uid' => $params['uid']));
+            $message['body'][] = t('Error on afcportal.com');
+            $message['body'][] = 'When an admin unpublishes, or changes a shoutout that causes it to remove a shoutout point,
+            the function afc_custom_remove_shoutout runs. Something happened in this case and this function did not
+            run correctly.';
+            $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
+            watchdog('afc_custom', 'Function: hook_mail - remove_shoutout_error email sent to tech');
             break;
     }
 }
