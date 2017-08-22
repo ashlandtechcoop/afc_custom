@@ -281,21 +281,18 @@ function shoutout_create_reward($uid) {
 
             watchdog('afc_custom', 'Function: shoutout_create_reward - Created FC item on user profile. Uid: @uid', array('@uid' => $uid));
             return true;
-        } else {
-            return false;
         }
-
-    } else {
-        watchdog('afc_custom', 'Function: shoutout_create_reward FALSE. No userid or profile found. Submitted value: @uid', array('@uid' => $uid));
-        $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
-        $to = $site_email;
-        $values = array(
-            'uid' => $uid,
-            'to' => $to,
-        );
-        drupal_mail('afc_custom', 'create_reward_error', $to, 'en', $values, $site_email);
-        return false;
     }
+    watchdog('afc_custom', 'Function: shoutout_create_reward FALSE. Either no userid, no profile, or no field named field_employee_rewards
+    was found. Submitted value: @uid', array('@uid' => $uid));
+    $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+    $to = $site_email;
+    $values = array(
+        'uid' => $uid,
+        'to' => $to,
+    );
+    drupal_mail('afc_custom', 'create_reward_error', $to, 'en', $values, $site_email);
+    return false;
 }
 
 /**
@@ -364,7 +361,7 @@ function afc_custom_remove_shoutout($uid) {
                     )
                 );
 
-                $site_email = variable_get('site_mail', 'tech@ashlandfood.coop');
+                $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
                 $to = $site_email;
                 $values = array(
                     'uid' => $uid,
@@ -390,9 +387,18 @@ function afc_custom_remove_shoutout($uid) {
  */
 function afc_custom_calculate_shoutout($uid) {
 
+    $x = 0; //init x
     if (empty($uid)) {
+        $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+        $to = $site_email;
+        $values = array(
+            'uid' => $uid,
+            'to' => $to,
+        );
+        drupal_mail('afc_custom', 'calculate_shoutout_error', $to, 'en', $values, $site_email);
         return false;
     }
+
     watchdog('afc_custom', 'Function: afc_custom_calculate_shoutout - Begin calculate shoutout');
     $profile = get_profile($uid);
 
@@ -423,12 +429,21 @@ function afc_custom_calculate_shoutout($uid) {
             }
         } else {
             watchdog('afc_custom','Function: afc_custom_calculate_shoutout - one or both of the profile fields are not set on user profile. field_total_shoutouts field_current_shoutouts');
-            return false;
         }
     } else {
         watchdog('afc_custom','Function: afc_custom_calculate_shoutout - no profile was found');
-        return false;
     }
+
+
+    //if something went wrong here, alert tech
+    $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+    $to = $site_email;
+    $values = array(
+        'uid' => $uid,
+        'to' => $to,
+    );
+    drupal_mail('afc_custom', 'calculate_shoutout_error', $to, 'en', $values, $site_email);
+    return false;
 }
 
 
@@ -1176,6 +1191,15 @@ function afc_custom_mail ($key, &$message, $params) {
              You can manually add a reward on their account too while debugging.';
             $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
             watchdog('afc_custom', 'Function: hook_mail - create_reward_error email sent to tech');
+            break;
+        case 'calculate_shoutout_error':
+            $message['to'] = $params['to']; //$params['manager_email'];
+            $message['subject'] = t('Shoutout Error! Couldnt calculate shoutout for user:@uid', array('@uid' => $params['uid']));
+            $message['body'][] = t('Error on afcportal.com');
+            $message['body'][] = 'Something happened with the afc_custom_calculate_shoutout function. This function runs anytime
+            a new shoutout is created. There should be more info in the dblog about it.';
+            $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
+            watchdog('afc_custom', 'Function: hook_mail - calculate_shoutout_error email sent to tech');
             break;
     }
 }
