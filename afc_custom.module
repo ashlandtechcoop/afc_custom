@@ -1199,7 +1199,7 @@ function afc_custom_node_update($node){
         } else {
             //the field was blank first and is now being updated to say NO
             //do nothing, going from BLANK to NO should have no change
-            watchdog('afc_custom', 'Function: afc_custom_node_update - Do nothing');
+            watchdog('afc_custom', 'Function: afc_custom_node_update - Do nothing to shoutout points');
             if($node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0) {
                 //unpublishing node
                 $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
