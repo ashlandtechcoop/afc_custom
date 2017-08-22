@@ -281,10 +281,19 @@ function shoutout_create_reward($uid) {
 
             watchdog('afc_custom', 'Function: shoutout_create_reward - Created FC item on user profile. Uid: @uid', array('@uid' => $uid));
             return true;
+        } else {
+            return false;
         }
 
     } else {
-        watchdog('afc_custom', 'Function: FALSE shoutout_create_reward - Uid: @uid', array('@uid' => $uid));
+        watchdog('afc_custom', 'Function: shoutout_create_reward FALSE. No userid or profile found. Submitted value: @uid', array('@uid' => $uid));
+        $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+        $to = $site_email;
+        $values = array(
+            'uid' => $uid,
+            'to' => $to,
+        );
+        drupal_mail('afc_custom', 'create_reward_error', $to, 'en', $values, $site_email);
         return false;
     }
 }
@@ -399,6 +408,7 @@ function afc_custom_calculate_shoutout($uid) {
             profile2_save($profile);
 
             if ($profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] == 3) {
+                watchdog('afc_custom','User just received 3 shoutouts and should have a new reward item on their account.');
                 //create a reward field collection item for the user if theyve reached 3
                 shoutout_create_reward($uid);
                 //alert manager of shoutout prize with an email
@@ -470,7 +480,7 @@ function afc_custom_add_new_shoutout(&$nodeinfo){
     watchdog('afc_custom', 'Created new shoutout to user @user', array('@user' => $nodeinfo['employee_to']));
 
     //return the dropdown value so we know whether or not this counted toward CXi rewards.
-    watchdog('afc_custom', 'Returning value @general', array('@general' => $general_or_cxi));
+    watchdog('afc_custom', 'Returning value @general for cxi/general dropdown on shoutout form', array('@general' => $general_or_cxi));
     return $nodeinfo['general_or_cxi'];
 }
 
@@ -1153,6 +1163,19 @@ function afc_custom_mail ($key, &$message, $params) {
             run correctly.';
             $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
             watchdog('afc_custom', 'Function: hook_mail - remove_shoutout_error email sent to tech');
+            break;
+        case 'create_reward_error':
+            $message['to'] = $params['to']; //$params['manager_email'];
+            $message['subject'] = t('Shoutout Error! Couldnt create reward for user:@uid', array('@uid' => $params['uid']));
+            $message['body'][] = t('Error on afcportal.com');
+            $message['body'][] = 'When a user receives a shoutout, this module creates a new node for it and increases
+            the total_shoutout count by 1, and increases the current_shoutout count by 1. If a user gets 3 current shoutouts,
+            this module creates a new reward item on their profile and sends an email to that persons manager.';
+            $message['body'][] = 'This function returned false, and thus it did NOT create a reward, and possibly did not
+            alert the persons manager. Investigate why this has happened, and if the person definitely needed a reward, let HR know.
+             You can manually add a reward on their account too while debugging.';
+            $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
+            watchdog('afc_custom', 'Function: hook_mail - create_reward_error email sent to tech');
             break;
     }
 }
