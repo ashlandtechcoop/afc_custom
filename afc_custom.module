@@ -605,19 +605,28 @@ function update_recognized_access_check($user, $roles = array()) {
 function afc_custom_update_recognized_callback($item_id) {
     //field collection item id from url
     $collection = entity_metadata_wrapper('field_collection_item', $item_id);
-    $collection->field_recognized_bool = 1;
-    $collection->save(true);
-    watchdog('afc_custom','Updated user reward item to recognized = yes. Field Collection ID is: @item',array('@item' => $item_id));
-
-    if(user_has_role(4) || user_has_role(3)) {
-        //if user is admin or hr admin then send them to manage shoutouts
-        drupal_set_message('Thanks! The employee reward has been marked as complete!');
-        drupal_goto('manage-shoutouts');
-    } else {
-        drupal_set_message('Thanks! The employee reward has been marked as complete! You can close this page now.');
+    //if fc is empty, then it no longer exists. Probably because the reward was removed due
+    //to a shoutout being unpublished
+    if (!isset($collection->field_recognized_bool)) {
+        drupal_set_message('Sorry, this reward was removed from the employee\'s account! No further action is needed from you.
+         Contact HR with any questions.', 'warning');
         drupal_goto('<front>');
+    } else {
+        $collection->field_recognized_bool = 1;
+        $collection->save(true);
+        watchdog('afc_custom','Updated user reward item to recognized = yes. Field Collection ID is: @item',array('@item' => $item_id));
+
+        if(user_has_role(4) || user_has_role(3)) {
+            //if user is admin or hr admin then send them to manage shoutouts
+            drupal_set_message('Thanks! The employee reward has been marked as complete!');
+            drupal_goto('manage-shoutouts');
+        } else {
+            drupal_set_message('Thanks! The employee reward has been marked as complete! You can close this page now.');
+            drupal_goto('<front>');
+        }
+        return;
     }
-    return;
+
 }
 
 /**
