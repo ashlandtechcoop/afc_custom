@@ -1250,6 +1250,13 @@ function afc_custom_mail ($key, &$message, $params) {
             $message['body'][] = 'Check the watchdog dblog in drupal for more information, and look at this function in afc_custom.module';
             watchdog('afc_custom', 'Function: hook_mail - calculate_shoutout_error email sent to tech');
             break;
+        case 'general_shoutout_error':
+            $message['to'] = $params['to']; //$params['manager_email'];
+            $message['subject'] = t('Shoutout General Error!');
+            $message['body'][] = t('Error on afcportal.com');
+            $message['body'][] = t('Login and check the dblog for more details');
+            watchdog('afc_custom', 'Function: hook_mail - general_shoutout_error email sent to tech');
+            break;
     }
 }
 
