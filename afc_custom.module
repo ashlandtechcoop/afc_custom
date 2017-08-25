@@ -155,12 +155,9 @@ function shoutout_alert($uid) {
 
             //if a manager uid was found
             if ($manager_uid) {
-
-
                 $manager = user_load($manager_uid);
                 if ($manager->status == 1) { //if the manager is active
                     $mgr_profile = get_profile($manager_uid);
-
 
                     $site_email = variable_get('site_mail', '');
                     $users_name = $user_profile->field_nick_name[LANGUAGE_NONE][0]['value'].' '.$user_profile->field_last_name[LANGUAGE_NONE][0]['value'];
@@ -174,6 +171,7 @@ function shoutout_alert($uid) {
                     } else {
                         $link = 'An error has occurred please contact your admin. Check watchdog log';
                         watchdog('afc_custom','The field_employee_rewards field collection is not on the users profile. No beuno son');
+                        return false;
                     }
 
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
@@ -188,6 +186,7 @@ function shoutout_alert($uid) {
                             'update_link' => $link,
                         );
                         drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
+                        return true;
                     } else { //normal shoutout
 //                        $to = $manager->mail;
                         $to = 'mcampbell@ashlandfood.coop';
@@ -418,7 +417,15 @@ function afc_custom_calculate_shoutout($uid) {
                 //create a reward field collection item for the user if theyve reached 3
                 shoutout_create_reward($uid);
                 //alert manager of shoutout prize with an email
-                shoutout_alert($uid);
+                if (!shoutout_alert($uid)) {
+                    $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+                    $to = $site_email;
+                    $values = array(
+                        'uid' => $uid,
+                        'to' => $to,
+                    );
+                    drupal_mail('afc_custom', 'create_reward_error', $to, 'en', $values, $site_email);
+                }
                 //reset current shoutouts to 0. Since we load the $profile in shoutout_create_reward and save it, we MUST re-load the $profile here before we save it again
                 $profile = get_profile($uid);
                 $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] = 0;
