@@ -542,7 +542,7 @@ function afc_custom_menu() {
         'access arguments' => array(1, array('Manager','HR Admin','administrator')),
         'type' => MENU_CALLBACK,
     );
-    
+
     $items['shoutout/add/like/%'] = array(
         'page callback' => 'afc_custom_ajax_get_ajax', // Render HTML.
         'page arguments' => array(3),
@@ -600,6 +600,7 @@ function update_recognized_access_check($user, $roles = array()) {
 
 /**
  * menu callback to recognize field collection item. set it to yes
+ * @param $item_id field collection item ID from hook_menu
  */
 function afc_custom_update_recognized_callback($item_id) {
     //field collection item id from url
@@ -1280,12 +1281,23 @@ function afc_custom_node_update($node){
             }
         }
 
-        //----IF PUBLISHING
+    //----IF PUBLISHING
+        //if user only publishes, then do nothing. If they publish AND switch to cxi, recalculate shoutouts
+        //if they publish AND switch to general, do nothing, since counts will already be correct. This is already
+        //accomplished above in the switch statement. Simply remove the message if users makes cxi AND publishes
         if (isset($node->original->status) && $node->original->status == 0 && $node->status == 1){
-            watchdog('afc_custom', 'Function: afc_custom_node_update - Published a shoutout that was unpublished. Alert the user');
-            drupal_set_message('Publishing a Shoutout will NOT recalculate current and total counts. It will not
-             create any due rewards, and it will not alert managers of rewards. If you must re-publish a Shoutout
-             then any due rewards must be created manually.');
+
+            if ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1
+                && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0) {
+                //do nothing, this is already accomplished in another case above
+            } else {
+                watchdog('afc_custom', 'Function: afc_custom_node_update - Published a shoutout that was unpublished. Alert the user');
+                drupal_set_message('Publishing a Shoutout will NOT recalculate current and total counts. It will not
+                create any due rewards, and it will not alert managers of rewards. If you must re-publish a Shoutout
+                then any due rewards must be created manually.');
+            }
+
+
         }
 
     }
