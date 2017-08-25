@@ -542,14 +542,7 @@ function afc_custom_menu() {
         'access arguments' => array(1, array('Manager','HR Admin','administrator')),
         'type' => MENU_CALLBACK,
     );
-
-    $items['add_like/%'] = array(
-        'page callback' => 'afc_custom_update_recognized_callback',
-        'page arguments' => array(1),
-        'access callback' => 'update_recognized_access_check',
-        'access arguments' => array(1, array('Manager','HR Admin','administrator')),
-        'type' => MENU_CALLBACK,
-    );
+    
     $items['shoutout/add/like/%'] = array(
         'page callback' => 'afc_custom_ajax_get_ajax', // Render HTML.
         'page arguments' => array(3),
