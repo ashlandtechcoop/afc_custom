@@ -1234,23 +1234,37 @@ function afc_custom_node_update($node){
     //----IF SWITCHING FROM A GENERAL SHOUTOUT TO CXI SHOUTOUT
         if ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1
                 && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0){
-            //switched from a general shoutout to a cxi shoutout
-            if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
-                $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
-                watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from general to CXi, add a new point');
-                afc_custom_calculate_shoutout($userid);
+
+            //if its unpublished do nothing
+            if ($node->status == 0) {
+                watchdog('afc_custom','node_update: The user switched a shoutout from general to cxi, but its unpublished, so I did nothing');
+                drupal_set_message('You switched a shoutout from General to CXi, however this shoutout is unpublished, so I didn\'t do anything.');
+            } else {//if it is published
+                //switched from a general shoutout to a cxi shoutout
+                if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                    $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                    watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from general to CXi, add a new point');
+                    afc_custom_calculate_shoutout($userid);
+                }
             }
+
 
     //----IF SWITCHING FROM A CXI SHOUTOUT TO A GENERAL SHOUTOUT
         } elseif ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0
             && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1){
 
-            //switched from a CXI shoutout to a general shoutout'
-            if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
-                //unpublishing node
-                $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
-                watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. Remove a shoutout point.');
-                afc_custom_remove_shoutout($userid);
+            //if its unpublished do nothing
+            if ($node->status == 0) {
+                watchdog('afc_custom','node_update: The user switched a shoutout from general to cxi, but its unpublished, so I did nothing');
+                drupal_set_message('You switched a shoutout from CXi to General, however this shoutout is unpublished, so I didn\'t do anything.');
+            } else {
+                //switched from a CXI shoutout to a general shoutout'
+                if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                    //unpublishing node
+                    $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                    watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. Remove a shoutout point.');
+                    afc_custom_remove_shoutout($userid);
+                }
             }
         } else {
             //the field was blank first and is now being updated to say NO
