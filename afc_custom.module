@@ -240,11 +240,31 @@ function shoutout_delete_reward($uid) {
     if ($user_account && $user_profile) {
         if(isset($user_profile->field_employee_rewards[LANGUAGE_NONE])) {
             $key_to_select = max(array_keys($user_profile->field_employee_rewards[LANGUAGE_NONE]));
-            entity_delete_multiple('field_collection_item', array($user_profile->field_employee_rewards[LANGUAGE_NONE][$key_to_select]['value']));
-        }
+            $item_id = $user_profile->field_employee_rewards[LANGUAGE_NONE][$key_to_select]['value'];
+            $item = entity_metadata_wrapper('field_collection_item', $item_id);
 
-        watchdog('afc_custom', 'Function: shoutout_delete_reward - Deleted FC item on user profile. Uid: @uid', array('@uid' => $uid));
-        return true;
+            //load the field collection item. If its already been recognized, then bounce
+            if($item->field_recognized_bool->value() ==1) {
+                watchdog('afc_custom','Error: Tried to delete a field collection item reward that has already been recognized.
+                    If you are trying to remove a reward from someones account, it failed. You cannot remove a reward
+                    that has already been given and recognized by the manager.');
+
+                drupal_set_message('Error: Tried to delete a reward that has already been recognized.
+                    If you are trying to remove a reward from someones account, it failed. You cannot remove a reward
+                    that has already been given and recognized by the manager.','warning');
+                return false;
+            } else {
+                entity_delete_multiple('field_collection_item', array($item_id));
+                drupal_set_message('Success! Removed a reward item from the employee account');
+                watchdog('afc_custom', 'Function: shoutout_delete_reward - Deleted FC item on user profile. Uid: @uid', array('@uid' => $uid));
+                return true;
+            }
+        } else {
+            //if field_employee_rewards is not set, it could be gone or just empty. toss error
+            watchdog('afc_custom', 'Function: shoutout_delete_reward - Error on Uid: @uid could not delete FC item.
+                Either because field_employee_rewards does not exist on the profile OR it is empty', array('@uid' => $uid));
+            return false;
+        }
     } else {
         watchdog('afc_custom', 'Function: FALSE shoutout_delete_reward - Uid: @uid', array('@uid' => $uid));
         return false;
@@ -343,11 +363,22 @@ function afc_custom_remove_shoutout($uid) {
                 //if its equal to 0 then we need to remove a reward
                 //if its equal to zero, then we need to countdown the total by one, and change the current from zero to two
                 watchdog('afc_custom','removal: counted down current(@ct) and total(@ttl) shoutouts',array('@ct' => $current_so, '@ttl' => $total_so));
-                shoutout_delete_reward($uid);
-                $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
-                $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] =  2;
-                profile2_save($profile);
-                return true;
+                if (shoutout_delete_reward($uid)) {
+                    $profile->field_total_shoutouts[LANGUAGE_NONE][0]['value'] =  $total_so - 1;
+                    $profile->field_current_shoutouts[LANGUAGE_NONE][0]['value'] =  2;
+                    profile2_save($profile);
+                    return true;
+                } else {
+                    watchdog('afc_custom','shoutout_delete_reward returned false. An error happened, email tech');
+                    $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
+                    $to = $site_email;
+                    $values = array(
+                        'uid' => $uid,
+                        'to' => $to,
+                    );
+                    drupal_mail('afc_custom', 'general_shoutout_error', $to, 'en', $values, $site_email);
+                    return false;
+                }
             } else {
                 watchdog('afc_custom','removal: Unhandled exception!
                 uid: @uid,
@@ -986,7 +1017,6 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-
 }
     switch ($node->type) {
         case 'page':
@@ -1249,8 +1279,9 @@ function afc_custom_node_update($node){
             if ($node->status == 0) {
                 watchdog('afc_custom','node_update: The user switched a shoutout from general to cxi, but its unpublished, so I did nothing');
                 drupal_set_message('You switched a shoutout from General to CXi, however this shoutout is unpublished, so I didn\'t do anything.');
-            } else {//if it is published
-                //switched from a general shoutout to a cxi shoutout
+            } else {
+            //if it is published calculate it
+            //switched from a general shoutout to a cxi shoutout
                 if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
                     $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
                     watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from general to CXi, add a new point');
@@ -1272,8 +1303,11 @@ function afc_custom_node_update($node){
                 if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
                     //unpublishing node
                     $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
-                    watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. Remove a shoutout point.');
-                    afc_custom_remove_shoutout($userid);
+                    if (!afc_custom_remove_shoutout($userid)) {
+                        watchdog('afc_custom', 'Function: afc_custom_node_update - remove_shoutout came back false. Did not countdown shoutout counts');
+                    } else {
+                        watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from CXi to General. remove_shoutout came back true');
+                    }
                 }
             }
         } else {
@@ -1297,20 +1331,26 @@ function afc_custom_node_update($node){
             }
         }
 
-    //----IF PUBLISHING
+    //----IF PUBLISHING something that WAS unpublished first
         //if user only publishes, then do nothing. If they publish AND switch to cxi, recalculate shoutouts
         //if they publish AND switch to general, do nothing, since counts will already be correct. This is already
         //accomplished above in the switch statement. Simply remove the message if users makes cxi AND publishes
         if (isset($node->original->status) && $node->original->status == 0 && $node->status == 1){
-
+            //switching from general to cxi
             if ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 1
                 && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0) {
                 //do nothing, this is already accomplished in another case above
+
+            //if re-publishing a cxi shoutout
+            } elseif ($node->original->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0
+                && $node->field_general_shoutout_[LANGUAGE_NONE][0]['value'] == 0){
+                if(isset($node->field_employee[LANGUAGE_NONE][0]['uid'])) {
+                    $userid = $node->field_employee[LANGUAGE_NONE][0]['uid'];
+                    watchdog('afc_custom', 'Function: afc_custom_node_update - switching shoutout from general to CXi, add a new point');
+                    afc_custom_calculate_shoutout($userid);
+                }
             } else {
-                watchdog('afc_custom', 'Function: afc_custom_node_update - Published a shoutout that was unpublished. Alert the user');
-                drupal_set_message('Publishing a Shoutout will NOT recalculate current and total counts. It will not
-                create any due rewards, and it will not alert managers of rewards. If you must re-publish a Shoutout
-                then any due rewards must be created manually.');
+                //unhandled case, could be anything, maybe alert admin
             }
 
 
