@@ -177,8 +177,7 @@ function shoutout_alert($uid) {
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
 
                     if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM
-//                        $to = 'gm@ashlandfood.coop';
-                        $to = 'mcampbell@ashlandfood.coop';
+                        $to = 'gm@ashlandfood.coop';
                         $values = array(
                             'manager_email' => $to,
                             'manager_nick_name' => 'General Manager',
@@ -188,10 +187,9 @@ function shoutout_alert($uid) {
                         drupal_mail('afc_custom', 'shoutout_alert', $to, 'en', $values, $site_email);
                         return true;
                     } else { //normal shoutout
-//                        $to = $manager->mail;
-                        $to = 'mcampbell@ashlandfood.coop';
+                        $to = $manager->mail;
                         $values = array(
-                            'manager_email' => 'mcampbell@ashlandfood.coop',
+                            'manager_email' => $manager->mail,
                             'manager_nick_name' => $mgr_profile->field_nick_name[LANGUAGE_NONE][0]['value'],
                             'employee_name' => $users_name,
                             'update_link' => $link,
@@ -216,12 +214,12 @@ function shoutout_alert($uid) {
         return false;
     }
     $values = array(
-        'manager_email' => 'mcampbell@ashlandfood.coop',
-        'to' => 'mcampbell@ashlandfood.coop',
+        'manager_email' => 'hrteam@ashlandfood.coop',
+        'to' => 'hrteam@ashlandfood.coop',
         'employee_name' => ($user_profile->field_full_name[LANGUAGE_NONE][0]['value']) ? $user_profile->field_full_name[LANGUAGE_NONE][0]['value'] : 'No Name Found',
     );
 
-    drupal_mail('afc_custom', 'shoutout_alert_no_manager', 'mcampbell@ashlandfood.coop', 'en', $values, variable_get('site_mail', ''));
+    drupal_mail('afc_custom', 'shoutout_alert_no_manager', 'hrteam@ashlandfood.coop', 'en', $values, variable_get('site_mail', ''));
     return false;
 }
 
@@ -1326,7 +1324,6 @@ function afc_custom_node_update($node){
         } else {
             //the field was blank first and is now being updated to say NO
             //do nothing, going from BLANK to NO should have no change
-            watchdog('afc_custom', 'Function: afc_custom_node_update - Not switching. Do nothing to shoutout points');
         }
 
     //----IF UNPUBLISHING
