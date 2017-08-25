@@ -372,9 +372,14 @@ function afc_custom_remove_shoutout($uid) {
                     watchdog('afc_custom','shoutout_delete_reward returned false. An error happened, email tech');
                     $site_email = variable_get('site_mail', 'help@ashlandfood.coop');
                     $to = $site_email;
+                    $body = 'The user unpublished a shoutout which tried to remove a reward on the employee
+                     account, but the reward has already been recognized. There is not fix for this really.
+                     HR just needs to understand, that unpublishing an old shoutout will not affect the shoutout count or remove
+                     any rewards.';
                     $values = array(
                         'uid' => $uid,
                         'to' => $to,
+                        'body' => $body,
                     );
                     drupal_mail('afc_custom', 'general_shoutout_error', $to, 'en', $values, $site_email);
                     return false;
@@ -1255,6 +1260,7 @@ function afc_custom_mail ($key, &$message, $params) {
             $message['subject'] = t('Shoutout General Error!');
             $message['body'][] = t('Error on afcportal.com');
             $message['body'][] = t('Login and check the dblog for more details');
+            $message['body'][] = $params['body'];
             watchdog('afc_custom', 'Function: hook_mail - general_shoutout_error email sent to tech');
             break;
     }
