@@ -86,31 +86,28 @@ function ip_is_afc ($ip) {
  * the department who is labeled 'manager'
  */
 function _get_manager_of_dept($dept_tid, $manager_tid) {
-    //SELECT et.entity_id, et.field_employee_type_tid FROM field_data_field_department fd join
-    // field_data_field_employee_type et on fd.entity_id = et.entity_id WHERE fd.field_department_tid = 7 and et.field_employee_type_tid = 36;
 
-    $query = db_query("SELECT et.entity_id, et.field_employee_type_tid FROM {field_data_field_department} fd join {field_data_field_employee_type} et on
-                      fd.entity_id = et.entity_id where fd.field_department_tid =".$dept_tid." and et.field_employee_type_tid =".$manager_tid);
+    //Select the employee profile id that is in the department supplied, and has the manager termID
+    $query = db_query("SELECT et.entity_id, et.field_employee_type_tid, profile.uid, uu.status
+                  FROM {field_data_field_department} fd
+                  join {field_data_field_employee_type} et
+                  on fd.entity_id = et.entity_id
+                  join profile
+                  on profile.pid = et.entity_id
+                  join users uu on profile.uid = uu.uid
+                  where fd.field_department_tid =".$dept_tid."
+                  and uu.status = 1
+                  and et.field_employee_type_tid =".$manager_tid);
+
     $records = $query->fetchAll();
 
     if ($records[0]->entity_id) {
-        //if its there, return the profile ID of employee
-        $pid = $records[0]->entity_id;
-
-        //now get uid from profile ID pid and make sure its an active account
-        $query2 = db_query("SELECT p.uid FROM {profile} p join {users} u on p.uid = u.uid where p.pid=".$pid." and u.status=1"); //select * from profile join users on profile.uid = users.uid where pid =722 and users.status = 1;
-        $uid = $query2->fetchAll();
-
-        if ($uid[0]->uid) {
-            //grab the first active manager
-            return $uid[0]->uid;
-        } else {
-            //a manager profile was found but a matching user id was not found for some reason
-            return false;
-        }
-
+        //found one, return it
+        watchdog('afc_custom','Function: _get_manager_of_dept found manager uid: @uid', array('@uid' => $records[0]->uid));
+        return $records[0]->uid;
     } else {
         //no manager was found for that department
+        watchdog('afc_custom','Function: _get_manager_of_dept returned zero results for the sql query');
         return false;
     }
 }
@@ -147,12 +144,12 @@ function shoutout_alert($uid) {
 
     $user_profile = get_profile($uid);
     $manager_tid = _get_manager_tid();
+    watchdog('afc_custom','Function: shoutout_alert started, preparing email to manager');
 
     if ($user_profile && $manager_tid) {
         if (isset($user_profile->field_department[LANGUAGE_NONE])) {
             $dept_tid = $user_profile->field_department[LANGUAGE_NONE][0]['tid'];
             $manager_uid = _get_manager_of_dept($dept_tid,$manager_tid);
-
             //if a manager uid was found
             if ($manager_uid) {
                 $manager = user_load($manager_uid);
@@ -1020,6 +1017,8 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
+    shoutout_alert(1511);
+
 }
     switch ($node->type) {
         case 'page':
