@@ -1017,8 +1017,6 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
-    shoutout_alert(1511);
-
 }
     switch ($node->type) {
         case 'page':
