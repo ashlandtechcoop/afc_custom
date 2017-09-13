@@ -339,8 +339,11 @@ div#block-block-3 .content {
 }
 
 .view-shoutout-huddle-news p, .view.view-shoutout-huddle-news span, .view.view-shoutout-huddle-news {
-    font-size: 20px;
-
+    font-size: 18px;
+}
+.huddle-news-row.zoomin .huddle-news-body-1 p, .huddle-news-row.zoomin .huddle-news-body-1 span, .huddle-news-row.zoomin .huddle-news-body-1 a {
+    font-size: 13px;
+    line-height: 16px;
 }
 
 .huddle-news-image {
