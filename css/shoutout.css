@@ -345,10 +345,14 @@ div#block-block-3 .content {
     font-size: 13px;
     line-height: 16px;
 }
-
-.huddle-news-image {
-    float: right;
+.zoomin .views-field-body-1.huddle-news-body-1 {
+    float: none !important;
 }
+.views-field-body-1.huddle-news-body-1 {
+    float: left;
+    /*width: 60%;*/
+}
+
 .huddle-news-image img {
     border-radius: 8px 8px;
 }
@@ -436,10 +440,12 @@ div#block-block-3 .content {
     /* display: flex; */
     /* box-shadow: 1px 2px 2px black; */
 }
-.shoutout-comment-row.general-shoutout-no {
+.shoutout-comment-row.general-shoutout-no,
+.shoutout-comment-row.general-shoutout-No {
     background: #ccc;
 }
-.shoutout-comment-row.general-shoutout-yes {
+.shoutout-comment-row.general-shoutout-yes,
+.shoutout-comment-row.general-shoutout-Yes  {
     background: #a9da89;
 }
 .view-shoutout-comment-list .views-row {
@@ -455,18 +461,23 @@ div#block-block-3 .content {
     transition: .5s;
     position: relative;
 }
-.view.view-shoutout-comment-list .views-field-field-last-name, .view.view-shoutout-comment-list .views-field-field-department {
+.view.view-shoutout-comment-list .views-field-field-last-name {
+    font-weight: 600;
+}
+.view.view-shoutout-comment-list .views-field-field-department {
     font-weight: 500;
     color: #3e3e3e;
 }
-.general-shoutout-yes .views-field-field-total-shoutouts .field-content {
+.general-shoutout-yes .views-field-field-total-shoutouts .field-content,
+.general-shoutout-Yes .views-field-field-total-shoutouts .field-content {
     display: none;
 }
 
 .resizable-textarea .grippie {
     display: none;
 }
-.general-shoutout-yes .views-field-field-total-shoutouts:after {
+.general-shoutout-yes .views-field-field-total-shoutouts:after,
+.general-shoutout-Yes .views-field-field-total-shoutouts:after {
     /* background-color: white; */
     background-image: url(/sites/all/modules/afc_custom/images/whitestar2.png);
     background-size: 18px 18px;
@@ -478,7 +489,8 @@ div#block-block-3 .content {
     margin-top: 6px;
     margin-left: 3px;
 }
-.general-shoutout-yes .views-field-field-total-shoutouts {
+.general-shoutout-yes .views-field-field-total-shoutouts,
+.general-shoutout-Yes .views-field-field-total-shoutouts {
     float: right;
     position: relative;
     left: 9px;
@@ -493,7 +505,8 @@ div#block-block-3 .content {
     border-radius: 50%;
     color: white;
 }
-.general-shoutout-no .views-field-field-total-shoutouts {
+.general-shoutout-no .views-field-field-total-shoutouts,
+.general-shoutout-No .views-field-field-total-shoutouts {
     float: right;
     position: relative;
     left: 9px;

@@ -1,0 +1,76 @@
+diff --git a/afc_custom.info b/afc_custom.info
+index 4a98c28..2bb5e63 100644
+--- a/afc_custom.info
++++ b/afc_custom.info
+@@ -9,6 +9,7 @@ scripts[] = js/jquery-gradientify/jquery.gradientify.js
+ scripts[] = js/jquery-gradientify/jquery.gradientify.min.js
+ scripts[] = js/afc_custom.js
+ scripts[] = js/shoutout_stats_refresh.js
++scripts[] = js/jQuery.scrollSpeed/jQuery.scrollSpeed.js
+ 
+ stylesheets[all][] = css/animate.css
+ stylesheets[all][] = css/afc_custom.css
+diff --git a/css/shoutout.css b/css/shoutout.css
+index 7711c56..bfce77f 100644
+--- a/css/shoutout.css
++++ b/css/shoutout.css
+@@ -40,7 +40,9 @@ form#webform-client-form-106 .desc {
+     margin: 0;
+     height: 117px;
+ }
+-div#shoutout-page-main-content {
++div#shoutout-page-main-content,
++div#shoutout-page-main-content p,
++div#shoutout-page-main-content span {
+     font-family: 'Raleway', arial, sans-serif !important;
+ }
+ .shout-menu-header .menu-div {
+@@ -298,8 +300,16 @@ div#block-block-3 .content {
+     padding: 0;
+ }
+ 
+-.view.view-shoutout-huddle-news p {
++.view-shoutout-huddle-news p, .view.view-shoutout-huddle-news span, .view.view-shoutout-huddle-news {
+     font-size: 20px;
++
++}
++
++.huddle-news-image {
++    float: right;
++}
++.huddle-news-image img {
++    border-radius: 8px 8px;
+ }
+ .view.view-shoutout-huddle-news .views-field-created {
+     font-size: 20px;
+diff --git a/js/afc_custom.js b/js/afc_custom.js
+index a514ea5..e8b894f 100644
+--- a/js/afc_custom.js
++++ b/js/afc_custom.js
+@@ -414,7 +414,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
+ 
+ 			});
+ 
+-
+ 			//Each shoutout comment add the animation classes on page load
+ 			$(".shoutout-comment-row").once().each(function(index) {
+ 				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
+@@ -424,12 +423,12 @@ var getUrlParameter = function getUrlParameter(sParam) {
+ 			});
+ 
+ 			//Bounce in effects to shoutout comments
+-			$(".shoutout-comment-row").once().each(function(index) {
+-				$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
+-					$(this).removeClass("bounceIn animated");
+-					next();
+-				});
+-			});
++			//$(".shoutout-comment-row").once().each(function(index) {
++			//	$(this).delay(90*index).fadeIn(300).addClass("bounceIn animated").queue(function(next){
++			//		$(this).removeClass("bounceIn animated");
++			//		next();
++			//	});
++			//});
+ 
+ 			//Popups for shoutout buttons greenway to work -  job openings - ideas
+ 			var they_clicked = false;
