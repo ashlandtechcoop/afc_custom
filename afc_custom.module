@@ -175,7 +175,7 @@ function shoutout_alert($uid) {
 
                     if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM, if they are an operations manager send it to the Store Manager
                       $mgr_type = $user_profile->field_operations_manager[LANGUAGE_NONE][0]['value'];
-                      if(!empty($mgr_type)) {
+                      if($mgr_type == '1') {
                         $to = 'storemanager@ashlandfood.coop';
                         $mgr_name = 'Store Manager';
                       } else {
