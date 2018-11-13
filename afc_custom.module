@@ -173,11 +173,18 @@ function shoutout_alert($uid) {
 
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
 
-                    if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM
+                    if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM, if they are an operations manager send it to the Store Manager
+                      $mgr_type = $user_profile->field_operations_manager[LANGUAGE_NONE][0]['value'];
+                      if(!empty($mgr_type)) {
+                        $to = 'storemanager@ashlandfood.coop';
+                        $mgr_name = 'Store Manager';
+                      } else {
                         $to = 'gm@ashlandfood.coop';
+                        $mgr_name = 'General Manager';
+                      }
                         $values = array(
                             'manager_email' => $to,
-                            'manager_nick_name' => 'General Manager',
+                            'manager_nick_name' => $mgr_name,
                             'employee_name' => $users_name,
                             'update_link' => $link,
                         );
@@ -1017,6 +1024,7 @@ function afc_custom_webform_js_submit($form, $form_state) {
  */
 function afc_custom_node_view($node, $view_mode, $langcode) {
 if (isset($_GET['ss'])) {
+  //shoutout_alert(1580);
 }
     switch ($node->type) {
         case 'page':
