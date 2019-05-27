@@ -1,0 +1,85 @@
+<?php
+
+function afc_surveys_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'survey_results_node_form') {
+
+    if (!isset($_GET['survey'])) {
+      return;
+    }
+
+    $survey_id = $_GET['survey'];
+    $survey = node_load($survey_id);
+
+    if (!$survey) {
+      drupal_set_message(t("Sorry this survey does not exist"),'warning');
+      //reroute to shoutout board
+      return;
+    }
+
+    if ($survey->type != 'survey_campaigns') {
+      drupal_set_message(t("Sorry this is not a survey"),'warning');
+      //reroute to shoutout board
+      return;
+    }
+
+    if (!_surveyIsOpen($survey) || $survey->status <> 1) {
+      drupal_set_message(t("Sorry this survey is not open"),'warning');
+      //reroute to shoutout board
+      return;
+    }
+
+    $survey_description = $survey->body[LANGUAGE_NONE][0]['safe_value'];
+    $survey_options = _prepareOptions($survey->field_options[LANGUAGE_NONE]);
+
+
+    //create a title
+    // $result_title =
+    //create our fake options
+    $form['survey_options_display'] = [
+      '#type' => 'radios',
+      '#title' => $survey_description,
+      '#options' => $survey_options,
+      ];
+    // dpm($form['field_survey_option_select']);
+  }
+}
+
+
+
+
+/**
+ * Prepare the nested options array
+ * @param  array $survey_options The survey options from loaded campaign
+ * @return array                 An unnested array of options
+ */
+function _prepareOptions($survey_options) {
+  $options = [];
+  foreach ($survey_options as $key => $survey_option_array) {
+    $options[$key] = $survey_option_array['safe_value'];
+  }
+  return $options;
+}
+
+
+/**
+ * Check survey dates to see if survey is open
+ * @param  object $survey The loaded survey node
+ * @return bool          True if open false if not
+ */
+function _surveyIsOpen($survey) {
+
+  if (!isset($survey->field_date[LANGUAGE_NONE][0]['value'])) {
+    return FALSE;
+  }
+
+  $opens = $survey->field_date[LANGUAGE_NONE][0]['value'];
+  $closes = $survey->field_date[LANGUAGE_NONE][0]['value2'];
+
+  $today = date('Y-m-d');
+
+  if ($today >= $opens && $today <=$closes) {
+    return TRUE;
+  }
+
+  return FALSE;
+}

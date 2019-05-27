@@ -1,0 +1,11 @@
+name = Ashland Food Coop Custom Survey Tool
+description = Survey Tool
+core = 7.x
+
+dependencies[] = afc_custom:afc_custom
+
+; Information added by  packaging script on 2019-05-03
+version = "7.x-1.0"
+core = "7.x"
+project = "afc_surveys"
+datestamp = "1386094705"
