@@ -1,51 +1,228 @@
 <?php
 
-function afc_surveys_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'survey_results_node_form') {
+/**
+ * Implements hook_menu().
+ */
+function afc_surveys_menu() {
+    $items = array();
+    //survey campain node id
+    $items['load-survey/%/%ctools_js'] = array(
+        'page callback' => 'afc_surveys_load_survey_callback',
+        'page arguments' => array(1, 2),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    $items['load-survey-results/%/%ctools_js'] = array(
+        'page callback' => 'afc_surveys_load_results_callback',
+        'page arguments' => array(1, 2),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
 
-    if (!isset($_GET['survey'])) {
-      return;
+/**
+ * Implements hook_views_api().
+ */
+function afc_surveys_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'afc_surveys') . '/views',
+  );
+}
+
+function afc_surveys_theme($existing, $type, $theme, $path) {
+  return array(
+    'survey_results' => array(
+      'variables' => array(
+          'count' => NULL,
+          'aggregate_results' => NULL
+        ),
+        'template' => 'templates/survey-results'
+      ),
+    );
+  }
+/**
+ * Ajax menu callback.
+ */
+function afc_surveys_load_survey_callback($survey_id, $ajax) {
+    if ($ajax) {
+
+        ctools_include('ajax');
+        ctools_include('modal');
+
+        $form_state = array(
+            'ajax' => TRUE,
+            'title' => t('Employee Survey'),
+            'survey_id' => $survey_id
+        );
+
+        // Use ctools to generate ajax instructions for the browser to create
+        // a form in a modal popup.
+        $output = ctools_modal_form_wrapper('new_survey_result_form', $form_state);
+
+        // If the form has been submitted, there may be additional instructions
+        // such as dismissing the modal popup.
+        if (!empty($form_state['ajax_commands'])) {
+            $output = $form_state['ajax_commands'];
+        }
+        if (!empty($form_state['executed'])) {
+          $output[] = ctools_modal_command_dismiss(); // Close modal automatically.
+          // $msg = 'Sweet, thanks!';
+          // $output[] = ajax_command_replace('#ajax-response', '<div id="ajax-msg">'.$msg.'</div>');
+          $results = _getSurveyResults($survey_id);
+          $html = _prepareResultsHtml($results);
+          $output[] = ctools_modal_command_display('Survey Results', $html);
+        }
+
+        print ajax_render($output);
+        drupal_exit();
+    }
+    else {
+        return drupal_get_form('new_survey_result_form');
+    }
+}
+
+/**
+ * hook_form
+ */
+function new_survey_result_form($form, $form_state) {
+    $form = array();
+
+    if (!isset($form_state['survey_id'])) {
+      $form['error'] = [
+        '#markup' => 'There is no survey set.'
+      ];
+      return $form;
     }
 
-    $survey_id = $_GET['survey'];
+    $survey_id = $form_state['survey_id'];
     $survey = node_load($survey_id);
 
     if (!$survey) {
-      drupal_set_message(t("Sorry this survey does not exist"),'warning');
-      //reroute to shoutout board
-      return;
+      $form['error'] = [
+        '#markup' => 'Sorry this survey does not exist'
+      ];
+      return $form;
     }
 
     if ($survey->type != 'survey_campaigns') {
-      drupal_set_message(t("Sorry this is not a survey"),'warning');
-      //reroute to shoutout board
-      return;
+      $form['error'] = [
+        '#markup' => 'Sorry this is not a survey'
+      ];
+      return $form;
     }
 
     if (!_surveyIsOpen($survey) || $survey->status <> 1) {
-      drupal_set_message(t("Sorry this survey is not open"),'warning');
-      //reroute to shoutout board
-      return;
+      $form['error'] = [
+        '#markup' => 'Sorry this survey is not open'
+      ];
+      return $form;
     }
 
-    $survey_description = $survey->body[LANGUAGE_NONE][0]['safe_value'];
+    $survey_description = $survey->field_survey_campaign_question[LANGUAGE_NONE][0]['value'];
     $survey_options = _prepareOptions($survey->field_options[LANGUAGE_NONE]);
 
+    $require_badge = empty($survey->field_survey_require_badge_numbe) ? FALSE : $survey->field_survey_require_badge_numbe[LANGUAGE_NONE][0]['value'];
 
-    //create a title
-    // $result_title =
-    //create our fake options
+    if ($require_badge <> 1) {
+      $prefix = '<div class="hide-field">';
+    } else {
+      $prefix = '<div>';
+    }
+
+    $form['staff_number'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Your Staff #'),
+        '#required' => $require_badge <> 1 ? FALSE : TRUE,
+        '#prefix' => $prefix,
+        '#suffix' => '</div>'
+    );
+    $form['require_badge'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $require_badge
+    );
+    $form['survey_title'] = [
+      '#markup' => '<div class="survey-description">'.$survey_description.'</div>',
+      ];
     $form['survey_options_display'] = [
       '#type' => 'radios',
-      '#title' => $survey_description,
+      '#title' => 'Please choose one',
       '#options' => $survey_options,
+      '#required' => TRUE
       ];
-    // dpm($form['field_survey_option_select']);
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+    );
+    return $form;
+}
+
+function new_survey_result_form_validate($form, $form_state) {
+  if ($form_state['values']['require_badge'] == 1) {
+    if(isset($form_state['values']['staff_number'])) {
+        $badge = $form_state['values']['staff_number'];
+        $uid = afc_custom_return_uid_for_badge($badge);
+        if (!$uid) {
+          //error if we can't find a matching uid for that badge
+          form_set_error('', t('It looks like your badge# is incorrect :('));
+           // $form_state['rebuild'] = TRUE;
+        }
+    } else {
+        form_set_error('', t('No badge# given'));
+    }
   }
 }
 
+function new_survey_result_form_submit($form, $form_state) {
+  if (isset($form_state['values']['require_badge'])) {
+    if ($form_state['values']['require_badge']) {
+      $badge = $form_state['values']['staff_number'];
+    } else {
+      $badge = NULL;
+    }
+  } else {
+    $badge = NULL;
+  }
+  $choice = $form_state['values']['survey_options_display'];
+  $survey_id = $form_state['survey_id'];
+  $nodeinfo = [
+    'badge' => $badge,
+    'choice' => $choice,
+    'survey_id' => $survey_id
+  ];
 
+  _add_new_survey_result($nodeinfo);
+  $form_state['rebuild'] = TRUE;
+}
 
+/**
+ * Custom function that creates survey result node from
+ *  submitted response on shoutout webform
+ */
+function _add_new_survey_result(&$nodeinfo){
+    global $user; //should be service account
+    $user_submitted = !empty($nodeinfo['badge']) ? afc_custom_return_uid_for_badge($nodeinfo['badge']) : NULL;
+    $title = 'Survey Result-' . date('m-d-y').'-'.rand(10,1000);
+    $new_result = null;
+    $new_result = new stdClass();
+    $new_result->title = $title;
+    $new_result->type = 'survey_results';
+    $new_result->language = LANGUAGE_NONE;
+    node_object_prepare($new_result);
+    $new_result->uid = $user->uid;
+    $new_result->status = 1;
+    $new_result->promote = 0;
+    $new_result->comment = 0;
+    $new_result->field_survey_reference[LANGUAGE_NONE][0]['target_id'] = $nodeinfo['survey_id'];
+    $new_result->field_survey_user[LANGUAGE_NONE][0]['uid'] = $user_submitted;
+    $new_result->field_survey_option_select[LANGUAGE_NONE][0]['value'] = $nodeinfo['choice'];
+
+    $new_result = node_submit($new_result);
+    node_save($new_result);
+    return true;
+}
 
 /**
  * Prepare the nested options array
@@ -74,12 +251,77 @@ function _surveyIsOpen($survey) {
 
   $opens = $survey->field_date[LANGUAGE_NONE][0]['value'];
   $closes = $survey->field_date[LANGUAGE_NONE][0]['value2'];
-
   $today = date('Y-m-d');
+
 
   if ($today >= $opens && $today <=$closes) {
     return TRUE;
   }
 
   return FALSE;
+}
+
+/**
+ * Get results for campaign
+ * @param  integer $survey_id The survey campaign nid
+ * @return array            An array containing results of query
+ */
+function _getSurveyResults($survey_id) {
+
+  //get all survey results for survey campaign
+  $detailed_query = db_query("SELECT nid survey_result_id,
+                      field_survey_reference_target_id survey_campaign_id,
+                      field_survey_option_select_value survey_choice_id,
+                      field_options_value
+                      FROM afcportal.node
+                      join field_data_field_survey_reference on node.nid = field_data_field_survey_reference.entity_id
+                      join field_data_field_survey_option_select on node.nid = field_data_field_survey_option_select.entity_id
+                      join field_data_field_options on field_data_field_survey_reference.field_survey_reference_target_id = field_data_field_options.entity_id
+                      	and field_data_field_survey_option_select.field_survey_option_select_value = field_data_field_options.delta
+                      where type = 'survey_results'
+                      and field_survey_reference_target_id = ".$survey_id."
+                      and node.status = 1");
+
+  $aggregate_query = db_query("SELECT
+                      field_survey_reference_target_id survey_campaign_id,
+                      count(field_survey_option_select_value) survey_choice_id_count,
+                      field_survey_option_select_value,
+                      field_options_value
+                      FROM afcportal.node
+                      join field_data_field_survey_reference on node.nid = field_data_field_survey_reference.entity_id
+                      join field_data_field_survey_option_select on node.nid = field_data_field_survey_option_select.entity_id
+                      join field_data_field_options on field_data_field_survey_reference.field_survey_reference_target_id = field_data_field_options.entity_id
+                      	and field_data_field_survey_option_select.field_survey_option_select_value = field_data_field_options.delta
+                      where type = 'survey_results'
+                      and field_survey_reference_target_id = ".$survey_id."
+                      and node.status = 1
+                      group by survey_campaign_id, field_survey_option_select_value, field_options_value");
+
+  $detailed_results = $detailed_query->fetchAll();
+  $survey = node_load($survey_id);
+  $survey_title = $survey->field_survey_campaign_question[LANGUAGE_NONE][0]['value'];
+  $survey_closes = $survey->field_date[LANGUAGE_NONE][0]['value2'];
+  $total_count = $detailed_query->rowCount();
+  $aggregate_results = $aggregate_query->fetchAll();
+
+  return [
+    'detailed_results' => $detailed_results,
+    'total_count' => $total_count,
+    'aggregate_results' => $aggregate_results,
+    'survey_title' => $survey_title,
+    'closes' => date('m-d-Y', strtotime($survey_closes))
+  ];
+
+}
+
+function _prepareResultsHtml(array $results) {
+
+  $variables = [
+    'count' => $results['total_count'],
+    'aggregate_results' => $results['aggregate_results'],
+    'survey_title' => $results['survey_title'],
+    'closes' => $results['closes']
+  ];
+
+  return theme('survey_results',$variables);
 }
