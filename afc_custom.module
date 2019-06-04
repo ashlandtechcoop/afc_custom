@@ -1185,7 +1185,13 @@ function afc_custom_preprocess_node(&$variables){
         }
         $shout_menu_html .='</div>';
 
-        $survey_link = ctools_modal_text_button('Get shredded', '/load-survey/2221/nojs','Alt text bitch', 'ctools-use-modal survey-popup-form');
+        //provided by afc_surveys module
+        $survey_link = '';
+        $survey_id = _getNextOpenSurvey();
+        //if the array of survey ids contains more than zero ;)
+        if (count($survey_id) > 0) {
+          $survey_link = ctools_modal_text_button('New Employee Survey!', '/load-survey/nojs','Employee survey link', 'ctools-modal-modal-popup-large ctools-use-modal survey-popup-form');
+        }
 
         $variables['dept_list'] = $dept_list;
         $variables['huddle_news']=$huddle_new;

@@ -307,7 +307,7 @@ details.dept-group[open] summary {
 
 .shout-buttons img {
     transition: .5s;
-    width: 170px;
+    width: 115px;
 }
 .shout-buttons img:hover {
     transform: scale(1.3);

@@ -6,9 +6,9 @@
 function afc_surveys_menu() {
     $items = array();
     //survey campain node id
-    $items['load-survey/%/%ctools_js'] = array(
+    $items['load-survey/%ctools_js'] = array(
         'page callback' => 'afc_surveys_load_survey_callback',
-        'page arguments' => array(1, 2),
+        'page arguments' => array(1),
         'access callback' => TRUE,
         'type' => MENU_CALLBACK,
     );
@@ -45,11 +45,17 @@ function afc_surveys_theme($existing, $type, $theme, $path) {
 /**
  * Ajax menu callback.
  */
-function afc_surveys_load_survey_callback($survey_id, $ajax) {
+function afc_surveys_load_survey_callback($ajax) {
     if ($ajax) {
 
         ctools_include('ajax');
         ctools_include('modal');
+
+        $survey = _getNextOpenSurvey();
+        $survey_id = 0;
+        if(count($survey) > 0) {
+          $survey_id = $survey[0]->entity_id;
+        }
 
         $form_state = array(
             'ajax' => TRUE,
@@ -97,6 +103,15 @@ function new_survey_result_form($form, $form_state) {
     }
 
     $survey_id = $form_state['survey_id'];
+
+    if ($survey_id == 0) {
+      $form['error'] = [
+        '#markup' => 'Sorry there are no surveys published right now. Check back another time.'
+      ];
+      return $form;
+    }
+
+
     $survey = node_load($survey_id);
 
     if (!$survey) {
@@ -163,16 +178,52 @@ function new_survey_result_form_validate($form, $form_state) {
   if ($form_state['values']['require_badge'] == 1) {
     if(isset($form_state['values']['staff_number'])) {
         $badge = $form_state['values']['staff_number'];
+        $survey_id = $form_state['survey_id'];
         $uid = afc_custom_return_uid_for_badge($badge);
         if (!$uid) {
           //error if we can't find a matching uid for that badge
           form_set_error('', t('It looks like your badge# is incorrect :('));
-           // $form_state['rebuild'] = TRUE;
+           $form_state['rebuild'] = TRUE;
+        } else {
+          //check if already submitted
+          if (count(_previouslySubmitted($uid, $survey_id)) > 0) {
+            form_set_error('', t("You've already submitted an answer to this survey silly!"));
+            $form_state['rebuild'] = TRUE;
+
+          }
         }
     } else {
         form_set_error('', t('No badge# given'));
+        $form_state['rebuild'] = TRUE;
+
     }
   }
+}
+
+function _getNextOpenSurvey() {
+
+  $today = date('Y-m-d');
+
+  $query = db_query("SELECT field_data_field_date.entity_id
+        FROM field_data_field_date
+        join node on field_data_field_date.entity_id = node.nid
+        where bundle = 'survey_campaigns'
+        and field_date_value <= '".$today."'
+        and field_date_value2 >= '".$today."'
+        and node.status = 1
+        order by field_data_field_date.entity_id desc
+        limit 0,1");
+  return $query->fetchAll();
+}
+
+function _previouslySubmitted($uid, $survey_id){
+  $query = db_query("SELECT field_data_field_survey_reference.entity_id
+            FROM field_data_field_survey_reference
+            join field_data_field_survey_user on field_data_field_survey_reference.entity_id = field_data_field_survey_user.entity_id
+            where field_survey_reference_target_id = ".$survey_id."
+            and field_survey_user_uid = ".$uid);
+
+  return $query->fetchAll();
 }
 
 function new_survey_result_form_submit($form, $form_state) {
@@ -273,7 +324,7 @@ function _getSurveyResults($survey_id) {
                       field_survey_reference_target_id survey_campaign_id,
                       field_survey_option_select_value survey_choice_id,
                       field_options_value
-                      FROM afcportal.node
+                      FROM node
                       join field_data_field_survey_reference on node.nid = field_data_field_survey_reference.entity_id
                       join field_data_field_survey_option_select on node.nid = field_data_field_survey_option_select.entity_id
                       join field_data_field_options on field_data_field_survey_reference.field_survey_reference_target_id = field_data_field_options.entity_id
@@ -287,7 +338,7 @@ function _getSurveyResults($survey_id) {
                       count(field_survey_option_select_value) survey_choice_id_count,
                       field_survey_option_select_value,
                       field_options_value
-                      FROM afcportal.node
+                      FROM node
                       join field_data_field_survey_reference on node.nid = field_data_field_survey_reference.entity_id
                       join field_data_field_survey_option_select on node.nid = field_data_field_survey_option_select.entity_id
                       join field_data_field_options on field_data_field_survey_reference.field_survey_reference_target_id = field_data_field_options.entity_id
