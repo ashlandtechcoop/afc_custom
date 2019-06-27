@@ -166,7 +166,7 @@ span.btn-text {
     border-radius: 4px 4px;
 }
 .shout-col-3 {
-    float: left;
+    float: right;
     width: 56%;
 }
 .shout-col-2 div {
@@ -1400,4 +1400,9 @@ article#node-70.not-afc {
     -o-animation-name: red-heart;
     animation-name: red-heart;
     animation-duration: 1s;
+}
+
+.survey-description {
+    font-size: 20px;
+    font-weight: bold;
 }
