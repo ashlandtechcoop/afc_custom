@@ -164,6 +164,7 @@ function shoutout_alert($uid) {
                         global $base_url;
                         $last = end($user_profile->field_employee_rewards[LANGUAGE_NONE]);
                         $reward_fc_id = $last['value'];
+                        $reward_fc_id = str_replace( ',', '', $reward_fc_id);
                         $link = $base_url.'/update_recognized/'.$reward_fc_id;
                     } else {
                         $link = 'An error has occurred please contact your admin. Check watchdog log';
