@@ -13,6 +13,11 @@
 .survey-results text {
   font-family: 'Raleway', arial, sans-serif !important;
 }
+
+div form#new-survey-result-form {
+    font-size: 25px;
+    margin: 25px;
+}
 .survey-description p {
     font-size: 18px;
     font-weight: 500;
