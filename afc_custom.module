@@ -9,7 +9,6 @@
 
 /**
  * Custom function get the total and current shoutout count for a user
- *
  */
 function _get_shoutout_count($uid) {
 
@@ -66,7 +65,7 @@ function ip_is_afc ($ip) {
         '66.241.66.115',
         '66.241.66.116',
         '66.241.66.117',
-        '66.241.66.118',
+        '66.241.66.120',
         '69.9.146.34', //dsl infostructure ips
         '69.9.146.25',
     );
@@ -174,9 +173,9 @@ function shoutout_alert($uid) {
 
                     watchdog('afc_custom','Function: shoutout_alert - built email and submitted it for @tuser', array('@tuser' => $users_name));
 
-                    if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM, if they are an operations manager send it to the Store Manager
+                    if($manager_uid == $uid) { //if the manager is the one getting a shoutout send it to the GM, if they are an operations manager send it to the Store Manager or Maintenance dept ($dept_tid = 8)
                       $mgr_type = $user_profile->field_operations_manager[LANGUAGE_NONE][0]['value'];
-                      if($mgr_type == '1') {
+                      if($mgr_type == '1' || $dept_tid == '8') {
                         $to = 'storemanager@ashlandfood.coop';
                         $mgr_name = 'Store Manager';
                       } else {
